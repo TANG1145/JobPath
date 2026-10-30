@@ -1,0 +1,28 @@
+[WebServer] (node:67923) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 2 workers
+
+(node:67925) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (848ms)
+  ✓  2 [chromium] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (1.1s)
+(node:67977) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (787ms)
+(node:67981) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [firefox] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (980ms)
+  ✓  4 [firefox] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (1.5s)
+(node:68013) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  6 [firefox] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (1.1s)
+(node:68023) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  7 [webkit] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (1.3s)
+  ✓  8 [webkit] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (638ms)
+  ✓  9 [webkit] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (825ms)
+
+  9 passed (7.4s)

@@ -1,0 +1,16 @@
+{
+  "browser": "firefox",
+  "platform": "darwin",
+  "node": "v25.9.0",
+  "counts": {
+    "jobs": 50,
+    "tasks": 500,
+    "evidence": 200
+  },
+  "times": {
+    "/jobs": 66,
+    "/growth": 136,
+    "/growth/evidence/evidence-0": 105,
+    "save": 145
+  }
+}

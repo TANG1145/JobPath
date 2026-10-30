@@ -1,0 +1,62 @@
+
+> jobpath@0.7.0 test:e2e
+> playwright test
+
+[WebServer] (node:60314) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 39 tests using 2 workers
+
+(node:60315) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › e2e/history-drafts.spec.mjs:13:1 › 编辑关闭提醒、刷新恢复草稿、确认后清除 (656ms)
+  ✓   2 [chromium] › e2e/history-drafts.spec.mjs:5:1 › 投递日期、轮次编辑与前进回退历史可恢复 (947ms)
+  ✓   3 [chromium] › e2e/history-drafts.spec.mjs:17:1 › 保存失败不显示成功、不丢输入、重试只写一次 (311ms)
+  ✓   4 [chromium] › e2e/history-drafts.spec.mjs:23:1 › 双标签冲突保留正式记录及失败输入，刷新后可恢复 (567ms)
+  ✓   5 [chromium] › e2e/history-drafts.spec.mjs:27:1 › 可视化岗位要求动态字段可恢复，未确认不改正式要求 (586ms)
+  ✓   6 [chromium] › e2e/planning-offers.spec.mjs:6:1 › 4/8周确认、取消、完成证据及跨周期重排 (774ms)
+  ✓   7 [chromium] › e2e/planning-offers.spec.mjs:12:1 › 两份Offer条件、取消、阶段回退及备份恢复 (934ms)
+  ✓   8 [chromium] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (386ms)
+  ✓  10 [chromium] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (288ms)
+  ✓   9 [chromium] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (602ms)
+  ✓  12 [chromium] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (195ms)
+  ✓  11 [chromium] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (407ms)
+(node:60361) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [chromium] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (645ms)
+(node:60363) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [firefox] › e2e/history-drafts.spec.mjs:5:1 › 投递日期、轮次编辑与前进回退历史可恢复 (1.5s)
+  ✓  15 [firefox] › e2e/history-drafts.spec.mjs:13:1 › 编辑关闭提醒、刷新恢复草稿、确认后清除 (1.2s)
+  ✓  16 [firefox] › e2e/history-drafts.spec.mjs:17:1 › 保存失败不显示成功、不丢输入、重试只写一次 (511ms)
+  ✓  17 [firefox] › e2e/history-drafts.spec.mjs:23:1 › 双标签冲突保留正式记录及失败输入，刷新后可恢复 (888ms)
+  ✓  18 [firefox] › e2e/history-drafts.spec.mjs:27:1 › 可视化岗位要求动态字段可恢复，未确认不改正式要求 (867ms)
+  ✓  19 [firefox] › e2e/planning-offers.spec.mjs:6:1 › 4/8周确认、取消、完成证据及跨周期重排 (1.1s)
+  ✓  21 [firefox] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (552ms)
+  ✓  20 [firefox] › e2e/planning-offers.spec.mjs:12:1 › 两份Offer条件、取消、阶段回退及备份恢复 (1.3s)
+  ✓  23 [firefox] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (442ms)
+  ✓  24 [firefox] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (551ms)
+  ✓  22 [firefox] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (1.0s)
+  ✓  25 [firefox] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (208ms)
+(node:60397) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  26 [firefox] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (990ms)
+(node:60407) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  27 [webkit] › e2e/history-drafts.spec.mjs:5:1 › 投递日期、轮次编辑与前进回退历史可恢复 (1.2s)
+  ✓  28 [webkit] › e2e/history-drafts.spec.mjs:13:1 › 编辑关闭提醒、刷新恢复草稿、确认后清除 (789ms)
+  ✓  29 [webkit] › e2e/history-drafts.spec.mjs:17:1 › 保存失败不显示成功、不丢输入、重试只写一次 (539ms)
+  ✓  30 [webkit] › e2e/history-drafts.spec.mjs:23:1 › 双标签冲突保留正式记录及失败输入，刷新后可恢复 (1.1s)
+  ✓  31 [webkit] › e2e/history-drafts.spec.mjs:27:1 › 可视化岗位要求动态字段可恢复，未确认不改正式要求 (866ms)
+  ✓  32 [webkit] › e2e/planning-offers.spec.mjs:6:1 › 4/8周确认、取消、完成证据及跨周期重排 (979ms)
+  ✓  33 [webkit] › e2e/planning-offers.spec.mjs:12:1 › 两份Offer条件、取消、阶段回退及备份恢复 (1.2s)
+  ✓  34 [webkit] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (633ms)
+  ✓  36 [webkit] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (520ms)
+  ✓  35 [webkit] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (951ms)
+  ✓  38 [webkit] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (299ms)
+  ✓  37 [webkit] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (597ms)
+  ✓  39 [webkit] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (935ms)
+
+  39 passed (16.8s)

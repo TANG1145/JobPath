@@ -347,6 +347,7 @@ export default function Strands({
   intro = true,
   lightMode = false,
   maxDevicePixelRatio = 2,
+  onFrame,
   className = '',
   style
 }) {
@@ -379,7 +380,8 @@ export default function Strands({
     clickPulse,
     intro,
     lightMode,
-    maxDevicePixelRatio
+    maxDevicePixelRatio,
+    onFrame
   };
 
   useEffect(() => {
@@ -540,6 +542,7 @@ export default function Strands({
       gl.uniform1f(loc.uOpacity, p.opacity);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+      propsRef.current.onFrame?.(canvas);
     };
 
     const frame = now => {

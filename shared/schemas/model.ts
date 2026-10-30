@@ -1,3 +1,4 @@
+import {validateSceneRequest,validateSceneOutput} from '../ai-scenes.js';
 import {z} from 'zod';
 // Keep schema validation compatible with the strict script-src self policy.
 z.config({jitless:true});
@@ -66,6 +67,7 @@ export function validateDataset(input:unknown):Dataset{
  for(const f of data.feedback){ref('answers',f.answerVersionId);ref('sessions',f.sessionId)}
  // Link cancellation must not silently remove the referenced evidence.
  for(const t of data.tasks)if(t.status==='完成'&&t.type!=='action'&&!t.legacy&&!data.taskEvidence.some(x=>x.taskId===t.id))throw Error('实践任务完成需要关联成果');
+ for(const h of data.history)if(h.body?.kind==='ai-scene'){const b=h.body;validateSceneRequest(b.request);if(typeof b.scope!=='string'||typeof b.applied!=='boolean')throw Error('AI请求记录无效');if(b.result){if(!['completed','failed','pending'].includes(b.result.status))throw Error('AI结果状态无效');if(b.result.status==='completed'){validateSceneOutput(b.request,b.result.data);if(typeof b.result.model!=='string'||!Number.isFinite(b.result.generatedAt))throw Error('AI结果来源无效')}if(b.result.status==='failed'&&typeof b.result.message!=='string')throw Error('AI错误说明无效')}}
  return data;
 }
 export const envelope=z.object({app:z.literal('jobpath'),schemaVersion:z.literal(2),exportedAt:z.string(),data:z.unknown()});

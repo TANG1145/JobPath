@@ -1,0 +1,150 @@
+{
+  "checkedAt": "2026-10-30T04:11:04.208937+00:00",
+  "method": "HEAD via configured local proxy; no playback or project execution",
+  "results": [
+    {
+      "id": "java-1",
+      "url": "https://dev.java/learn/",
+      "status": 200,
+      "finalUrl": "https://dev.java/learn/"
+    },
+    {
+      "id": "java-2",
+      "url": "https://developer.mozilla.org/zh-CN/docs/Web/HTTP",
+      "status": 200,
+      "finalUrl": "https://developer.mozilla.org/zh-CN/docs/Web/HTTP"
+    },
+    {
+      "id": "java-3",
+      "url": "https://www.postgresql.org/docs/current/tutorial.html",
+      "status": 200,
+      "finalUrl": "https://www.postgresql.org/docs/current/tutorial.html"
+    },
+    {
+      "id": "java-4",
+      "url": "https://spring.io/guides/gs/rest-service",
+      "status": 200,
+      "finalUrl": "https://spring.io/guides/gs/rest-service/"
+    },
+    {
+      "id": "java-5",
+      "url": "https://github.com/spring-projects/spring-petclinic",
+      "status": 200,
+      "finalUrl": "https://github.com/spring-projects/spring-petclinic"
+    },
+    {
+      "id": "java-6",
+      "url": "https://github.com/spring-guides/gs-rest-service",
+      "status": 200,
+      "finalUrl": "https://github.com/spring-guides/gs-rest-service"
+    },
+    {
+      "id": "java-7",
+      "url": "https://www.freecodecamp.org/news/spring-boot-tutorial/",
+      "status": 200,
+      "finalUrl": "https://www.freecodecamp.org/news/spring-boot-tutorial/"
+    },
+    {
+      "id": "java-8",
+      "url": "https://www.freecodecamp.org/news/learn-spring-boot-and-spring-data-jpa/",
+      "status": 200,
+      "finalUrl": "https://www.freecodecamp.org/news/learn-spring-boot-and-spring-data-jpa/"
+    },
+    {
+      "id": "web-1",
+      "url": "https://developer.mozilla.org/zh-CN/docs/Learn_web_development",
+      "status": 200,
+      "finalUrl": "https://developer.mozilla.org/zh-CN/docs/Learn_web_development"
+    },
+    {
+      "id": "web-2",
+      "url": "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide",
+      "status": 200,
+      "finalUrl": "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide"
+    },
+    {
+      "id": "web-3",
+      "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+      "status": 200,
+      "finalUrl": "https://www.typescriptlang.org/docs/handbook/intro.html"
+    },
+    {
+      "id": "web-4",
+      "url": "https://react.dev/learn",
+      "status": 200,
+      "finalUrl": "https://react.dev/learn"
+    },
+    {
+      "id": "web-5",
+      "url": "https://github.com/tastejs/todomvc",
+      "status": 200,
+      "finalUrl": "https://github.com/tastejs/todomvc"
+    },
+    {
+      "id": "web-6",
+      "url": "https://github.com/vitejs/vite/tree/main/packages/create-vite",
+      "status": 200,
+      "finalUrl": "https://github.com/vitejs/vite/tree/main/packages/create-vite"
+    },
+    {
+      "id": "web-7",
+      "url": "https://www.freecodecamp.org/news/learn-react-js-in-this-free-7-hour-course/",
+      "status": 200,
+      "finalUrl": "https://www.freecodecamp.org/news/learn-react-js-in-this-free-7-hour-course/"
+    },
+    {
+      "id": "web-8",
+      "url": "https://www.freecodecamp.org/news/learn-javascript-free-js-courses-for-beginners",
+      "status": 200,
+      "finalUrl": "https://www.freecodecamp.org/news/learn-javascript-free-js-courses-for-beginners"
+    },
+    {
+      "id": "test-1",
+      "url": "https://docs.python.org/zh-cn/3/tutorial/",
+      "status": 200,
+      "finalUrl": "https://docs.python.org/zh-cn/3/tutorial/"
+    },
+    {
+      "id": "test-2",
+      "url": "https://docs.pytest.org/en/stable/getting-started.html",
+      "status": 200,
+      "finalUrl": "https://docs.pytest.org/en/stable/getting-started.html"
+    },
+    {
+      "id": "test-3",
+      "url": "https://playwright.dev/docs/intro",
+      "status": 200,
+      "finalUrl": "https://playwright.dev/docs/intro"
+    },
+    {
+      "id": "test-4",
+      "url": "https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview",
+      "status": 200,
+      "finalUrl": "https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/Overview"
+    },
+    {
+      "id": "test-5",
+      "url": "https://github.com/pytest-dev/pytest/tree/main/doc/en/example",
+      "status": 200,
+      "finalUrl": "https://github.com/pytest-dev/pytest/tree/main/doc/en/example"
+    },
+    {
+      "id": "test-6",
+      "url": "https://github.com/microsoft/playwright-examples",
+      "status": 200,
+      "finalUrl": "https://github.com/microsoft/playwright-examples"
+    },
+    {
+      "id": "test-7",
+      "url": "https://www.freecodecamp.org/news/testing-in-python-with-pytest",
+      "status": 200,
+      "finalUrl": "https://www.freecodecamp.org/news/testing-in-python-with-pytest"
+    },
+    {
+      "id": "test-8",
+      "url": "https://www.freecodecamp.org/news/software-testing-with-playwright",
+      "status": 200,
+      "finalUrl": "https://www.freecodecamp.org/news/software-testing-with-playwright"
+    }
+  ]
+}

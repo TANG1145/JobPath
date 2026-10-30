@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {indexedDB} from 'fake-indexeddb';import {writeRevision} from '../src/storage.js';
+async function db(){return new Promise((resolve,reject)=>{const r=indexedDB.open(crypto.randomUUID(),1);r.onupgradeneeded=()=>r.result.createObjectStore('state');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+const read=d=>new Promise(r=>{const q=d.transaction('state').objectStore('state').get('main');q.onsuccess=()=>r(q.result)});
+test('并发同revision只允许一个写入，其余不覆盖',async()=>{const d=await db();const results=await Promise.allSettled([writeRevision(d,{title:'a'},0),writeRevision(d,{title:'b'},0)]);assert.equal(results.filter(r=>r.status==='fulfilled').length,1);assert.deepEqual(await read(d),{title:'a',revision:1});d.close()});
+test('导入事务替换后可恢复，旧revision失败不破坏记录',async()=>{const d=await db();await writeRevision(d,{tasks:['original']},0);await assert.rejects(writeRevision(d,{tasks:['bad']},0));assert.deepEqual((await read(d)).tasks,['original']);await writeRevision(d,{tasks:['restored']},1);assert.deepEqual((await read(d)).tasks,['restored']);d.close()});
+test('数据库连接关闭后写入报错，不返回成功',async()=>{const d=await db();d.close();await assert.rejects(writeRevision(d,{tasks:[]},0))});
+test('清空个人状态事务可持久化，公共资源不在store中',async()=>{const d=await db();await writeRevision(d,{tasks:['original'],jobs:['private']},0);await writeRevision(d,{tasks:[],jobs:[]},1);assert.deepEqual(await read(d),{tasks:[],jobs:[],revision:2});d.close()});

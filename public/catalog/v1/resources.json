@@ -1,0 +1,438 @@
+{
+  "version": 1,
+  "publicationStatus": "candidate",
+  "resources": [
+    {
+      "id": "java-1",
+      "direction": "java",
+      "type": "doc",
+      "title": "Java 官方学习",
+      "url": "https://dev.java/learn/",
+      "skills": [
+        "Java"
+      ],
+      "section": "集合与异常",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "java-1"
+    },
+    {
+      "id": "java-2",
+      "direction": "java",
+      "type": "doc",
+      "title": "MDN HTTP",
+      "url": "https://developer.mozilla.org/zh-CN/docs/Web/HTTP",
+      "skills": [
+        "HTTP"
+      ],
+      "section": "状态码与请求方法",
+      "language": "中文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "java-2"
+    },
+    {
+      "id": "java-3",
+      "direction": "java",
+      "type": "doc",
+      "title": "PostgreSQL 教程",
+      "url": "https://www.postgresql.org/docs/current/tutorial.html",
+      "skills": [
+        "SQL"
+      ],
+      "section": "表与查询",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "java-3"
+    },
+    {
+      "id": "java-4",
+      "direction": "java",
+      "type": "doc",
+      "title": "Spring REST 指南",
+      "url": "https://spring.io/guides/gs/rest-service",
+      "skills": [
+        "Spring"
+      ],
+      "section": "REST 服务",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "java-4"
+    },
+    {
+      "id": "java-5",
+      "direction": "java",
+      "type": "project",
+      "title": "Spring Petclinic",
+      "url": "https://github.com/spring-projects/spring-petclinic",
+      "skills": [
+        "Spring"
+      ],
+      "section": "为一个接口增加验证测试",
+      "language": "英文",
+      "minutes": 60,
+      "prerequisite": "已完成 Spring 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
+      "fallbackId": "java-1"
+    },
+    {
+      "id": "java-6",
+      "direction": "java",
+      "type": "project",
+      "title": "Spring REST 示例",
+      "url": "https://github.com/spring-guides/gs-rest-service",
+      "skills": [
+        "HTTP"
+      ],
+      "section": "增加一个参数校验分支",
+      "language": "英文",
+      "minutes": 60,
+      "prerequisite": "已完成 HTTP 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
+      "fallbackId": "java-2"
+    },
+    {
+      "id": "java-7",
+      "direction": "java",
+      "type": "video",
+      "title": "Spring Boot 入门课程",
+      "url": "https://www.freecodecamp.org/news/spring-boot-tutorial/",
+      "skills": [
+        "Spring"
+      ],
+      "section": "只学习 REST 相关片段；旧版API须对照当前文档",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "已完成 Spring 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "java-3"
+    },
+    {
+      "id": "java-8",
+      "direction": "java",
+      "type": "video",
+      "title": "Spring Boot 与 JPA",
+      "url": "https://www.freecodecamp.org/news/learn-spring-boot-and-spring-data-jpa/",
+      "skills": [
+        "SQL"
+      ],
+      "section": "实体映射与查询片段",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "已完成 SQL 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "java-4"
+    },
+    {
+      "id": "web-1",
+      "direction": "web",
+      "type": "doc",
+      "title": "MDN Web 基础",
+      "url": "https://developer.mozilla.org/zh-CN/docs/Learn_web_development",
+      "skills": [
+        "HTML/CSS"
+      ],
+      "section": "语义化与表单",
+      "language": "中文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "web-1"
+    },
+    {
+      "id": "web-2",
+      "direction": "web",
+      "type": "doc",
+      "title": "MDN JavaScript 指南",
+      "url": "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide",
+      "skills": [
+        "JavaScript"
+      ],
+      "section": "函数、数组与异步",
+      "language": "中文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "web-2"
+    },
+    {
+      "id": "web-3",
+      "direction": "web",
+      "type": "doc",
+      "title": "TypeScript Handbook",
+      "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+      "skills": [
+        "TypeScript"
+      ],
+      "section": "对象类型与联合类型",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "web-3"
+    },
+    {
+      "id": "web-4",
+      "direction": "web",
+      "type": "doc",
+      "title": "React 官方教程",
+      "url": "https://react.dev/learn",
+      "skills": [
+        "React"
+      ],
+      "section": "状态与事件",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "web-4"
+    },
+    {
+      "id": "web-5",
+      "direction": "web",
+      "type": "project",
+      "title": "TodoMVC",
+      "url": "https://github.com/tastejs/todomvc",
+      "skills": [
+        "JavaScript"
+      ],
+      "section": "比较实现后独立新增筛选条件",
+      "language": "英文",
+      "minutes": 60,
+      "prerequisite": "已完成 JavaScript 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
+      "fallbackId": "web-1"
+    },
+    {
+      "id": "web-6",
+      "direction": "web",
+      "type": "project",
+      "title": "Vite 示例模板",
+      "url": "https://github.com/vitejs/vite/tree/main/packages/create-vite",
+      "skills": [
+        "React"
+      ],
+      "section": "理解模板后独立实现一个表单",
+      "language": "英文",
+      "minutes": 60,
+      "prerequisite": "已完成 React 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
+      "fallbackId": "web-2"
+    },
+    {
+      "id": "web-7",
+      "direction": "web",
+      "type": "video",
+      "title": "React 入门视频",
+      "url": "https://www.freecodecamp.org/news/learn-react-js-in-this-free-7-hour-course/",
+      "skills": [
+        "React"
+      ],
+      "section": "只学习组件与状态片段；旧版API对照官方文档",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "已完成 React 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "web-3"
+    },
+    {
+      "id": "web-8",
+      "direction": "web",
+      "type": "video",
+      "title": "JavaScript 视频课程入口",
+      "url": "https://www.freecodecamp.org/news/learn-javascript-free-js-courses-for-beginners",
+      "skills": [
+        "JavaScript"
+      ],
+      "section": "函数和数组片段",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "已完成 JavaScript 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "web-4"
+    },
+    {
+      "id": "test-1",
+      "direction": "test",
+      "type": "doc",
+      "title": "Python 教程",
+      "url": "https://docs.python.org/zh-cn/3/tutorial/",
+      "skills": [
+        "Python"
+      ],
+      "section": "函数和异常",
+      "language": "中文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "test-1"
+    },
+    {
+      "id": "test-2",
+      "direction": "test",
+      "type": "doc",
+      "title": "pytest 入门",
+      "url": "https://docs.pytest.org/en/stable/getting-started.html",
+      "skills": [
+        "pytest"
+      ],
+      "section": "断言和fixture",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "test-2"
+    },
+    {
+      "id": "test-3",
+      "direction": "test",
+      "type": "doc",
+      "title": "Playwright 入门",
+      "url": "https://playwright.dev/docs/intro",
+      "skills": [
+        "Playwright"
+      ],
+      "section": "第一个浏览器测试",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "test-3"
+    },
+    {
+      "id": "test-4",
+      "direction": "test",
+      "type": "doc",
+      "title": "MDN HTTP 概述",
+      "url": "https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview",
+      "skills": [
+        "HTTP"
+      ],
+      "section": "请求响应",
+      "language": "中文",
+      "minutes": 30,
+      "prerequisite": "能运行基础示例",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "test-4"
+    },
+    {
+      "id": "test-5",
+      "direction": "test",
+      "type": "project",
+      "title": "pytest 示例",
+      "url": "https://github.com/pytest-dev/pytest/tree/main/doc/en/example",
+      "skills": [
+        "pytest"
+      ],
+      "section": "编写独立参数化用例",
+      "language": "英文",
+      "minutes": 60,
+      "prerequisite": "已完成 pytest 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
+      "fallbackId": "test-1"
+    },
+    {
+      "id": "test-6",
+      "direction": "test",
+      "type": "project",
+      "title": "Playwright 示例",
+      "url": "https://github.com/microsoft/playwright-examples",
+      "skills": [
+        "Playwright"
+      ],
+      "section": "新增一个失败路径测试",
+      "language": "英文",
+      "minutes": 60,
+      "prerequisite": "已完成 Playwright 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
+      "fallbackId": "test-2"
+    },
+    {
+      "id": "test-7",
+      "direction": "test",
+      "type": "video",
+      "title": "pytest 视频教程",
+      "url": "https://www.freecodecamp.org/news/testing-in-python-with-pytest",
+      "skills": [
+        "pytest"
+      ],
+      "section": "断言与fixture片段",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "已完成 pytest 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "test-3"
+    },
+    {
+      "id": "test-8",
+      "direction": "test",
+      "type": "video",
+      "title": "Playwright 软件测试",
+      "url": "https://www.freecodecamp.org/news/software-testing-with-playwright",
+      "skills": [
+        "Playwright"
+      ],
+      "section": "测试设计和首个用例",
+      "language": "英文",
+      "minutes": 30,
+      "prerequisite": "已完成 Playwright 基础练习",
+      "reviewStatus": "候选 / 待人工运行与可达审核",
+      "reviewedAt": null,
+      "license": "原站学习，不镜像或再分发",
+      "fallbackId": "test-4"
+    }
+  ]
+}

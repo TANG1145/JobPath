@@ -1,1 +1,19 @@
-{"name":"jobpath","version":"0.1.0","private":true,"type":"module","scripts":{"dev":"node server.mjs","build":"node build.mjs","test":"node --test"}}
+{
+  "name": "jobpath",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "build": "node build.mjs",
+    "test": "node --test",
+    "invite": "node scripts/create-invite.mjs",
+    "catalog": "node scripts/export-catalog.mjs"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.7"
+  }
+}

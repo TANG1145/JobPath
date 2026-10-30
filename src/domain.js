@@ -11,5 +11,12 @@ function validateExtended(d){
  if(d.ratings&&(typeof d.ratings!=='object'||Object.values(d.ratings).some(v=>!Number.isInteger(v)||v<0||v>3)))fail();
  if(d.days&&(!Array.isArray(d.days)||d.days.some(v=>!Number.isInteger(v)||v<0||v>6)))fail();
  for(const k of ['plans','backlog','events'])if(d[k]&&!Array.isArray(d[k]))fail();
- if(d.events?.some(e=>!Number.isFinite(e.at)||typeof e.type!=='string'))fail();
+ if(d.events?.some(e=>!e||!Number.isFinite(e.at)||typeof e.type!=='string'))fail();
+ if(d.plans?.some(p=>!p||!Number.isFinite(p.createdAt)||!Array.isArray(p.tasks)||p.tasks.some(t=>!t||typeof t.title!=='string'||typeof t.evidence!=='string')))fail();
+ if(d.backlog?.some(t=>!t||typeof t.title!=='string'||!Number.isFinite(t.minutes)||typeof t.reason!=='string'))fail();
+ if(d.deadline&&!/^\d{4}-\d{2}-\d{2}$/.test(d.deadline))fail();
+ if(d.interests&&(typeof d.interests!=='object'||Object.values(d.interests).some(v=>!Number.isInteger(v)||v<0||v>4)))fail();
+ if(d.feedback&&(typeof d.feedback!=='object'||Array.isArray(d.feedback)))fail();
+ const sensitive=['token','apiKey','invite','DEEPSEEK_API_KEY','authorization'];for(const k of sensitive)if(k in d)fail();
+
 }

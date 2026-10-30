@@ -1,0 +1,1 @@
+import {catalog} from '../src/catalog.js';import {writeFileSync,mkdirSync} from 'node:fs';mkdirSync('public/catalog/v1',{recursive:true});writeFileSync('public/catalog/v1/resources.json',JSON.stringify({version:1,publicationStatus:'candidate',resources:catalog},null,2)+'\n');

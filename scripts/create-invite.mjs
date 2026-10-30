@@ -1,0 +1,2 @@
+import {randomBytes} from 'node:crypto';import {mkdirSync,writeFileSync} from 'node:fs';import {Quota} from '../backend/quota.mjs';
+mkdirSync('.local',{recursive:true,mode:0o700});const token=randomBytes(24).toString('hex');const db=new Quota('.local/quota.sqlite');db.invite(token,Date.now()+30*86400000);db.close();writeFileSync('.local/invite.txt',token+'\n',{mode:0o600});console.log('Invitation saved to .local/invite.txt (excluded from Git).');

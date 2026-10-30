@@ -2,3 +2,5 @@
 .requirement-row{border:1px solid #6d785e;margin:18px 0;padding:15px}.skill-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.skill-picker label{margin:3px;font-size:11px}.requirement-row .filters label{flex:1;margin:4px 0}button:disabled{cursor:not-allowed;opacity:.55}.task summary{cursor:pointer;line-height:1.8}pre{font:inherit} @media(max-width:650px){.skill-picker{grid-template-columns:1fr 1fr}}
 
 .task summary,.task p{overflow-wrap:anywhere}.filters label{min-width:0}
+
+.offer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}.offer-card{border:1px solid var(--line);padding:16px;min-width:0}.offer-field{border-top:1px solid var(--line);padding-top:12px}.offer-field p{white-space:pre-wrap;overflow-wrap:anywhere}.offer-card h3{overflow-wrap:anywhere}dialog .row{flex-wrap:wrap}

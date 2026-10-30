@@ -11,7 +11,7 @@ test('实际尺寸下四页面与目录详情没有横向溢出',async({page},in
  await page.goto('/');for(const width of [320,390,768]){await page.setViewportSize({width,height:844});for(const nav of ['01 机会 OPPORTUNITIES','02 备战 PREPARATION','03 求职 APPLICATIONS','04 设置 SYSTEM']){
  await page.locator('[data-page='+({'01':'jobs','02':'prep','03':'career','04':'settings'}[nav.slice(0,2)])+']').click();if(nav.startsWith('01'))await page.locator('#public-results summary').first().click();
  const size=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));expect(size.width).toBe(width);expect(size.scroll).toBeLessThanOrEqual(width);
- if(width===390&&nav.startsWith('01')){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`docs/audit/v05/mobile-${info.project.name}.png`});}
+ if(width===390&&nav.startsWith('01')){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`test-results/mobile-${info.project.name}.png`});}
  }}
 });
 test('私人JD恶意文本不执行且编辑拒绝危险链接',async({page})=>{

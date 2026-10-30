@@ -1,0 +1,13 @@
+import {schedule} from './workflow.js';
+export function validDate(value){return typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString().slice(0,10)===value;}
+export function addDays(value,n){if(!validDate(value))throw Error('日期无效');const d=new Date(value+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+// Expand before scheduling, so partially scheduled work cannot be counted as complete.
+export function splitTasks(items){const expanded=[];const last=new Map(items.map(t=>[t.key,t.minutes>90?`${t.key}::${Math.ceil(t.minutes/90)}`:t.key]));if(last.size!==items.length)throw Error('任务标识重复');for(const t of items){if(!t.key||!Number.isInteger(t.minutes)||t.minutes<1||t.minutes>10080)throw Error('任务估时无效');const count=Math.ceil(t.minutes/90);for(let i=1;i<=count;i++)expanded.push({...t,key:count===1?t.key:`${t.key}::${i}`,title:t.title+(count>1?` (${i}/${count})`:''),minutes:Math.min(90,t.minutes-(i-1)*90),deps:i>1?[`${t.key}::${i-1}`]:(t.deps||[]).map(d=>last.get(d)||d)});}return expanded;}
+export function roadmap(items,{weeks=4,start,hours,deadline='',days=[0,1,2,3,4,5,6],completed=[],reserved=[]}){
+ if(![4,8].includes(weeks)||!validDate(start)||(deadline&&!validDate(deadline))||!Array.isArray(days)||days.some(d=>!Number.isInteger(d)||d<0||d>6))throw Error('计划周期、日期或可用日无效');
+ let pending=splitTasks(items).filter(t=>!completed.includes(t.key));const placed=[...completed],rows=[];const capacity=Math.floor(hours*48);
+ for(let i=0;i<weeks;i++){const date=addDays(start,i*7),end=addDays(date,6),fixed=reserved.filter(t=>t.date>=date&&t.date<=end),spent=fixed.reduce((n,t)=>n+(t.minutes||0),0);const result=schedule(pending,{hours,start:date,deadline,days,completed:placed,reserved:fixed,budget:Math.max(0,capacity-spent)});rows.push({number:i+1,start:date,end,capacity,spent,used:result.used,tasks:result.tasks});const keys=new Set(result.tasks.map(t=>t.key));placed.push(...keys);pending=pending.filter(t=>!keys.has(t.key));}
+ return {weeks,start,deadline,hours,days,rows,backlog:pending,capacity};
+}
+export const offerFields=[['content','岗位内容'],['city','城市'],['compensation','薪酬结构'],['probation','试用期'],['learning','学习机会'],['deadline','回复截止日期'],['questions','待向公司确认事项']];
+export function validateOffer(offer){if(!offer||typeof offer!=='object'||Array.isArray(offer))throw Error('Offer 格式无效');for(const [key]of offerFields){if(typeof offer[key]!=='string'||offer[key].length>2000)throw Error('Offer 字段无效');}if(offer.deadline&&!validDate(offer.deadline))throw Error('Offer 截止日期无效');return offer;}

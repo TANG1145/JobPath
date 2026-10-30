@@ -1,0 +1,47 @@
+
+> jobpath@0.6.0 test:e2e
+> playwright test
+
+[WebServer] (node:57422) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 2 workers
+
+(node:57423) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57424) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › e2e/planning-offers.spec.mjs:4:1 › 4/8周确认、取消、完成证据及跨周期重排 (986ms)
+  ✓   2 [chromium] › e2e/planning-offers.spec.mjs:10:1 › 两份Offer条件、取消、阶段回退及备份恢复 (1.1s)
+  ✓   3 [chromium] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (386ms)
+  ✓   5 [chromium] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (292ms)
+  ✓   4 [chromium] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (603ms)
+  ✓   7 [chromium] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (190ms)
+  ✓   6 [chromium] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (440ms)
+(node:57463) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [chromium] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (640ms)
+(node:57465) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [firefox] › e2e/planning-offers.spec.mjs:4:1 › 4/8周确认、取消、完成证据及跨周期重排 (1.7s)
+  ✓  10 [firefox] › e2e/planning-offers.spec.mjs:10:1 › 两份Offer条件、取消、阶段回退及备份恢复 (1.7s)
+  ✓  11 [firefox] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (537ms)
+  ✓  13 [firefox] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (429ms)
+  ✓  12 [firefox] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (962ms)
+  ✓  14 [firefox] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (518ms)
+  ✓  15 [firefox] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (196ms)
+(node:57492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  16 [firefox] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (964ms)
+(node:57503) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [webkit] › e2e/planning-offers.spec.mjs:4:1 › 4/8周确认、取消、完成证据及跨周期重排 (1.3s)
+  ✓  19 [webkit] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (621ms)
+  ✓  18 [webkit] › e2e/planning-offers.spec.mjs:10:1 › 两份Offer条件、取消、阶段回退及备份恢复 (1.2s)
+  ✓  21 [webkit] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (518ms)
+  ✓  20 [webkit] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (908ms)
+  ✓  23 [webkit] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (296ms)
+  ✓  22 [webkit] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (580ms)
+  ✓  24 [webkit] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (896ms)
+
+  24 passed (11.2s)

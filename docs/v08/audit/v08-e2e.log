@@ -1,55 +1,55 @@
-[WebServer] (node:67624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:68722) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
 
 Running 36 tests using 2 workers
 
-(node:67626) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:68723) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:67627) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:68724) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓   2 [chromium] › e2e/v08-flows.spec.mjs:4:1 › 旧数据迁移确认、恢复副本、刷新幂等与正文保留 (495ms)
-  ✓   1 [chromium] › e2e/v08-flows.spec.mjs:5:1 › 一份成果支持两个岗位，取消关联不删除成果 (687ms)
-  ✓   3 [chromium] › e2e/v08-flows.spec.mjs:6:1 › 共性任务、取消重排、估时容量和任务身份保留 (654ms)
-  ✓   4 [chromium] › e2e/v08-flows.spec.mjs:7:1 › 材料追加版本，实际投递仍引用旧版本 (834ms)
-  ✓   5 [chromium] › e2e/v08-flows.spec.mjs:8:1 › 练习回答保留版本，旧自查不能冒充新版本反馈 (549ms)
-  ✓   6 [chromium] › e2e/v08-flows.spec.mjs:9:1 › 旧申请确认归属后保留轮次，Offer条件可对照且未知项不补造 (535ms)
-  ✓   7 [chromium] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (564ms)
-  ✓   8 [chromium] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (262ms)
-  ✓  10 [chromium] › e2e/v08-shell.spec.mjs:3:1 › 首次未知画像、JD先保存、要求快照与刷新前进后退 (548ms)
-  ✓   9 [chromium] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (671ms)
-  ✓  12 [chromium] › e2e/v08-shell.spec.mjs:7:1 › 首屏主操作可通过键盘进入，静态修复指南与敏感路径隔离 (143ms)
-(node:67684) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+  ✓   1 [chromium] › e2e/v08-flows.spec.mjs:4:1 › 旧数据迁移确认、恢复副本、刷新幂等与正文保留 (539ms)
+  ✓   2 [chromium] › e2e/v08-flows.spec.mjs:5:1 › 一份成果支持两个岗位，取消关联不删除成果 (734ms)
+  ✓   3 [chromium] › e2e/v08-flows.spec.mjs:6:1 › 共性任务、取消重排、估时容量和任务身份保留 (653ms)
+  ✓   4 [chromium] › e2e/v08-flows.spec.mjs:7:1 › 材料追加版本，实际投递仍引用旧版本 (812ms)
+  ✓   5 [chromium] › e2e/v08-flows.spec.mjs:8:1 › 练习回答保留版本，旧自查不能冒充新版本反馈 (545ms)
+  ✓   6 [chromium] › e2e/v08-flows.spec.mjs:9:1 › 旧申请确认归属后保留轮次，Offer条件可对照且未知项不补造 (510ms)
+  ✓   7 [chromium] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (497ms)
+  ✓   8 [chromium] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (242ms)
+  ✓  10 [chromium] › e2e/v08-shell.spec.mjs:3:1 › 首次未知画像、JD先保存、要求快照与刷新前进后退 (523ms)
+  ✓   9 [chromium] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (647ms)
+  ✓  12 [chromium] › e2e/v08-shell.spec.mjs:7:1 › 首屏主操作可通过键盘进入，静态修复指南与敏感路径隔离 (123ms)
+(node:68778) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  11 [chromium] › e2e/v08-shell.spec.mjs:6:1 › 筛选在URL中，390/768/1280主导航可用且无横向溢出 (458ms)
-(node:67685) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+  ✓  11 [chromium] › e2e/v08-shell.spec.mjs:6:1 › 筛选在URL中，390/768/1280主导航可用且无横向溢出 (452ms)
+(node:68780) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  13 [firefox] › e2e/v08-flows.spec.mjs:4:1 › 旧数据迁移确认、恢复副本、刷新幂等与正文保留 (1.0s)
+  ✓  13 [firefox] › e2e/v08-flows.spec.mjs:4:1 › 旧数据迁移确认、恢复副本、刷新幂等与正文保留 (1.1s)
   ✓  14 [firefox] › e2e/v08-flows.spec.mjs:5:1 › 一份成果支持两个岗位，取消关联不删除成果 (1.2s)
-  ✓  15 [firefox] › e2e/v08-flows.spec.mjs:6:1 › 共性任务、取消重排、估时容量和任务身份保留 (895ms)
-  ✓  17 [firefox] › e2e/v08-flows.spec.mjs:8:1 › 练习回答保留版本，旧自查不能冒充新版本反馈 (561ms)
-  ✓  16 [firefox] › e2e/v08-flows.spec.mjs:7:1 › 材料追加版本，实际投递仍引用旧版本 (1.0s)
-  ✓  18 [firefox] › e2e/v08-flows.spec.mjs:9:1 › 旧申请确认归属后保留轮次，Offer条件可对照且未知项不补造 (697ms)
-  ✓  19 [firefox] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (721ms)
-  ✓  20 [firefox] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (420ms)
-  ✓  21 [firefox] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (896ms)
-  ✓  22 [firefox] › e2e/v08-shell.spec.mjs:3:1 › 首次未知画像、JD先保存、要求快照与刷新前进后退 (687ms)
-  ✓  24 [firefox] › e2e/v08-shell.spec.mjs:7:1 › 首屏主操作可通过键盘进入，静态修复指南与敏感路径隔离 (238ms)
-(node:67716) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+  ✓  15 [firefox] › e2e/v08-flows.spec.mjs:6:1 › 共性任务、取消重排、估时容量和任务身份保留 (870ms)
+  ✓  17 [firefox] › e2e/v08-flows.spec.mjs:8:1 › 练习回答保留版本，旧自查不能冒充新版本反馈 (598ms)
+  ✓  16 [firefox] › e2e/v08-flows.spec.mjs:7:1 › 材料追加版本，实际投递仍引用旧版本 (1.1s)
+  ✓  18 [firefox] › e2e/v08-flows.spec.mjs:9:1 › 旧申请确认归属后保留轮次，Offer条件可对照且未知项不补造 (663ms)
+  ✓  19 [firefox] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (781ms)
+  ✓  20 [firefox] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (409ms)
+  ✓  21 [firefox] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (917ms)
+  ✓  22 [firefox] › e2e/v08-shell.spec.mjs:3:1 › 首次未知画像、JD先保存、要求快照与刷新前进后退 (680ms)
+  ✓  24 [firefox] › e2e/v08-shell.spec.mjs:7:1 › 首屏主操作可通过键盘进入，静态修复指南与敏感路径隔离 (323ms)
+(node:68816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  23 [firefox] › e2e/v08-shell.spec.mjs:6:1 › 筛选在URL中，390/768/1280主导航可用且无横向溢出 (803ms)
-(node:67725) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+  ✓  23 [firefox] › e2e/v08-shell.spec.mjs:6:1 › 筛选在URL中，390/768/1280主导航可用且无横向溢出 (860ms)
+(node:68825) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  25 [webkit] › e2e/v08-flows.spec.mjs:4:1 › 旧数据迁移确认、恢复副本、刷新幂等与正文保留 (745ms)
-  ✓  26 [webkit] › e2e/v08-flows.spec.mjs:5:1 › 一份成果支持两个岗位，取消关联不删除成果 (789ms)
-  ✓  27 [webkit] › e2e/v08-flows.spec.mjs:6:1 › 共性任务、取消重排、估时容量和任务身份保留 (784ms)
-  ✓  29 [webkit] › e2e/v08-flows.spec.mjs:8:1 › 练习回答保留版本，旧自查不能冒充新版本反馈 (573ms)
-  ✓  28 [webkit] › e2e/v08-flows.spec.mjs:7:1 › 材料追加版本，实际投递仍引用旧版本 (982ms)
-  ✓  30 [webkit] › e2e/v08-flows.spec.mjs:9:1 › 旧申请确认归属后保留轮次，Offer条件可对照且未知项不补造 (689ms)
-  ✓  31 [webkit] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (711ms)
-  ✓  32 [webkit] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (388ms)
-  ✓  33 [webkit] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (820ms)
-  ✓  34 [webkit] › e2e/v08-shell.spec.mjs:3:1 › 首次未知画像、JD先保存、要求快照与刷新前进后退 (623ms)
-  ✓  36 [webkit] › e2e/v08-shell.spec.mjs:7:1 › 首屏主操作可通过键盘进入，静态修复指南与敏感路径隔离 (254ms)
-  ✓  35 [webkit] › e2e/v08-shell.spec.mjs:6:1 › 筛选在URL中，390/768/1280主导航可用且无横向溢出 (675ms)
+  ✓  25 [webkit] › e2e/v08-flows.spec.mjs:4:1 › 旧数据迁移确认、恢复副本、刷新幂等与正文保留 (849ms)
+  ✓  26 [webkit] › e2e/v08-flows.spec.mjs:5:1 › 一份成果支持两个岗位，取消关联不删除成果 (776ms)
+  ✓  27 [webkit] › e2e/v08-flows.spec.mjs:6:1 › 共性任务、取消重排、估时容量和任务身份保留 (814ms)
+  ✓  28 [webkit] › e2e/v08-flows.spec.mjs:7:1 › 材料追加版本，实际投递仍引用旧版本 (997ms)
+  ✓  29 [webkit] › e2e/v08-flows.spec.mjs:8:1 › 练习回答保留版本，旧自查不能冒充新版本反馈 (569ms)
+  ✓  30 [webkit] › e2e/v08-flows.spec.mjs:9:1 › 旧申请确认归属后保留轮次，Offer条件可对照且未知项不补造 (661ms)
+  ✓  31 [webkit] › e2e/v08-protection.spec.mjs:2:1 › 草稿跨刷新恢复、未保存离开取消、冲突不覆盖新记录 (771ms)
+  ✓  32 [webkit] › e2e/v08-protection.spec.mjs:3:1 › 保存失败保留编辑与正式数据，恢复写入后可重试 (412ms)
+  ✓  34 [webkit] › e2e/v08-shell.spec.mjs:3:1 › 首次未知画像、JD先保存、要求快照与刷新前进后退 (665ms)
+  ✓  33 [webkit] › e2e/v08-protection.spec.mjs:4:1 › 50岗位500任务200成果下列表、编辑、窄屏与无外发 (867ms)
+  ✓  36 [webkit] › e2e/v08-shell.spec.mjs:7:1 › 首屏主操作可通过键盘进入，静态修复指南与敏感路径隔离 (248ms)
+  ✓  35 [webkit] › e2e/v08-shell.spec.mjs:6:1 › 筛选在URL中，390/768/1280主导航可用且无横向溢出 (651ms)
 
-  36 passed (14.0s)
+  36 passed (14.3s)

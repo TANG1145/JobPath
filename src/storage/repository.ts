@@ -29,7 +29,12 @@ export class Repository{
    for(const t of tables){tx.objectStore(t).clear();for(const record of valid[t]){const previous=prior[t].find(r=>r.id===record.id);tx.objectStore(t).put({...record,revision:previous?Math.max(previous.revision+1,record.revision):record.revision})}}tx.objectStore('meta').put({id:'active',schemaVersion:2,revision:(current?.revision??-1)+1,updatedAt:Date.now(),source:label});
   }catch(e){failure=e;try{tx.abort()}catch{}}try{await done}catch(e){throw failure||e}
  }
- async initialize(){if(await this.metadata())return;const d=emptyDataset();d.profiles=[newProfile()];await this.replace(d,null,null,'new')}
+ async initialize(){
+  // Serialize the existence check and seed in one transaction across tabs.
+  const tx=this.db.transaction([...tables,'meta'],'readwrite'),done=complete(tx);let failure:unknown;
+  try{const current=await request(tx.objectStore('meta').get('active'));if(!current){const d=emptyDataset();d.profiles=[newProfile()];validateDataset(d);tx.objectStore('profiles').put(d.profiles[0]);tx.objectStore('meta').put({id:'active',schemaVersion:2,revision:0,updatedAt:Date.now(),source:'new'})}}
+  catch(e){failure=e;try{tx.abort()}catch{}}try{await done}catch(e){throw failure||e}
+ }
  close(){this.db.close()}
 }
 export async function legacyBackup(factory:IDBFactory=indexedDB){

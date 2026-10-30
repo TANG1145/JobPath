@@ -1,4 +1,6 @@
 import {z} from 'zod';
+// Keep schema validation compatible with the strict script-src self policy.
+z.config({jitless:true});
 const id=z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9_~:-]{0,159}$/,'标识含不支持字符'),text=z.string().max(32000),date=z.string().refine(s=>!s||/^\d{4}-\d{2}-\d{2}$/.test(s)&&Number.isFinite(Date.parse(s))&&new Date(s).toISOString().slice(0,10)===s,'日期无效');
 const base={id,createdAt:z.number().finite(),updatedAt:z.number().finite(),revision:z.number().int().nonnegative()};
 const optionalId=id.nullable().default(null),ids=z.array(id).max(1000).default([]);

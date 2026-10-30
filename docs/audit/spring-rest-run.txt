@@ -1,0 +1,42 @@
+Execution evidence excerpt; dependency download progress omitted. Full local transcript: .local/resource-audit/spring-rest-run.txt.raw
+[INFO] Scanning for projects...
+[INFO]
+[INFO] -----------------< com.example:rest-service-complete >------------------
+[INFO] Building rest-service-complete 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ rest-service-complete ---
+[INFO] skip non existing resourceDirectory /Users/tan/Projects/JobPath/.local/resource-audit/gs-rest-service/complete/src/main/resources
+[INFO] skip non existing resourceDirectory /Users/tan/Projects/JobPath/.local/resource-audit/gs-rest-service/complete/src/main/resources
+[INFO]
+[INFO] --- compiler:3.14.1:compile (default-compile) @ rest-service-complete ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 3 source files with javac [debug parameters release 17] to target/classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ rest-service-complete ---
+[INFO] skip non existing resourceDirectory /Users/tan/Projects/JobPath/.local/resource-audit/gs-rest-service/complete/src/test/resources
+[INFO]
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ rest-service-complete ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 17] to target/test-classes
+[INFO]
+[INFO] --- surefire:3.5.6:test (default-test) @ rest-service-complete ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.restservice.GreetingControllerTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.934 s -- in com.example.restservice.GreetingControllerTests
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  57.382 s
+[INFO] Finished at: 2026-10-30T12:56:27+08:00
+[INFO] ------------------------------------------------------------------------

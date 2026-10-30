@@ -1,0 +1,38 @@
+npm warn deprecated stable@0.1.8: Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility
+
+added 450 packages, and audited 451 packages in 7s
+
+67 packages are looking for funding
+  run `npm fund` for details
+
+40 vulnerabilities (4 low, 14 moderate, 20 high, 2 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+> todomvc-javascript-es6-webpack@1.0.0 build
+> webpack --config webpack.prod.js
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+assets by path *.js 11.8 KiB
+  asset app.bundle.js 8.16 KiB [compared for emit] [minimized] (name: app) 1 related asset
+  asset base.js 3.67 KiB [compared for emit] [from: node_modules/todomvc-common/base.js] [copied] [minimized]
+asset app.css 7.2 KiB [compared for emit] [minimized] (name: app) 1 related asset
+asset index.html 1.24 KiB [compared for emit]
+Entrypoint app 15.4 KiB (51.3 KiB) = app.css 7.2 KiB app.bundle.js 8.16 KiB 2 auxiliary assets
+orphan modules 54.2 KiB (javascript) 2.78 KiB (runtime) [orphan] 30 modules
+cacheable modules 24.7 KiB (javascript) 9.2 KiB (css/mini-extract)
+  modules by path ./src/ 24.7 KiB (javascript) 331 bytes (css/mini-extract)
+    ./src/app.js + 6 modules 24.7 KiB [built] [code generated]
+    css ./node_modules/css-loader/dist/cjs.js!./src/app.css 331 bytes [built] [code generated]
+  modules by path ./node_modules/ 8.88 KiB
+    css ./node_modules/css-loader/dist/cjs.js!./node_modules/todomvc-app-css/index.css 7.1 KiB [built] [code generated]
+    css ./node_modules/css-loader/dist/cjs.js!./node_modules/todomvc-common/base.css 1.78 KiB [built] [code generated]
+webpack 5.89.0 compiled successfully in 482 ms

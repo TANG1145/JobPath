@@ -1,3 +1,4 @@
+import {resourceAudit} from './resource-audit.js';
 const rows={java:[
 ['doc','Java 官方学习','https://dev.java/learn/','Java','集合与异常'],['doc','MDN HTTP','https://developer.mozilla.org/zh-CN/docs/Web/HTTP','HTTP','状态码与请求方法'],['doc','PostgreSQL 教程','https://www.postgresql.org/docs/current/tutorial.html','SQL','表与查询'],['doc','Spring REST 指南','https://spring.io/guides/gs/rest-service','Spring','REST 服务'],
 ['project','Spring Petclinic','https://github.com/spring-projects/spring-petclinic','Spring','为一个接口增加验证测试'],['project','Spring REST 示例','https://github.com/spring-guides/gs-rest-service','HTTP','增加一个参数校验分支'],
@@ -7,8 +8,14 @@ web:[['doc','MDN Web 基础','https://developer.mozilla.org/zh-CN/docs/Learn_web
 ['video','React 入门视频','https://www.freecodecamp.org/news/learn-react-js-in-this-free-7-hour-course/','React','只学习组件与状态片段；旧版API对照官方文档'],['video','JavaScript 视频课程入口','https://www.freecodecamp.org/news/learn-javascript-free-js-courses-for-beginners','JavaScript','函数和数组片段']],
 test:[['doc','Python 教程','https://docs.python.org/zh-cn/3/tutorial/','Python','函数和异常'],['doc','pytest 入门','https://docs.pytest.org/en/stable/getting-started.html','pytest','断言和fixture'],['doc','Playwright 入门','https://playwright.dev/docs/intro','Playwright','第一个浏览器测试'],['doc','MDN HTTP 概述','https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview','HTTP','请求响应'],
 ['project','pytest 示例','https://github.com/pytest-dev/pytest/tree/main/doc/en/example','pytest','编写独立参数化用例'],['project','Playwright 示例','https://github.com/microsoft/playwright-examples','Playwright','新增一个失败路径测试'],
-['video','pytest 视频教程','https://www.freecodecamp.org/news/testing-in-python-with-pytest','pytest','断言与fixture片段'],['video','Playwright 软件测试','https://www.freecodecamp.org/news/software-testing-with-playwright','Playwright','测试设计和首个用例']]};
-export const catalog=Object.entries(rows).flatMap(([direction,list])=>list.map(([type,title,url,skill,section],i)=>({id:`${direction}-${i+1}`,direction,type,title,url,skills:[skill],section,language:/zh-CN|zh-cn/.test(url)?'中文':'英文',minutes:type==='project'?60:30,prerequisite:type==='doc'?'能运行基础示例':`已完成 ${skill} 基础练习`,reviewStatus:'候选 / 待人工运行与可达审核',reviewedAt:null,license:type==='project'?'使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果':'原站学习，不镜像或再分发',fallbackId:`${direction}-${Math.min(i%4+1,4)}`})));
+['video','pytest 视频教程','https://www.freecodecamp.org/news/testing-in-python-with-pytest','pytest','断言与fixture片段'],['video','Playwright 软件测试','https://www.freecodecamp.org/news/software-testing-with-playwright','Playwright','只学习测试设计和首个用例；跳过KaneAI等第三方AI服务演示']]};
+export const catalog=Object.entries(rows).flatMap(([direction,list])=>list.map(([type,title,url,skill,section],i)=>({id:`${direction}-${i+1}`,direction,type,title,url,skills:[skill],section,language:/zh-CN|zh-cn/.test(url)?'中文':'英文',minutes:type==='project'?60:30,prerequisite:type==='doc'?'能运行基础示例':`已完成 ${skill} 基础练习`,reviewStatus:'候选 / 待人工运行与可达审核',reviewedAt:null,license:type==='project'?'使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果':'原站学习，不镜像或再分发',fallbackId:`${direction}-${list.findIndex(row=>row[0]==='doc'&&row[3]===skill)+1}`})));
+// Audit state is per resource; reaching an article is not evidence of video playback.
+for(const r of catalog){
+ const a=resourceAudit[r.id];r.audit=a||null;
+ r.reviewStatus=r.type==='doc'?'官方文档入口 / 已检查链接响应，章节实践待复核':'候选 / 待核验';
+ if(a){r.reviewedAt=a.checkedAt;r.reviewStatus=a.dependencyStatus==='needs-review'?'候选 / 依赖问题待整改':a.playbackStatus==='blocked'?'播放受阻 / 使用文档替代':a.contentStatus==='reviewed'?'文档主题已核对 / 原站学习':a.runtimeStatus==='passed'?'最小实践通过 / 非全项目认证':'部分检查通过 / 未完成运行';if(a.license)r.license=`${a.license} · 来源 ${a.licenseFile} · 保留上游版权与许可声明，不将克隆计作个人成果`;}
+}
 export const types={doc:'文档',project:'开源项目',video:'视频'};
 export function resourceFor(skill,direction){return catalog.filter(r=>r.direction===direction&&r.skills.includes(skill));}
 const details={

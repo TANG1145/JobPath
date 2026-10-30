@@ -1,0 +1,56 @@
+
+added 4 packages, and audited 5 packages in 6s
+
+2 high severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+Listing tests:
+  [chromium] › api-mocking/api-mocking.spec.ts:5:7 › Mocking an API call › mocks a fruit and does not call api
+  [chromium] › api-mocking/api-mocking.spec.ts:22:7 › Intercepting the request and modifying it › gets the json from api and adds a new fruit
+  [chromium] › api-mocking/api-mocking.spec.ts:44:7 › Mocking with HAR files › records or updates the HAR file
+  [chromium] › api-mocking/api-mocking.spec.ts:58:7 › Mocking with HAR files › gets the json from HAR and checks the new fruit has been added
+  [chromium] › boxed-steps/boxed-step.spec.ts:21:7 › add to cart scenarios › add to cart from carousel
+  [chromium] › boxed-steps/boxed-step.spec.ts:27:7 › add to cart scenarios › add to cart from search
+  [chromium] › boxed-steps/boxed-step.spec.ts:38:7 › add to cart scenarios › add to cart from all products page
+  [chromium] › boxed-steps/boxed-step.spec.ts:46:7 › add to cart scenarios › add to cart from laptops page
+  [chromium] › boxed-steps-pom/boxed-step-pom.spec.ts:15:7 › add to cart scenarios › buy now from carousel using pom
+  [chromium] › boxed-steps-pom/boxed-step-pom.spec.ts:23:7 › add to cart scenarios › add to cart from search using pom
+  [chromium] › boxed-steps-pom/boxed-step-pom.spec.ts:33:7 › add to cart scenarios › add to cart from all products page using pom
+  [chromium] › boxed-steps-pom/boxed-step-pom.spec.ts:43:7 › add to cart scenarios › add to cart from all laptops page using pom
+  [chromium] › clock/clock.spec.ts:3:5 › set fixed time
+  [chromium] › clock/clock.spec.ts:9:5 › manually advance time
+  [chromium] › clock/clock.spec.ts:20:5 › test inactivity monitoring
+  [firefox] › api-mocking/api-mocking.spec.ts:5:7 › Mocking an API call › mocks a fruit and does not call api
+  [firefox] › api-mocking/api-mocking.spec.ts:22:7 › Intercepting the request and modifying it › gets the json from api and adds a new fruit
+  [firefox] › api-mocking/api-mocking.spec.ts:44:7 › Mocking with HAR files › records or updates the HAR file
+  [firefox] › api-mocking/api-mocking.spec.ts:58:7 › Mocking with HAR files › gets the json from HAR and checks the new fruit has been added
+  [firefox] › boxed-steps/boxed-step.spec.ts:21:7 › add to cart scenarios › add to cart from carousel
+  [firefox] › boxed-steps/boxed-step.spec.ts:27:7 › add to cart scenarios › add to cart from search
+  [firefox] › boxed-steps/boxed-step.spec.ts:38:7 › add to cart scenarios › add to cart from all products page
+  [firefox] › boxed-steps/boxed-step.spec.ts:46:7 › add to cart scenarios › add to cart from laptops page
+  [firefox] › boxed-steps-pom/boxed-step-pom.spec.ts:15:7 › add to cart scenarios › buy now from carousel using pom
+  [firefox] › boxed-steps-pom/boxed-step-pom.spec.ts:23:7 › add to cart scenarios › add to cart from search using pom
+  [firefox] › boxed-steps-pom/boxed-step-pom.spec.ts:33:7 › add to cart scenarios › add to cart from all products page using pom
+  [firefox] › boxed-steps-pom/boxed-step-pom.spec.ts:43:7 › add to cart scenarios › add to cart from all laptops page using pom
+  [firefox] › clock/clock.spec.ts:3:5 › set fixed time
+  [firefox] › clock/clock.spec.ts:9:5 › manually advance time
+  [firefox] › clock/clock.spec.ts:20:5 › test inactivity monitoring
+  [webkit] › api-mocking/api-mocking.spec.ts:5:7 › Mocking an API call › mocks a fruit and does not call api
+  [webkit] › api-mocking/api-mocking.spec.ts:22:7 › Intercepting the request and modifying it › gets the json from api and adds a new fruit
+  [webkit] › api-mocking/api-mocking.spec.ts:44:7 › Mocking with HAR files › records or updates the HAR file
+  [webkit] › api-mocking/api-mocking.spec.ts:58:7 › Mocking with HAR files › gets the json from HAR and checks the new fruit has been added
+  [webkit] › boxed-steps/boxed-step.spec.ts:21:7 › add to cart scenarios › add to cart from carousel
+  [webkit] › boxed-steps/boxed-step.spec.ts:27:7 › add to cart scenarios › add to cart from search
+  [webkit] › boxed-steps/boxed-step.spec.ts:38:7 › add to cart scenarios › add to cart from all products page
+  [webkit] › boxed-steps/boxed-step.spec.ts:46:7 › add to cart scenarios › add to cart from laptops page
+  [webkit] › boxed-steps-pom/boxed-step-pom.spec.ts:15:7 › add to cart scenarios › buy now from carousel using pom
+  [webkit] › boxed-steps-pom/boxed-step-pom.spec.ts:23:7 › add to cart scenarios › add to cart from search using pom
+  [webkit] › boxed-steps-pom/boxed-step-pom.spec.ts:33:7 › add to cart scenarios › add to cart from all products page using pom
+  [webkit] › boxed-steps-pom/boxed-step-pom.spec.ts:43:7 › add to cart scenarios › add to cart from all laptops page using pom
+  [webkit] › clock/clock.spec.ts:3:5 › set fixed time
+  [webkit] › clock/clock.spec.ts:9:5 › manually advance time
+  [webkit] › clock/clock.spec.ts:20:5 › test inactivity monitoring
+Total: 45 tests in 4 files

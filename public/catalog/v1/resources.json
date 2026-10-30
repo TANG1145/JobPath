@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "publicationStatus": "candidate",
+  "publicationStatus": "partially-reviewed",
   "resources": [
     {
       "id": "java-1",
@@ -15,10 +15,15 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "java-1"
+      "fallbackId": "java-1",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "java-2",
@@ -33,10 +38,15 @@
       "language": "中文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "java-2"
+      "fallbackId": "java-2",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "java-3",
@@ -51,10 +61,15 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "java-3"
+      "fallbackId": "java-3",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "java-4",
@@ -69,10 +84,15 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "java-4"
+      "fallbackId": "java-4",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "java-5",
@@ -87,10 +107,19 @@
       "language": "英文",
       "minutes": 60,
       "prerequisite": "已完成 Spring 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
-      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
-      "fallbackId": "java-1"
+      "reviewStatus": "最小实践通过 / 非全项目认证",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
+      "license": "Apache-2.0 · 来源 LICENSE.txt · 保留上游版权与许可声明，不将克隆计作个人成果",
+      "fallbackId": "java-4",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "revision": "500158f732419217507c7656904b8e6aa1bcc0d6",
+        "license": "Apache-2.0",
+        "licenseFile": "LICENSE.txt",
+        "runtimeStatus": "passed",
+        "scope": "PetTypeFormatterTests：3项通过；仅最小单元测试，未测试数据库或全站",
+        "repository": "https://github.com/spring-projects/spring-petclinic.git"
+      }
     },
     {
       "id": "java-6",
@@ -105,10 +134,19 @@
       "language": "英文",
       "minutes": 60,
       "prerequisite": "已完成 HTTP 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
-      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
-      "fallbackId": "java-2"
+      "reviewStatus": "最小实践通过 / 非全项目认证",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
+      "license": "Apache-2.0 · 来源 LICENSE.txt · 保留上游版权与许可声明，不将克隆计作个人成果",
+      "fallbackId": "java-2",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "revision": "3f4cef01152596c19bc4d37939409358812b1421",
+        "license": "Apache-2.0",
+        "licenseFile": "LICENSE.txt",
+        "runtimeStatus": "passed",
+        "scope": "complete/GreetingControllerTests：2项通过，Spring REST上下文与接口测试",
+        "repository": "https://github.com/spring-guides/gs-rest-service.git"
+      }
     },
     {
       "id": "java-7",
@@ -123,10 +161,16 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "已完成 Spring 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "播放受阻 / 使用文档替代",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "java-3"
+      "fallbackId": "java-4",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "playbackStatus": "blocked",
+        "videoUrl": "https://www.youtube.com/watch?v=vtPkZShrvXQ",
+        "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+      }
     },
     {
       "id": "java-8",
@@ -141,10 +185,16 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "已完成 SQL 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "播放受阻 / 使用文档替代",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "java-4"
+      "fallbackId": "java-3",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "playbackStatus": "blocked",
+        "videoUrl": "https://www.youtube.com/watch?v=5rNk7m_zlAg",
+        "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+      }
     },
     {
       "id": "web-1",
@@ -159,10 +209,15 @@
       "language": "中文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "web-1"
+      "fallbackId": "web-1",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "web-2",
@@ -177,10 +232,15 @@
       "language": "中文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "web-2"
+      "fallbackId": "web-2",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "web-3",
@@ -195,10 +255,15 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "web-3"
+      "fallbackId": "web-3",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "web-4",
@@ -213,10 +278,15 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "web-4"
+      "fallbackId": "web-4",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "web-5",
@@ -231,10 +301,20 @@
       "language": "英文",
       "minutes": 60,
       "prerequisite": "已完成 JavaScript 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
-      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
-      "fallbackId": "web-1"
+      "reviewStatus": "候选 / 依赖问题待整改",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
+      "license": "MIT · 来源 license.md · 保留上游版权与许可声明，不将克隆计作个人成果",
+      "fallbackId": "web-2",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "revision": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+        "license": "MIT",
+        "licenseFile": "license.md",
+        "runtimeStatus": "passed",
+        "scope": "javascript-es6：npm ci、生产构建；浏览器新增、完成与筛选通过；此实现使用内存存储，刷新会清空，不作为持久化示例；安装审计报告40项依赖问题（含2 critical），不作为可直接复制的生产模板，优先使用同技能文档。",
+        "repository": "https://github.com/tastejs/todomvc.git",
+        "dependencyStatus": "needs-review"
+      }
     },
     {
       "id": "web-6",
@@ -249,10 +329,19 @@
       "language": "英文",
       "minutes": 60,
       "prerequisite": "已完成 React 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
-      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
-      "fallbackId": "web-2"
+      "reviewStatus": "最小实践通过 / 非全项目认证",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
+      "license": "MIT · 来源 LICENSE · 保留上游版权与许可声明，不将克隆计作个人成果",
+      "fallbackId": "web-4",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "revision": "4f340fdb1b619089bbf8ae5dc56c2c0866224306",
+        "license": "MIT",
+        "licenseFile": "LICENSE",
+        "runtimeStatus": "passed",
+        "scope": "create-vite/template-react：安装、生产构建通过；浏览器计数按钮从0变为1",
+        "repository": "https://github.com/vitejs/vite.git"
+      }
     },
     {
       "id": "web-7",
@@ -267,10 +356,16 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "已完成 React 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "播放受阻 / 使用文档替代",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "web-3"
+      "fallbackId": "web-4",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "playbackStatus": "blocked",
+        "videoUrl": "https://www.youtube.com/watch?v=nTeuhbP7wdE",
+        "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+      }
     },
     {
       "id": "web-8",
@@ -285,10 +380,16 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "已完成 JavaScript 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "播放受阻 / 使用文档替代",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "web-4"
+      "fallbackId": "web-2",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "playbackStatus": "blocked",
+        "videoUrl": "https://www.youtube.com/watch?v=PkZNo7MFNFg",
+        "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+      }
     },
     {
       "id": "test-1",
@@ -303,10 +404,15 @@
       "language": "中文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "test-1"
+      "fallbackId": "test-1",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "test-2",
@@ -321,10 +427,15 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "test-2"
+      "fallbackId": "test-2",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "test-3",
@@ -339,10 +450,15 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "test-3"
+      "fallbackId": "test-3",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "test-4",
@@ -357,10 +473,15 @@
       "language": "中文",
       "minutes": 30,
       "prerequisite": "能运行基础示例",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "文档主题已核对 / 原站学习",
+      "reviewedAt": "2026-10-30T05:04:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "test-4"
+      "fallbackId": "test-4",
+      "audit": {
+        "checkedAt": "2026-10-30T05:04:00.000Z",
+        "contentStatus": "reviewed",
+        "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+      }
     },
     {
       "id": "test-5",
@@ -375,10 +496,19 @@
       "language": "英文",
       "minutes": 60,
       "prerequisite": "已完成 pytest 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
-      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
-      "fallbackId": "test-1"
+      "reviewStatus": "最小实践通过 / 非全项目认证",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
+      "license": "MIT · 来源 LICENSE · 保留上游版权与许可声明，不将克隆计作个人成果",
+      "fallbackId": "test-2",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "revision": "a7b2446ee41a7298d3a0bc22c52f3b8bacae1566",
+        "license": "MIT",
+        "licenseFile": "LICENSE",
+        "runtimeStatus": "passed",
+        "scope": "官方test_fixtures_order_dependencies.py：1项通过",
+        "repository": "https://github.com/pytest-dev/pytest.git"
+      }
     },
     {
       "id": "test-6",
@@ -393,10 +523,20 @@
       "language": "英文",
       "minutes": 60,
       "prerequisite": "已完成 Playwright 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
-      "license": "使用前检查原仓库 LICENSE；保留引用，不将克隆计为个人成果",
-      "fallbackId": "test-2"
+      "reviewStatus": "候选 / 依赖问题待整改",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
+      "license": "MIT · 来源 LICENSE · 保留上游版权与许可声明，不将克隆计作个人成果",
+      "fallbackId": "test-3",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "revision": "4eb82aedf58321da90332e5f7316b64d5914a6b1",
+        "license": "MIT",
+        "licenseFile": "LICENSE",
+        "runtimeStatus": "partial",
+        "scope": "安装与测试发现通过：45项；未执行浏览器测试。package.json称Apache-2.0，与LICENSE不一致，以LICENSE文件记录为准；安装审计报告2项high依赖问题，发布审核未通过。",
+        "repository": "https://github.com/microsoft/playwright-examples.git",
+        "dependencyStatus": "needs-review"
+      }
     },
     {
       "id": "test-7",
@@ -411,10 +551,16 @@
       "language": "英文",
       "minutes": 30,
       "prerequisite": "已完成 pytest 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "播放受阻 / 使用文档替代",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "test-3"
+      "fallbackId": "test-2",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "playbackStatus": "blocked",
+        "videoUrl": "https://www.youtube.com/watch?v=cHYq1MRoyI0",
+        "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+      }
     },
     {
       "id": "test-8",
@@ -425,14 +571,20 @@
       "skills": [
         "Playwright"
       ],
-      "section": "测试设计和首个用例",
+      "section": "只学习测试设计和首个用例；跳过KaneAI等第三方AI服务演示",
       "language": "英文",
       "minutes": 30,
       "prerequisite": "已完成 Playwright 基础练习",
-      "reviewStatus": "候选 / 待人工运行与可达审核",
-      "reviewedAt": null,
+      "reviewStatus": "播放受阻 / 使用文档替代",
+      "reviewedAt": "2026-10-30T05:00:00.000Z",
       "license": "原站学习，不镜像或再分发",
-      "fallbackId": "test-4"
+      "fallbackId": "test-3",
+      "audit": {
+        "checkedAt": "2026-10-30T05:00:00.000Z",
+        "playbackStatus": "blocked",
+        "videoUrl": "https://www.youtube.com/watch?v=jydYq7oAtD8",
+        "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+      }
     }
   ]
 }

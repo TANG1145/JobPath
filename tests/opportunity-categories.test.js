@@ -1,0 +1,8 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {categories,searchCategories} from '../src/opportunity-categories.js';
+import {recruitmentCatalog,jobsForCategory} from '../src/recruitment-catalog.js';
+import {validateBackup} from '../src/domain.js';
+test('分类有真实来源记录，记录唯一且链接使用HTTPS',()=>{assert.equal(categories.length,8);assert.equal(new Set(recruitmentCatalog.map(r=>r.id)).size,recruitmentCatalog.length);for(const c of categories)assert.ok(jobsForCategory(c.id).length);for(const r of recruitmentCatalog){assert.equal(new URL(r.source).protocol,'https:');assert.ok(r.verification);assert.ok(r.categories.every(id=>categories.some(c=>c.id===id)));}});
+test('分类搜索支持技能、大小写和无结果',()=>{assert.equal(searchCategories(' react ')[0].id,'web');assert.equal(searchCategories('安全')[0].id,'security');assert.equal(searchCategories('不存在').length,0);});
+test('招聘收藏备份兼容并拒绝损坏记录',()=>{const data={direction:'web',hours:8,tasks:[],jobs:[],applications:[],answers:[],ratings:{},recruitmentSaves:[recruitmentCatalog.find(r=>r.id==='tx-merchant')]};const backup={app:'jobpath',schemaVersion:1,data};assert.equal(validateBackup(structuredClone(backup)).recruitmentSaves.length,1);const bad=structuredClone(backup);bad.data.recruitmentSaves[0].source='javascript:alert(1)';assert.throws(()=>validateBackup(bad));});

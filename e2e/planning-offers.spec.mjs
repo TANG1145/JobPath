@@ -1,4 +1,6 @@
 import {test,expect} from '@playwright/test';
+// Linux WebKit on shared CI takes longer for multi-dialog journeys; keep assertions and zero retries.
+test.setTimeout(process.env.CI ? 90000 : 30000);
 const nav=async(page,id)=>page.locator(`[data-page=${id}]`).click();
 async function preview(page,weeks){await page.locator('[data-action=plan]').click();await page.locator('[name=weeks]').selectOption(String(weeks));await page.getByRole('button',{name:'预览计划',exact:true}).click();await expect(page.getByRole('heading',{name:'确认计划差异',exact:true})).toBeVisible();}
 test('4/8周确认、取消、完成证据及跨周期重排',async({page},info)=>{

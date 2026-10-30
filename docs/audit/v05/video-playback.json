@@ -1,0 +1,110 @@
+[
+  {
+    "id": "java-7",
+    "source": "https://cs50.harvard.edu/x/shorts/http/",
+    "player": "https://cdn.cs50.net/2017/fall/shorts/http/http-360p.mp4",
+    "checkedAt": "2026-10-30T05:37:03.212Z",
+    "browser": "156.0.8078.4",
+    "network": "configured-proxy",
+    "playback": {
+      "time": 3.003313,
+      "duration": 902.36,
+      "paused": false,
+      "readyState": 4,
+      "src": "https://cdn.cs50.net/2017/fall/shorts/http/http-360p.mp4",
+      "width": 858,
+      "frames": 76
+    },
+    "status": "passed"
+  },
+  {
+    "id": "java-8",
+    "source": "https://cs50.harvard.edu/sql/weeks/0/",
+    "player": "https://cdn.cs50.net/sql/2023/x/lectures/0/lecture0-360p.mp4",
+    "checkedAt": "2026-10-30T05:37:09.429Z",
+    "browser": "156.0.8078.4",
+    "network": "configured-proxy",
+    "playback": {
+      "time": 3.018403,
+      "duration": 4753.408,
+      "paused": false,
+      "readyState": 4,
+      "src": "https://cdn.cs50.net/sql/2023/x/lectures/0/lecture0-360p.mp4",
+      "width": 640,
+      "frames": 78
+    },
+    "status": "passed"
+  },
+  {
+    "id": "web-7",
+    "source": "https://cs50.harvard.edu/web/weeks/6/",
+    "player": "https://cdn.cs50.net/web/2020/spring/lectures/6/lecture6-360p.mp4",
+    "checkedAt": "2026-10-30T05:37:16.089Z",
+    "browser": "156.0.8078.4",
+    "network": "configured-proxy",
+    "playback": {
+      "time": 3.020663,
+      "duration": 6014.833333,
+      "paused": false,
+      "readyState": 4,
+      "src": "https://cdn.cs50.net/web/2020/spring/lectures/6/lecture6-360p.mp4",
+      "width": 640,
+      "frames": 77
+    },
+    "status": "passed"
+  },
+  {
+    "id": "web-8",
+    "source": "https://cs50.harvard.edu/web/weeks/5/",
+    "player": "https://cdn.cs50.net/web/2020/spring/lectures/5/lecture5-360p.mp4",
+    "checkedAt": "2026-10-30T05:37:22.858Z",
+    "browser": "156.0.8078.4",
+    "network": "configured-proxy",
+    "playback": {
+      "time": 3.012686,
+      "duration": 6685.25,
+      "paused": false,
+      "readyState": 4,
+      "src": "https://cdn.cs50.net/web/2020/spring/lectures/5/lecture5-360p.mp4",
+      "width": 640,
+      "frames": 77
+    },
+    "status": "passed"
+  },
+  {
+    "id": "test-7",
+    "source": "https://cs50.harvard.edu/python/weeks/5/",
+    "player": "https://cdn.cs50.net/python/2022/x/lectures/5/lecture5-360p.mp4",
+    "checkedAt": "2026-10-30T05:37:29.696Z",
+    "browser": "156.0.8078.4",
+    "network": "configured-proxy",
+    "playback": {
+      "time": 3.020365,
+      "duration": 3053.888,
+      "paused": false,
+      "readyState": 4,
+      "src": "https://cdn.cs50.net/python/2022/x/lectures/5/lecture5-360p.mp4",
+      "width": 640,
+      "frames": 78
+    },
+    "status": "passed"
+  },
+  {
+    "id": "test-8",
+    "source": "https://cs50.harvard.edu/python/weeks/3/",
+    "player": "https://cdn.cs50.net/python/2022/x/lectures/3/lecture3-360p.mp4",
+    "checkedAt": "2026-10-30T05:37:36.520Z",
+    "browser": "156.0.8078.4",
+    "network": "configured-proxy",
+    "playback": {
+      "time": 3.010939,
+      "duration": 2675.477333,
+      "paused": false,
+      "readyState": 4,
+      "src": "https://cdn.cs50.net/python/2022/x/lectures/3/lecture3-360p.mp4",
+      "width": 640,
+      "frames": 78
+    },
+    "status": "passed"
+  }
+]

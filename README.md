@@ -1,4 +1,4 @@
-# 启职 JobPath v0.4
+# 启职 JobPath v0.5
 
 岗位要求驱动的本地求职备战工作台，卡带未来主义风格。私有仓库：https://github.com/TANG1145/JobPath 。不部署上线，真实 AI 默认关闭。
 
@@ -10,6 +10,8 @@ Node.js 24/25 推荐（最低22.13）。运行应用无需第三方生产依赖�
 npm ci
 npm run dev
 npm test
+npx playwright install chromium firefox webkit
+npm run test:e2e
 npm run build
 ```
 
@@ -23,6 +25,6 @@ AI网关支持JD提取与回答反馈；发送预览、逐次同意、邀请与�
 
 ## 边界
 
-12条官方岗位详情已核验，保存的是有限原文摘录和摘要，不是完整JD；收藏资格仍需本人确认。资源已核对12文档主题、6项目许可，5个项目通过最小测试或交互；6视频受YouTube登录验证阻断，Playwright示例仅完成测试发现。真实AI仍仅模拟联调，无真实调用和账单结论。未部署；Node/SQLite本地实现不等于React/Workers/D1远端验收。Offer为自由备注、4/8周为模板概览。执行结果与未测项见 [测试报告](docs/TEST_REPORT.md)，资源复现见 [核验说明](docs/RESOURCE_AUDIT.md)。
+12条官方岗位详情已核验，保存的是有限原文摘录和摘要，不是完整JD；收藏资格仍需本人确认。资源已核对12文档主题、6项目许可，6个项目通过限定范围实践（TodoMVC与Playwright需先应用附带补丁，审计零已知漏洞）；6视频已换为官方CS50直链并抽样播放通过。应用三浏览器18项、修复版Playwright项目21项及320/390/768px布局检查通过。真实AI仍仅模拟联调，无真实调用和账单结论。未部署；Node/SQLite本地实现不等于React/Workers/D1远端验收。Offer为自由备注、4/8周为模板概览。执行结果与未测项见 [测试报告](docs/TEST_REPORT.md)，资源复现见 [核验说明](docs/RESOURCE_AUDIT.md)。
 
 .env、.local、数据库、邀请和用户备份均不进入Git。测试浏览器保留明确标记的合成演示数据。

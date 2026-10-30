@@ -1,4 +1,4 @@
-// Recorded checks, not guarantees about future availability.
+// Measured source checks; upstream repositories require the linked patches.
 export const resourceAudit={
   "java-5": {
     "checkedAt": "2026-10-30T05:00:00.000Z",
@@ -19,13 +19,15 @@ export const resourceAudit={
     "repository": "https://github.com/spring-guides/gs-rest-service.git"
   },
   "web-5": {
-    "checkedAt": "2026-10-30T05:00:00.000Z",
+    "checkedAt": "2026-10-30T05:31:24.850Z",
     "revision": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
     "license": "MIT",
     "licenseFile": "license.md",
     "runtimeStatus": "passed",
-    "scope": "javascript-es6：npm ci、生产构建；浏览器新增、完成与筛选通过；此实现使用内存存储，刷新会清空，不作为持久化示例",
-    "repository": "https://github.com/tastejs/todomvc.git"
+    "scope": "固定提交应用JobPath补丁；全新安装、生产构建、npm audit零已知漏洞；浏览器新增、编辑、完成、筛选通过。原仓库锁文件仍有问题；内存存储刷新清空。",
+    "repository": "https://github.com/tastejs/todomvc.git",
+    "dependencyStatus": "patched",
+    "guideUrl": "/public/resource-guide.html"
   },
   "web-6": {
     "checkedAt": "2026-10-30T05:00:00.000Z",
@@ -46,55 +48,128 @@ export const resourceAudit={
     "repository": "https://github.com/pytest-dev/pytest.git"
   },
   "test-6": {
-    "checkedAt": "2026-10-30T05:00:00.000Z",
+    "checkedAt": "2026-10-30T05:31:24.850Z",
     "revision": "4eb82aedf58321da90332e5f7316b64d5914a6b1",
     "license": "MIT",
     "licenseFile": "LICENSE",
-    "runtimeStatus": "partial",
-    "scope": "安装与测试发现通过：45项；未执行浏览器测试。package.json称Apache-2.0，与LICENSE不一致，以LICENSE文件记录为准",
-    "repository": "https://github.com/microsoft/playwright-examples.git"
+    "runtimeStatus": "passed",
+    "scope": "固定提交应用JobPath补丁，Playwright 1.64.1；全新安装与npm audit零已知漏洞。API Mocking与Clock共7用例在Chromium/Firefox/WebKit均通过，共21项。替换连接失败的8个商店用例，不计入通过范围。",
+    "repository": "https://github.com/microsoft/playwright-examples.git",
+    "dependencyStatus": "patched",
+    "guideUrl": "/public/resource-guide.html"
   },
   "java-7": {
-    "checkedAt": "2026-10-30T05:00:00.000Z",
-    "playbackStatus": "blocked",
-    "videoUrl": "https://www.youtube.com/watch?v=vtPkZShrvXQ",
-    "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+    "checkedAt": "2026-10-30T05:28:00.541Z",
+    "playbackStatus": "passed",
+    "videoUrl": "https://cdn.cs50.net/2017/fall/shorts/http/http-360p.mp4",
+    "sourcePage": "https://cs50.harvard.edu/x/shorts/http/",
+    "playbackSeconds": 3.006958,
+    "decodedFrames": 77,
+    "scope": "官方CDN 360p直链；无登录，实际播放超过3秒并解码画面。仅抽样播放，非整课验收；本机代理网络核验，其他网络未保证。"
   },
   "java-8": {
-    "checkedAt": "2026-10-30T05:00:00.000Z",
-    "playbackStatus": "blocked",
-    "videoUrl": "https://www.youtube.com/watch?v=5rNk7m_zlAg",
-    "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+    "checkedAt": "2026-10-30T05:27:36.870Z",
+    "playbackStatus": "passed",
+    "videoUrl": "https://cdn.cs50.net/sql/2023/x/lectures/0/lecture0-360p.mp4",
+    "sourcePage": "https://cs50.harvard.edu/sql/weeks/0/",
+    "playbackSeconds": 3.010019,
+    "decodedFrames": 77,
+    "scope": "官方CDN 360p直链；无登录，实际播放超过3秒并解码画面。仅抽样播放，非整课验收；本机代理网络核验，其他网络未保证。"
   },
   "web-7": {
-    "checkedAt": "2026-10-30T05:00:00.000Z",
-    "playbackStatus": "blocked",
-    "videoUrl": "https://www.youtube.com/watch?v=nTeuhbP7wdE",
-    "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+    "checkedAt": "2026-10-30T05:27:53.761Z",
+    "playbackStatus": "passed",
+    "videoUrl": "https://cdn.cs50.net/web/2020/spring/lectures/6/lecture6-360p.mp4",
+    "sourcePage": "https://cs50.harvard.edu/web/weeks/6/",
+    "playbackSeconds": 3.00236,
+    "decodedFrames": 76,
+    "scope": "官方CDN 360p直链；无登录，实际播放超过3秒并解码画面。仅抽样播放，非整课验收；本机代理网络核验，其他网络未保证。"
   },
   "web-8": {
-    "checkedAt": "2026-10-30T05:00:00.000Z",
-    "playbackStatus": "blocked",
-    "videoUrl": "https://www.youtube.com/watch?v=PkZNo7MFNFg",
-    "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+    "checkedAt": "2026-10-30T05:27:47.019Z",
+    "playbackStatus": "passed",
+    "videoUrl": "https://cdn.cs50.net/web/2020/spring/lectures/5/lecture5-360p.mp4",
+    "sourcePage": "https://cs50.harvard.edu/web/weeks/5/",
+    "playbackSeconds": 3.007431,
+    "decodedFrames": 76,
+    "scope": "官方CDN 360p直链；无登录，实际播放超过3秒并解码画面。仅抽样播放，非整课验收；本机代理网络核验，其他网络未保证。"
   },
   "test-7": {
-    "checkedAt": "2026-10-30T05:00:00.000Z",
-    "playbackStatus": "blocked",
-    "videoUrl": "https://www.youtube.com/watch?v=cHYq1MRoyI0",
-    "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+    "checkedAt": "2026-10-30T05:27:13.938Z",
+    "playbackStatus": "passed",
+    "videoUrl": "https://cdn.cs50.net/python/2022/x/lectures/5/lecture5-360p.mp4",
+    "sourcePage": "https://cs50.harvard.edu/python/weeks/5/",
+    "playbackSeconds": 3.015535,
+    "decodedFrames": 78,
+    "scope": "官方CDN 360p直链；无登录，实际播放超过3秒并解码画面。仅抽样播放，非整课验收；本机代理网络核验，其他网络未保证。"
   },
   "test-8": {
-    "checkedAt": "2026-10-30T05:00:00.000Z",
-    "playbackStatus": "blocked",
-    "videoUrl": "https://www.youtube.com/watch?v=jydYq7oAtD8",
-    "scope": "原频道视频页显示“请登录，以便我们确认你不是聊天机器人”；未完成播放验证，改用对应文档。"
+    "checkedAt": "2026-10-30T05:27:24.666Z",
+    "playbackStatus": "passed",
+    "videoUrl": "https://cdn.cs50.net/python/2022/x/lectures/3/lecture3-360p.mp4",
+    "sourcePage": "https://cs50.harvard.edu/python/weeks/3/",
+    "playbackSeconds": 3.01484,
+    "decodedFrames": 78,
+    "scope": "官方CDN 360p直链；无登录，实际播放超过3秒并解码画面。仅抽样播放，非整课验收；本机代理网络核验，其他网络未保证。"
+  },
+  "java-1": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "java-2": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "java-3": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "java-4": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "web-1": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "web-2": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "web-3": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "web-4": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "test-1": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "test-2": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "test-3": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
+  },
+  "test-4": {
+    "checkedAt": "2026-10-30T05:04:00.000Z",
+    "contentStatus": "reviewed",
+    "scope": "官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。"
   }
 };
-
-for(const direction of ['java','web','test'])for(let i=1;i<=4;i++)resourceAudit[`${direction}-${i}`]={checkedAt:'2026-10-30T05:04:00.000Z',contentStatus:'reviewed',scope:'官方文档页面与主题目录可读；链接至原站，不镜像。核验范围为主题和任务关联，未逐题执行全部教程。'};
-
-resourceAudit['web-5'].dependencyStatus='needs-review';
-resourceAudit['web-5'].scope+='；安装审计报告40项依赖问题（含2 critical），不作为可直接复制的生产模板，优先使用同技能文档。';
-resourceAudit['test-6'].dependencyStatus='needs-review';
-resourceAudit['test-6'].scope+='；安装审计报告2项high依赖问题，发布审核未通过。';

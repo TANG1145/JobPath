@@ -1,0 +1,32 @@
+
+Running 21 tests using 1 worker
+
+(node:51294) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/api-mocking/api-mocking.spec.ts:5:7 › Mocking an API call › mocks a fruit and does not call api (1.3s)
+  ✓   2 [chromium] › tests/api-mocking/api-mocking.spec.ts:22:7 › Intercepting the request and modifying it › gets the json from api and adds a new fruit (1.9s)
+  ✓   3 [chromium] › tests/api-mocking/api-mocking.spec.ts:44:7 › Mocking with HAR files › records or updates the HAR file (677ms)
+  ✓   4 [chromium] › tests/api-mocking/api-mocking.spec.ts:58:7 › Mocking with HAR files › gets the json from HAR and checks the new fruit has been added (595ms)
+  ✓   5 [chromium] › tests/clock/clock.spec.ts:3:5 › set fixed time (1.6s)
+  ✓   6 [chromium] › tests/clock/clock.spec.ts:9:5 › manually advance time (532ms)
+  ✓   7 [chromium] › tests/clock/clock.spec.ts:20:5 › test inactivity monitoring (1.4s)
+(node:51374) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [firefox] › tests/api-mocking/api-mocking.spec.ts:5:7 › Mocking an API call › mocks a fruit and does not call api (1.2s)
+  ✓   9 [firefox] › tests/api-mocking/api-mocking.spec.ts:22:7 › Intercepting the request and modifying it › gets the json from api and adds a new fruit (1.5s)
+  ✓  10 [firefox] › tests/api-mocking/api-mocking.spec.ts:44:7 › Mocking with HAR files › records or updates the HAR file (748ms)
+  ✓  11 [firefox] › tests/api-mocking/api-mocking.spec.ts:58:7 › Mocking with HAR files › gets the json from HAR and checks the new fruit has been added (717ms)
+  ✓  12 [firefox] › tests/clock/clock.spec.ts:3:5 › set fixed time (829ms)
+  ✓  13 [firefox] › tests/clock/clock.spec.ts:9:5 › manually advance time (603ms)
+  ✓  14 [firefox] › tests/clock/clock.spec.ts:20:5 › test inactivity monitoring (619ms)
+(node:51416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [webkit] › tests/api-mocking/api-mocking.spec.ts:5:7 › Mocking an API call › mocks a fruit and does not call api (745ms)
+  ✓  16 [webkit] › tests/api-mocking/api-mocking.spec.ts:22:7 › Intercepting the request and modifying it › gets the json from api and adds a new fruit (1.5s)
+  ✓  17 [webkit] › tests/api-mocking/api-mocking.spec.ts:44:7 › Mocking with HAR files › records or updates the HAR file (1.1s)
+  ✓  18 [webkit] › tests/api-mocking/api-mocking.spec.ts:58:7 › Mocking with HAR files › gets the json from HAR and checks the new fruit has been added (699ms)
+  ✓  19 [webkit] › tests/clock/clock.spec.ts:3:5 › set fixed time (646ms)
+  ✓  20 [webkit] › tests/clock/clock.spec.ts:9:5 › manually advance time (708ms)
+  ✓  21 [webkit] › tests/clock/clock.spec.ts:20:5 › test inactivity monitoring (621ms)
+
+  21 passed (21.8s)

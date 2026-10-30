@@ -1,0 +1,41 @@
+
+> jobpath@0.5.0 test:e2e
+> playwright test
+
+[WebServer] (node:51662) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 2 workers
+
+(node:51663) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (475ms)
+  ✓   2 [chromium] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (702ms)
+  ✓   3 [chromium] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (288ms)
+  ✓   5 [chromium] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (197ms)
+  ✓   4 [chromium] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (431ms)
+(node:51701) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [chromium] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (675ms)
+(node:51703) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [firefox] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (1.2s)
+  ✓   9 [firefox] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (459ms)
+  ✓   8 [firefox] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (1.5s)
+  ✓  11 [firefox] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (211ms)
+  ✓  10 [firefox] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (533ms)
+(node:51726) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 [firefox] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (999ms)
+(node:51740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [webkit] › e2e/workflows.spec.mjs:4:1 › 官方岗位收藏、去重、刷新、历史隔离 (877ms)
+  ✓  15 [webkit] › e2e/workflows.spec.mjs:17:1 › 私人JD恶意文本不执行且编辑拒绝危险链接 (571ms)
+  ✓  14 [webkit] › e2e/workflows.spec.mjs:10:1 › 实际尺寸下四页面与目录详情没有横向溢出 (1.0s)
+  ✓  16 [webkit] › e2e/workflows.spec.mjs:21:1 › 备份回导与未来版本拒绝不破坏数据 (618ms)
+  ✓  17 [webkit] › e2e/workflows.spec.mjs:27:1 › AI关闭且核心页面不向外部发起请求 (321ms)
+  ✓  18 [webkit] › e2e/workflows.spec.mjs:31:1 › 三方向资源直链、出处、技能替代与修复说明 (928ms)
+
+  18 passed (8.1s)

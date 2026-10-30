@@ -1,0 +1,117 @@
+diff --git a/package-lock.json b/package-lock.json
+index e727bda..b9a0f04 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -7,68 +7,54 @@
+     "": {
+       "name": "playwright-examples",
+       "version": "0.0.1",
+-      "license": "Apache-2.0",
++      "license": "MIT",
+       "devDependencies": {
+-        "@playwright/test": "^1.45.0"
++        "@playwright/test": "1.64.1"
+       }
+     },
+     "node_modules/@playwright/test": {
+-      "version": "1.45.0",
+-      "resolved": "https://registry.npmjs.org/@playwright/test/-/test-1.45.0.tgz",
+-      "integrity": "sha512-TVYsfMlGAaxeUllNkywbwek67Ncf8FRGn8ZlRdO291OL3NjG9oMbfVhyP82HQF0CZLMrYsvesqoUekxdWuF9Qw==",
++      "version": "1.64.1",
++      "resolved": "https://registry.npmjs.org/@playwright/test/-/test-1.64.1.tgz",
++      "integrity": "sha512-IaYGml/nSOiZWROfPtuIL7neuu9qDOZ3TNvNljUIrhDMxiGTgPjzj/g9p9RxpS2tSepPDRY+UwAaEeiKtUvIAg==",
+       "dev": true,
++      "license": "Apache-2.0",
+       "dependencies": {
+-        "playwright": "1.45.0"
++        "playwright": "1.64.1"
+       },
+       "bin": {
+         "playwright": "cli.js"
+       },
+       "engines": {
+-        "node": ">=18"
+-      }
+-    },
+-    "node_modules/fsevents": {
+-      "version": "2.3.2",
+-      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz",
+-      "integrity": "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==",
+-      "dev": true,
+-      "hasInstallScript": true,
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "engines": {
+-        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
++        "node": ">=20"
+       }
+     },
+     "node_modules/playwright": {
+-      "version": "1.45.0",
+-      "resolved": "https://registry.npmjs.org/playwright/-/playwright-1.45.0.tgz",
+-      "integrity": "sha512-4z3ac3plDfYzGB6r0Q3LF8POPR20Z8D0aXcxbJvmfMgSSq1hkcgvFRXJk9rUq5H/MJ0Ktal869hhOdI/zUTeLA==",
++      "version": "1.64.1",
++      "resolved": "https://registry.npmjs.org/playwright/-/playwright-1.64.1.tgz",
++      "integrity": "sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==",
+       "dev": true,
++      "license": "Apache-2.0",
+       "dependencies": {
+-        "playwright-core": "1.45.0"
++        "playwright-core": "1.64.1"
+       },
+       "bin": {
+         "playwright": "cli.js"
+       },
+       "engines": {
+-        "node": ">=18"
+-      },
+-      "optionalDependencies": {
+-        "fsevents": "2.3.2"
++        "node": ">=20"
+       }
+     },
+     "node_modules/playwright-core": {
+-      "version": "1.45.0",
+-      "resolved": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.45.0.tgz",
+-      "integrity": "sha512-lZmHlFQ0VYSpAs43dRq1/nJ9G/6SiTI7VPqidld9TDefL9tX87bTKExWZZUF5PeRyqtXqd8fQi2qmfIedkwsNQ==",
++      "version": "1.64.1",
++      "resolved": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.64.1.tgz",
++      "integrity": "sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==",
+       "dev": true,
++      "license": "Apache-2.0",
+       "bin": {
+         "playwright-core": "cli.js"
+       },
+       "engines": {
+-        "node": ">=18"
++        "node": ">=20"
+       }
+     }
+   }
+diff --git a/package.json b/package.json
+index 32249de..f73fc8b 100644
+--- a/package.json
++++ b/package.json
+@@ -1,9 +1,9 @@
+ {
+   "name": "playwright-examples",
+   "version": "0.0.1",
+-  "description": "This repo is used to demonstrate various testing scenarios with [Playwright](https://playwright.dev/) 🎭 with node.js",
+-  "license": "Apache-2.0",
++  "description": "This repo is used to demonstrate various testing scenarios with [Playwright](https://playwright.dev/) \ud83c\udfad with node.js",
++  "license": "MIT",
+   "devDependencies": {
+-    "@playwright/test": "^1.45.0"
++    "@playwright/test": "1.64.1"
+   }
+ }
+diff --git a/jobpath.config.ts b/jobpath.config.ts
+new file mode 100644
+--- /dev/null
++++ b/jobpath.config.ts
+@@ -0,0 +1,3 @@
++import config from './playwright.config';
++// Curated resource: API interception/HAR and clock. The retired external storefront is not required.
++export default {...config,testMatch:['**/api-mocking/*.spec.ts','**/clock/*.spec.ts'],fullyParallel:false,workers:1,retries:0,timeout:30000,reporter:'list',use:{...config.use,...(process.env.AUDIT_PROXY?{proxy:{server:process.env.AUDIT_PROXY}}:{})}};

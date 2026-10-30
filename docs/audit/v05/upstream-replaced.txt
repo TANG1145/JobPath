@@ -1,0 +1,204 @@
+
+Running 15 tests using 1 worker
+
+(node:50560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/api-mocking/api-mocking.spec.ts:5:7 › Mocking an API call › mocks a fruit and does not call api (3.1s)
+  ✓   2 [chromium] › tests/api-mocking/api-mocking.spec.ts:22:7 › Intercepting the request and modifying it › gets the json from api and adds a new fruit (1.5s)
+  ✓   3 [chromium] › tests/api-mocking/api-mocking.spec.ts:44:7 › Mocking with HAR files › records or updates the HAR file (906ms)
+  ✓   4 [chromium] › tests/api-mocking/api-mocking.spec.ts:58:7 › Mocking with HAR files › gets the json from HAR and checks the new fruit has been added (837ms)
+  ✘   5 [chromium] › tests/boxed-steps/boxed-step.spec.ts:21:7 › add to cart scenarios › add to cart from carousel (3.0s)
+(node:50584) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   6 [chromium] › tests/boxed-steps/boxed-step.spec.ts:27:7 › add to cart scenarios › add to cart from search (1.6s)
+(node:50596) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   7 [chromium] › tests/boxed-steps/boxed-step.spec.ts:38:7 › add to cart scenarios › add to cart from all products page (1.7s)
+(node:50603) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   8 [chromium] › tests/boxed-steps/boxed-step.spec.ts:46:7 › add to cart scenarios › add to cart from laptops page (1.6s)
+(node:50613) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   9 [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:15:7 › add to cart scenarios › buy now from carousel using pom (1.7s)
+(node:50620) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:23:7 › add to cart scenarios › add to cart from search using pom (1.6s)
+(node:50626) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  11 [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:33:7 › add to cart scenarios › add to cart from all products page using pom (1.6s)
+(node:50633) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  12 [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:43:7 › add to cart scenarios › add to cart from all laptops page using pom (1.6s)
+(node:50640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [chromium] › tests/clock/clock.spec.ts:3:5 › set fixed time (1.3s)
+  ✓  14 [chromium] › tests/clock/clock.spec.ts:9:5 › manually advance time (522ms)
+  ✓  15 [chromium] › tests/clock/clock.spec.ts:20:5 › test inactivity monitoring (1.3s)
+
+
+  1) [chromium] › tests/boxed-steps/boxed-step.spec.ts:21:7 › add to cart scenarios › add to cart from carousel
+
+    Error: page.goto: net::ERR_CONNECTION_CLOSED at https://cloudtesting.contosotraders.com/
+    Call log:
+      - navigating to "https://cloudtesting.contosotraders.com/", waiting until "load"
+
+
+      16 | test.describe('add to cart scenarios', () => {
+      17 |   test.beforeEach(async ({ page }) => {
+    > 18 |     await page.goto('https://cloudtesting.contosotraders.com/')
+         |                ^
+      19 |   });
+      20 |
+      21 |   test('add to cart from carousel', async ({ page }) => {
+        at /Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps/boxed-step.spec.ts:18:16
+
+    Error Context: test-results/boxed-steps-boxed-step-add-54f7e-s-add-to-cart-from-carousel-chromium/error-context.md
+
+  2) [chromium] › tests/boxed-steps/boxed-step.spec.ts:27:7 › add to cart scenarios › add to cart from search
+
+    Error: page.goto: net::ERR_CONNECTION_CLOSED at https://cloudtesting.contosotraders.com/
+    Call log:
+      - navigating to "https://cloudtesting.contosotraders.com/", waiting until "load"
+
+
+      16 | test.describe('add to cart scenarios', () => {
+      17 |   test.beforeEach(async ({ page }) => {
+    > 18 |     await page.goto('https://cloudtesting.contosotraders.com/')
+         |                ^
+      19 |   });
+      20 |
+      21 |   test('add to cart from carousel', async ({ page }) => {
+        at /Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps/boxed-step.spec.ts:18:16
+
+    Error Context: test-results/boxed-steps-boxed-step-add-95632-ios-add-to-cart-from-search-chromium/error-context.md
+
+  3) [chromium] › tests/boxed-steps/boxed-step.spec.ts:38:7 › add to cart scenarios › add to cart from all products page
+
+    Error: page.goto: net::ERR_CONNECTION_CLOSED at https://cloudtesting.contosotraders.com/
+    Call log:
+      - navigating to "https://cloudtesting.contosotraders.com/", waiting until "load"
+
+
+      16 | test.describe('add to cart scenarios', () => {
+      17 |   test.beforeEach(async ({ page }) => {
+    > 18 |     await page.goto('https://cloudtesting.contosotraders.com/')
+         |                ^
+      19 |   });
+      20 |
+      21 |   test('add to cart from carousel', async ({ page }) => {
+        at /Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps/boxed-step.spec.ts:18:16
+
+    Error Context: test-results/boxed-steps-boxed-step-add-b9134-cart-from-all-products-page-chromium/error-context.md
+
+  4) [chromium] › tests/boxed-steps/boxed-step.spec.ts:46:7 › add to cart scenarios › add to cart from laptops page
+
+    Error: page.goto: net::ERR_CONNECTION_CLOSED at https://cloudtesting.contosotraders.com/
+    Call log:
+      - navigating to "https://cloudtesting.contosotraders.com/", waiting until "load"
+
+
+      16 | test.describe('add to cart scenarios', () => {
+      17 |   test.beforeEach(async ({ page }) => {
+    > 18 |     await page.goto('https://cloudtesting.contosotraders.com/')
+         |                ^
+      19 |   });
+      20 |
+      21 |   test('add to cart from carousel', async ({ page }) => {
+        at /Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps/boxed-step.spec.ts:18:16
+
+    Error Context: test-results/boxed-steps-boxed-step-add-0a657-d-to-cart-from-laptops-page-chromium/error-context.md
+
+  5) [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:15:7 › add to cart scenarios › buy now from carousel using pom
+
+    Error: page.goto: net::ERR_CONNECTION_CLOSED at https://cloudtesting.contosotraders.com/
+    Call log:
+      - navigating to "https://cloudtesting.contosotraders.com/", waiting until "load"
+
+
+       at boxed-steps-pom/boxed-step-pom.ts:7
+
+       5 |
+       6 |   async goto() {
+    >  7 |     await this.page.goto('https://cloudtesting.contosotraders.com/');
+         |                     ^
+       8 |   }
+       9 |
+      10 |   // using the boxedStep decorator defined below
+        at MainPage.goto (/Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps-pom/boxed-step-pom.ts:7:21)
+        at /Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps-pom/boxed-step-pom.spec.ts:12:15
+
+    Error Context: test-results/boxed-steps-pom-boxed-step-cd84c-now-from-carousel-using-pom-chromium/error-context.md
+
+  6) [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:23:7 › add to cart scenarios › add to cart from search using pom
+
+    Error: page.goto: net::ERR_CONNECTION_CLOSED at https://cloudtesting.contosotraders.com/
+    Call log:
+      - navigating to "https://cloudtesting.contosotraders.com/", waiting until "load"
+
+
+       at boxed-steps-pom/boxed-step-pom.ts:7
+
+       5 |
+       6 |   async goto() {
+    >  7 |     await this.page.goto('https://cloudtesting.contosotraders.com/');
+         |                     ^
+       8 |   }
+       9 |
+      10 |   // using the boxedStep decorator defined below
+        at MainPage.goto (/Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps-pom/boxed-step-pom.ts:7:21)
+        at /Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps-pom/boxed-step-pom.spec.ts:12:15
+
+    Error Context: test-results/boxed-steps-pom-boxed-step-84ee9--cart-from-search-using-pom-chromium/error-context.md
+
+  7) [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:33:7 › add to cart scenarios › add to cart from all products page using pom
+
+    Error: page.goto: net::ERR_CONNECTION_CLOSED at https://cloudtesting.contosotraders.com/
+    Call log:
+      - navigating to "https://cloudtesting.contosotraders.com/", waiting until "load"
+
+
+       at boxed-steps-pom/boxed-step-pom.ts:7
+
+       5 |
+       6 |   async goto() {
+    >  7 |     await this.page.goto('https://cloudtesting.contosotraders.com/');
+         |                     ^
+       8 |   }
+       9 |
+      10 |   // using the boxedStep decorator defined below
+        at MainPage.goto (/Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps-pom/boxed-step-pom.ts:7:21)
+        at /Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps-pom/boxed-step-pom.spec.ts:12:15
+
+    Error Context: test-results/boxed-steps-pom-boxed-step-92f0f-all-products-page-using-pom-chromium/error-context.md
+
+  8) [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:43:7 › add to cart scenarios › add to cart from all laptops page using pom
+
+    Error: page.goto: net::ERR_CONNECTION_CLOSED at https://cloudtesting.contosotraders.com/
+    Call log:
+      - navigating to "https://cloudtesting.contosotraders.com/", waiting until "load"
+
+
+       at boxed-steps-pom/boxed-step-pom.ts:7
+
+       5 |
+       6 |   async goto() {
+    >  7 |     await this.page.goto('https://cloudtesting.contosotraders.com/');
+         |                     ^
+       8 |   }
+       9 |
+      10 |   // using the boxedStep decorator defined below
+        at MainPage.goto (/Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps-pom/boxed-step-pom.ts:7:21)
+        at /Users/tan/Projects/JobPath/.local/resource-audit/playwright-examples/tests/boxed-steps-pom/boxed-step-pom.spec.ts:12:15
+
+    Error Context: test-results/boxed-steps-pom-boxed-step-1b65c--all-laptops-page-using-pom-chromium/error-context.md
+
+  8 failed
+    [chromium] › tests/boxed-steps/boxed-step.spec.ts:21:7 › add to cart scenarios › add to cart from carousel
+    [chromium] › tests/boxed-steps/boxed-step.spec.ts:27:7 › add to cart scenarios › add to cart from search
+    [chromium] › tests/boxed-steps/boxed-step.spec.ts:38:7 › add to cart scenarios › add to cart from all products page
+    [chromium] › tests/boxed-steps/boxed-step.spec.ts:46:7 › add to cart scenarios › add to cart from laptops page
+    [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:15:7 › add to cart scenarios › buy now from carousel using pom
+    [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:23:7 › add to cart scenarios › add to cart from search using pom
+    [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:33:7 › add to cart scenarios › add to cart from all products page using pom
+    [chromium] › tests/boxed-steps-pom/boxed-step-pom.spec.ts:43:7 › add to cart scenarios › add to cart from all laptops page using pom
+  7 passed (26.5s)

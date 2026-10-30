@@ -1,0 +1,4 @@
+{
+  "public/resource-fixes/playwright.patch": "61bf1e677b28b17e5fb773737ec2b7e8ab8d95789c7cec8dc81d5ef270021895",
+  "public/resource-fixes/todomvc.patch": "8161e4bb770dba17ce3b71f2f9d29fd17f7fba06b176cbcb596fa523aed6ac8a"
+}

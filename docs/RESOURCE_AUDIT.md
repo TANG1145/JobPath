@@ -1,3 +1,22 @@
+# v0.5 资源修复与复现
+
+2026-10-30。六条视频已替换成官方CS50 CDN直链；资源卡保留课程出处和备用文档。复核命令：
+
+```sh
+npx playwright install chromium firefox webkit
+# 仅当前网络需要代理时设置 AUDIT_PROXY；不要把个人凭据写入仓库
+npm run verify:videos
+npm run test:e2e
+```
+
+视频证据记录于 [video-playback.json](audit/v05/video-playback.json)。执行的是浏览器实际播放，不以HEAD响应代替播放；没有镜像视频文件。
+
+TodoMVC与Playwright示例使用固定上游SHA与公开补丁，完整步骤见[修复指南](../public/resource-guide.html)。补丁哈希见[manifest.json](audit/v05/manifest.json)。均从全新克隆应用补丁、安装并审计，零已知漏洞；TodoMVC构建与浏览器交互通过，Playwright选定7个API/HAR/Clock用例在三浏览器全部通过（21项）。外部商店8项连接失败已从课程范围替换，不声称全部上游45项通过。HAR共享文件使用单worker顺序执行。
+
+其余四项目沿用上次已执行的最小实践结果。以下保留旧核验记录供追溯，旧视频受阻及两项待修复状态已被本轮替换。
+
+---
+
 # 资源运行核验复现说明
 
 2026-10-30。源码仅克隆到忽略目录 `.local/resource-audit/`，没有将它们当作个人成果或打包进产品。固定提交、许可证文件和核验范围见 [src/resource-audit.js](../src/resource-audit.js)；资源链接与任务映射见 [公开目录](../public/catalog/v1/resources.json)。重新核验须先checkout对应SHA，不假定未来main分支一致。

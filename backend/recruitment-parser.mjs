@@ -6,7 +6,7 @@ export function classifyRecruitment({text,title,apply=false,httpStatus=200,now=D
  if(apply)return {hiringStatus:'open',verification:'本次官网详情可读且显示可用投递入口；最终受理以官网为准'};
  return {hiringStatus:'unknown',verification:'官方详情可读，但未确认有效投递入口'};
 }
-export function classifyCategory(title){for(const [id,re] of [['test',/测试|质量/],['web',/前端/],['security',/安全|风控/],['data',/数据分析|数据挖掘/],['game',/游戏.*开发|引擎/],['product',/产品经理|产品策划/],['ai',/算法|模型|人工智能/],['java',/后端|Java|软件开发/]])if(re.test(title))return id;return null}
+export function classifyCategory(title){for(const [id,re] of [['mobile',/移动端|Android|iOS|客户端/],['embedded',/嵌入式|底层软件/],['multimedia',/多媒体|音视频/],['robotics',/具身|机器人/],['cloud',/运维|可观测|SRE/],['database',/数据库|RDS/],['hardware',/硬件/],['chip',/芯片|器件设计/],['design',/交互设计|体验设计|UI设计/],['operations',/运营/],['test',/测试|质量/],['web',/前端/],['security',/安全|风控/],['data',/数据分析|数据挖掘/],['game',/游戏.*开发|引擎/],['product',/产品经理|产品策划/],['ai',/算法|模型|人工智能/],['java',/后端|Java|软件开发/]])if(re.test(title))return id;return null}
 // Parse only the site's serialized public list. Never execute scripts from a recruitment page.
 export function parseBaiduList(html){
  const match=html.match(/window\.__INITIAL_DATA__\s*=\s*([\s\S]*?);\s*window\.prefix=/);if(!match)return [];

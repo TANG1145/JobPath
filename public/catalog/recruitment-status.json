@@ -155,6 +155,182 @@
       "contentHash": "c60af3bb30a1c73709176a562d70df062bee6da9160cbd9486e777ce851a9735"
     },
     {
+      "id": "baidu-cloud-99647",
+      "category": "cloud",
+      "categories": [
+        "cloud"
+      ],
+      "company": "百度",
+      "title": "AI-Infra开发工程师（可观测/运维平台方向）（J99647）",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/9b27d24c-657b-4212-8f57-5a219a8989ec",
+      "city": "北京、上海",
+      "intent": "实习",
+      "experience": "日常实习；学历及具体在校要求请核对官网",
+      "eligibility": "计算机基础、Go/Python/Java 等编码能力；分布式系统、云计算与问题定位。",
+      "summary": "建设可观测数据底座和自动化、智能化运维平台。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:34:12.726Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:34:12.726Z",
+      "contentHash": "5a8e0ac0c14db936576cef052287c98ce8814e7fda7f14651a6e6b9701a0daa3"
+    },
+    {
+      "id": "baidu-data-100281",
+      "category": "data",
+      "categories": [
+        "data"
+      ],
+      "title": "AIGC数据分析实习生（J100281）",
+      "company": "百度",
+      "city": "北京",
+      "intent": "实习",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/3f5ec667-8284-400e-9c87-a443145b519c",
+      "eligibility": "本科或硕士在读；每周5天，连续6个月优先；Excel、SQL 和数据分析能力。",
+      "experience": "日常实习；具体年级、学历和到岗要求见下方",
+      "summary": "参与大模型应用的需求调研、产品设计和数据评估。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:29:30.601Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:30.601Z",
+      "contentHash": "fbe94e4721ed53533a6e99a0a83f43ee497c5e309392e6d3ed39963bbbea9b7c"
+    },
+    {
+      "id": "baidu-data-106779",
+      "category": "data",
+      "categories": [
+        "data"
+      ],
+      "title": "AI 数据分析师（J106779）",
+      "company": "百度",
+      "city": "北京",
+      "intent": "实习",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/bd7450c8-64d6-4781-8261-9d5c49abc5bd",
+      "eligibility": "本科及以上；SQL / Excel，Python / R 至少一种；统计实验方法和独立核验能力。",
+      "experience": "日常实习；具体年级、学历和到岗要求见下方",
+      "summary": "分析企业 Agent 的使用效果，建设指标并验证效率改善。",
+      "sourceUpdated": "2026-10-22",
+      "checkedAt": "2026-10-30T12:29:31.598Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:31.598Z",
+      "contentHash": "b983a73cdb2ed0e59cad4cb542f3abc8777f5d4c3cee4bcfcbb7333f157d504e"
+    },
+    {
+      "id": "baidu-data-73307",
+      "category": "data",
+      "categories": [
+        "data"
+      ],
+      "title": "数据分析实习生（J73307）",
+      "company": "百度",
+      "city": "北京",
+      "intent": "实习",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/9fda9a23-dfce-4230-bbad-6dffe04b4e2e",
+      "eligibility": "常用数据分析方法；SQL 或 Python 基础优先；经济学、社会学、心理学等专业优先。",
+      "experience": "日常实习；具体年级、学历和到岗要求见下方",
+      "summary": "研究用户行为、业务指标并提供可落地的数据分析建议。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:29:27.652Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:27.652Z",
+      "contentHash": "142011a5ed82bf28abecf549aa5eb3282f4351c41da09bf8d65ed76d4fcaf7aa"
+    },
+    {
+      "id": "baidu-data-75756",
+      "category": "data",
+      "categories": [
+        "data"
+      ],
+      "title": "数据分析师实习生（J75756）",
+      "company": "百度",
+      "city": "北京",
+      "intent": "实习",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/6ad745b1-f7fd-4e0e-8307-d221b6bf298c",
+      "eligibility": "本科及以上，数学/统计/计算机等专业；SQL / Excel、R / Python。",
+      "experience": "日常实习；具体年级、学历和到岗要求见下方",
+      "summary": "建设内容生态指标、分析异常并优化自动化分析工具。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:29:29.624Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:29.624Z",
+      "contentHash": "eb6534fc152c2c35d6e11cad9f8bc1e5087333df218804f5f80cd00ad7c8ecfa"
+    },
+    {
+      "id": "baidu-data-81163",
+      "category": "data",
+      "categories": [
+        "data"
+      ],
+      "title": "AIGC数据分析实习生（J81163）",
+      "company": "百度",
+      "city": "北京",
+      "intent": "实习",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/302570bb-1256-4257-bc5c-ac1725794657",
+      "eligibility": "本科或硕士在读；每周5天、至少3个月；分析归纳及沟通能力。",
+      "experience": "日常实习；具体年级、学历和到岗要求见下方",
+      "summary": "支持 AIGC 内容生产和效果评测的数据分析。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:29:32.601Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:32.601Z",
+      "contentHash": "04d69f8c1ef1c5e01779dcae0533fb3472c46f43821430eb4af30f4bda727895"
+    },
+    {
+      "id": "baidu-data-98221",
+      "category": "data",
+      "categories": [
+        "data"
+      ],
+      "title": "数据分析实习生（J98221）",
+      "company": "百度",
+      "city": "北京",
+      "intent": "实习",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/a361b79c-86e5-4295-8bdd-a1f9c9988a5d",
+      "eligibility": "研究生及以上；SQL / Excel，Python / R 优先；每周至少4天、至少6个月。",
+      "experience": "日常实习；具体年级、学历和到岗要求见下方",
+      "summary": "支持用户增长分析、指标监控和专题报告。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:29:28.626Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:28.626Z",
+      "contentHash": "e962aced9139fc207d80dc512965d9930b3821467e6027426ae63a63dac53782"
+    },
+    {
+      "id": "baidu-db-97903",
+      "category": "database",
+      "categories": [
+        "database"
+      ],
+      "company": "百度",
+      "title": "RDS数据库管控平台开发实习生（J97903）",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/f197fcd2-22e9-4272-9f5c-28916e0b8993",
+      "city": "北京",
+      "intent": "实习",
+      "experience": "计算机相关本科/硕士在读；2027届优先；至少3个月、每周4天以上；包含值班支持要求",
+      "eligibility": "Python/Java、Linux/Shell、SQL、MySQL/PostgreSQL；云原生与监控工具。",
+      "summary": "开发数据库调度和自动化管理，参与巡检、备份恢复与容灾。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:34:13.691Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:34:13.691Z",
+      "contentHash": "8093fb370e2d2210fad9ee817f3ce60eead4fb09098e895a0c8089744fe80fd0"
+    },
+    {
       "id": "baidu-front",
       "category": "web",
       "categories": [
@@ -177,6 +353,50 @@
       "contentHash": "67f032c4e1f9cdcb8852a27714625834cf452c93c9496e6ed29e24e79e9bf324"
     },
     {
+      "id": "baidu-mobile-104728",
+      "category": "mobile",
+      "categories": [
+        "mobile"
+      ],
+      "company": "百度",
+      "title": "移动端研发实习生（J104728）",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/d4993c3c-f5a4-4a06-92d0-766f53fb832b",
+      "city": "北京",
+      "intent": "实习",
+      "experience": "本科及以上，计算机软件/通信相关专业优先；日常实习",
+      "eligibility": "Android 的 Java/Kotlin，或 iOS 的 Swift/Objective-C，或鸿蒙 ArkTS/ArkUI；掌握一条技术路线即可。",
+      "summary": "参与百度移动产品的广告研发、架构和性能优化。",
+      "sourceUpdated": "2026-09-16",
+      "checkedAt": "2026-10-30T12:34:11.776Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:34:11.776Z",
+      "contentHash": "74a57208c44b7b12e9919d83f78961ac72a754f3af29e06bdd0706e18b3d2380"
+    },
+    {
+      "id": "baidu-ops-106862",
+      "category": "operations",
+      "categories": [
+        "operations"
+      ],
+      "company": "百度",
+      "title": "内容生态策略运营（J106862）",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/4c64b0c5-47bd-407d-9eb8-4d64e6a264a9",
+      "city": "北京",
+      "intent": "实习",
+      "experience": "本科；日常实习；社区重度用户，有贴吧吧主或AI经验优先",
+      "eligibility": "数据敏感、沟通执行；PPT/Excel，社区运营与内容理解。",
+      "summary": "通过创作者孵化、内容供给和数据分析优化社区生态。",
+      "sourceUpdated": "2026-10-26",
+      "checkedAt": "2026-10-30T12:34:18.353Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:34:18.353Z",
+      "contentHash": "e70e6c97565ef041f811e79aa7b5ce72fae8197e5e9dd7b64fa0a6355fdddba8"
+    },
+    {
       "id": "baidu-product",
       "category": "product",
       "categories": [
@@ -197,6 +417,50 @@
       "officialExcerpt": false,
       "lastConfirmedOpen": "2026-10-30T11:58:04.179Z",
       "contentHash": "3bd0e10a03bf63e5fa5b2c610d0d729eb0521fc7415baa89677ec08c1c4ad529"
+    },
+    {
+      "id": "baidu-voice-102273",
+      "category": "product",
+      "categories": [
+        "product"
+      ],
+      "title": "AI 数据产品实习生（语音方向）（J102273）",
+      "company": "百度",
+      "city": "北京",
+      "intent": "实习",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/6f945b3c-2223-4b20-aeb5-aae1953dbe46",
+      "eligibility": "在校学生，至少6个月；Excel、数据质量意识和沟通能力，语音经验优先。",
+      "experience": "日常实习；具体年级、学历和到岗要求见下方",
+      "summary": "跟进语音数据采集、标注、质检与效果评估。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:29:33.618Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:33.618Z",
+      "contentHash": "adabc41a0b3c6ae3f60e9e5c13ab2383a58221e864cf6f8aa49f374509b52980"
+    },
+    {
+      "id": "baidu-web-70806",
+      "category": "web",
+      "categories": [
+        "web"
+      ],
+      "title": "web前端实习生（J70806）",
+      "company": "百度",
+      "city": "北京",
+      "intent": "实习",
+      "source": "https://talent.baidu.com/jobs/detail/INTERN/f4aa7aac-3d94-43b6-9762-ced2340391af",
+      "eligibility": "本科及以上，至少4个月；JavaScript / HTML / CSS、React / Vue、Node。",
+      "experience": "日常实习；具体年级、学历和到岗要求见下方",
+      "summary": "开发百度小程序与 AI 原生应用的前端模块。",
+      "sourceUpdated": "2026-07-21",
+      "checkedAt": "2026-10-30T12:29:34.568Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:34.568Z",
+      "contentHash": "7b25dae3e42b38af39ec47201a1b7a4ef2eb00b493390bf4acb716a24c9c4b17"
     },
     {
       "id": "baidu-wenku",
@@ -538,6 +802,50 @@
       "contentHash": "e62b3eb5cfa87804a69388c8de02179cc8f35037d252984da7f006eb071611b2"
     },
     {
+      "id": "huawei-chip-36387",
+      "category": "chip",
+      "categories": [
+        "chip"
+      ],
+      "company": "华为",
+      "title": "芯片与器件设计工程师",
+      "source": "https://career.huawei.com/cn/job-details?advertisementId=36387",
+      "city": "深圳、上海、北京等，具体城市见官网",
+      "intent": "校招",
+      "experience": "应届生项目；毕业时间以华为校园招聘说明为准",
+      "eligibility": "具体芯片、器件方向的要求需在官网选择岗位意向后核对。",
+      "summary": "芯片与器件研发综合岗位，方向及职责以官方详情为准。",
+      "sourceUpdated": "2026-08-17",
+      "checkedAt": "2026-10-30T12:34:26.608Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:34:26.608Z",
+      "contentHash": "b6c336eaa742d23389792bec942880f90e89cc433f26ad8ae005f336d76f8d27"
+    },
+    {
+      "id": "huawei-hardware-36386",
+      "category": "hardware",
+      "categories": [
+        "hardware"
+      ],
+      "company": "华为",
+      "title": "硬件技术工程师",
+      "source": "https://career.huawei.com/cn/job-details?advertisementId=36386",
+      "city": "深圳、上海、北京、南京等",
+      "intent": "校招",
+      "experience": "应届生项目；毕业时间以华为校园招聘说明为准",
+      "eligibility": "官网要求进一步选择岗位意向查看具体专业技能，不推断统一要求。",
+      "summary": "硬件研发综合岗位，各具体方向职责以官网岗位意向为准。",
+      "sourceUpdated": "2026-08-17",
+      "checkedAt": "2026-10-30T12:34:21.965Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:34:21.965Z",
+      "contentHash": "c6443f2146d8cf5b06522bd5294d919c75fba1b3f39b51d450aaca1651a11b34"
+    },
+    {
       "id": "huawei-software",
       "category": "java",
       "categories": [
@@ -661,6 +969,50 @@
       "contentHash": "2bf8e4f90ac844cf44eaf83997d008b42d1faef8e7a51e772a03f5d546f9ee76"
     },
     {
+      "id": "oppo-lowlevel-1838",
+      "category": "security",
+      "categories": [
+        "security"
+      ],
+      "company": "OPPO",
+      "title": "底层软件工程师",
+      "city": "南京、深圳、东莞、成都",
+      "intent": "校招",
+      "source": "https://careers.oppo.com/university/oppo/campus/post/1838?recruitType=Graduate",
+      "experience": "2027届应届生；本科及以上，计算机/通信/软件等相关专业",
+      "eligibility": "C/C++、数据结构和算法、操作系统；嵌入式经验更佳。",
+      "summary": "覆盖 Linux、嵌入式、底层开发等方向，其中系统安全方向涉及内核加固与加密；需在原站选择具体方向。",
+      "sourceUpdated": "2026-07-15",
+      "checkedAt": "2026-10-30T12:29:38.371Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:38.371Z",
+      "contentHash": "0d427870d620dfda8adb094b41f4407dcb79a9025a8335c06c07c0bc2ec0aaa2"
+    },
+    {
+      "id": "oppo-media-1831",
+      "category": "web",
+      "categories": [
+        "web"
+      ],
+      "company": "OPPO",
+      "title": "多媒体开发工程师",
+      "city": "南京、深圳",
+      "intent": "校招",
+      "source": "https://careers.oppo.com/university/oppo/campus/post/1831?recruitType=Graduate",
+      "experience": "2027届应届生；本科及以上，计算机/通信/软件等相关专业",
+      "eligibility": "C/C++/Java/Python 等编程能力；数据结构、算法、操作系统；相关领域经验。",
+      "summary": "覆盖音视频、相机、显示等多个方向；其中 Web 多媒体方向涉及 Web 引擎与混合应用框架，不是纯前端页面岗位。",
+      "sourceUpdated": "2026-07-15",
+      "checkedAt": "2026-10-30T12:29:41.635Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:29:41.635Z",
+      "contentHash": "36bb1711dacbf81b2eb66b90e2630b575684559667a637eb996225d5d42c52f8"
+    },
+    {
       "id": "oppo-platform",
       "category": "ai",
       "categories": [
@@ -703,6 +1055,28 @@
       "officialExcerpt": false,
       "lastConfirmedOpen": "2026-10-30T11:58:12.918Z",
       "contentHash": "c8368cd1697e257d35aa659320701e0d4f8f67421e8d4503672780b4f07b4256"
+    },
+    {
+      "id": "oppo-ux-1836",
+      "category": "design",
+      "categories": [
+        "design"
+      ],
+      "company": "OPPO",
+      "title": "交互设计师",
+      "source": "https://careers.oppo.com/university/oppo/campus/post/1836?recruitType=Graduate",
+      "city": "深圳",
+      "intent": "校招",
+      "experience": "2027届应届生；详细专业、学历及作品要求请核对官网",
+      "eligibility": "交互框架、体验设计与跨团队协作；操作系统或企业数字化设计经验相关。",
+      "summary": "参与 ColorOS 体验或企业数字化系统交互设计。",
+      "sourceUpdated": "2026-07-15",
+      "checkedAt": "2026-10-30T12:34:17.362Z",
+      "hiringStatus": "open",
+      "verification": "本次官网详情可读且显示可用投递入口；最终受理以官网为准",
+      "officialExcerpt": false,
+      "lastConfirmedOpen": "2026-10-30T12:34:17.362Z",
+      "contentHash": "b459fb99eef34bc8127e50cc9b14c99389260feb38e1cf1b1a4632c7c8b19444"
     },
     {
       "id": "poizon-java",
@@ -981,6 +1355,12 @@
       "contentHash": "9333aedee0c06a21b5f54c79dcd058600509abd86be4aa7edb6c0eb73f2047f9"
     }
   ],
-  "lastRun": null,
+  "lastRun": {
+    "day": "2026-10-30",
+    "started": 1793361476431,
+    "status": "partial",
+    "finished": 1793361834785,
+    "detail": "{\"trigger\":\"manual-validation\",\"checkedAt\":\"2026-10-30T11:57:56.431Z\",\"checked\":36,\"open\":16,\"closed\":0,\"unknown\":20,\"discovery\":[{\"company\":\"百度\",\"added\":6,\"note\":\"仅检查公开列表首页，非全量\"},{\"company\":\"哔哩哔哩\",\"added\":0,\"note\":\"当前列表没有可解析详情链接，未宣称没有新岗位\"}]}"
+  },
   "schedule": "每天 09:00（北京时间）"
 }

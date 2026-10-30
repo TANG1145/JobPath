@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
 async function jobs(page){await page.goto('/');await page.getByRole('button',{name:'01 机会 OPPORTUNITIES',exact:true}).click();}
 test('机会默认展示分类，搜索技能与空结果，不再展示公司目录',async({page})=>{
- await jobs(page);await expect(page.locator('[data-category]')).toHaveCount(8);await expect(page.locator('#public-results')).toHaveCount(0);await expect(page.locator('#saved-jd-view')).toBeHidden();await page.getByLabel('搜索岗位分类').fill('React');await expect(page.locator('[data-category]:visible')).toHaveCount(1);await expect(page.locator('[data-category]:visible')).toContainText('Web 前端');await page.getByLabel('搜索岗位分类').fill('完全不存在的分类');await expect(page.locator('#category-empty')).toBeVisible();await page.getByLabel('搜索岗位分类').fill('');await expect(page.locator('[data-category]:visible')).toHaveCount(8);
+ await jobs(page);await expect(page.locator('[data-category]')).toHaveCount(18);await expect(page.locator('#public-results')).toHaveCount(0);await expect(page.locator('#saved-jd-view')).toBeHidden();await page.getByLabel('搜索岗位分类').fill('React');await expect(page.locator('[data-category]:visible')).toHaveCount(1);await expect(page.locator('[data-category]:visible')).toContainText('Web 前端');await page.getByLabel('搜索岗位分类').fill('完全不存在的分类');await expect(page.locator('#category-empty')).toBeVisible();await page.getByLabel('搜索岗位分类').fill('');await expect(page.locator('[data-category]:visible')).toHaveCount(18);
 });
 test('实际尺寸下四页面与目录详情没有横向溢出',async({page},info)=>{
  await page.goto('/');for(const width of [320,390,768]){await page.setViewportSize({width,height:844});for(const nav of ['01 机会 OPPORTUNITIES','02 备战 PREPARATION','03 求职 APPLICATIONS','04 设置 SYSTEM']){

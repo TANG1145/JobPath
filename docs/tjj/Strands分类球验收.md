@@ -1,0 +1,43 @@
+# Strands 岗位分类球验收
+
+日期：2026-10-30。分支：`tjj`。保留 v0.7 主界面，真实 AI 关闭，不部署，不合并 main。
+
+## 本轮范围
+
+按照用户澄清，新增的是 **10 个岗位分类球**，分类由 8 个增至 18 个：移动端开发、嵌入式开发、多媒体开发、机器人与具身 AI、云平台与运维、数据库研发、硬件研发、芯片设计、交互与体验设计、产品与内容运营。
+
+移除旧 CrystalizedBall 组件，采用用户提供的 Strands 视觉。分类名直接显示在球体内；球体区域无可见方框，搜索、已保存理想 JD 入口和分类详情保留。
+
+Matter.js 提供二维圆形刚体、重力、碰撞、摩擦和鼠标推动/拖动。它是交互近似模拟，并非科研级物理仿真。拖动释放不误打开详情；键盘聚焦时固定球体以便激活。
+
+参考：[Matter.js Ball Pool 示例](https://github.com/liabru/matter-js/blob/master/examples/ballPool.js)、[Bodies 文档](https://brm.io/matter-js/docs/classes/Bodies.html)、[Body 文档](https://brm.io/matter-js/docs/classes/Body.html)。
+
+## 性能与可访问性
+
+- 仅为可见球体启动 Strands，最多 12 个同时运行；屏幕外显示静态球体，进入视野后启动。全页截图中的屏幕外球体因此是静态样式。
+- 减弱动态偏好、缺少 WebGL 时采用静态视觉；场地宽度小于 420px 时静态排列，方便触摸滚动和点击。
+- 物理世界休眠、页面隐藏或场地离屏后停止物理帧循环。搜索和改变尺寸时重建边界，离开页面时释放资源。
+
+## 招聘数据核验
+
+本轮增加 17 条具体岗位（此前待澄清时补充 10 条，随后为新分类补充 7 条），并将已有具身模型岗位归入机器人分类，沿用同一 ID，避免重复。
+
+合并当前官方快照后共 53 条唯一岗位、9 家公司：33 条最近核验可投，20 条待核验。**不代表全部岗位都面向应届生或仍在招聘**，页面保留招聘类型与状态筛选。可投核验超过 48 小时后降为待核验。
+
+两次定向官方核验回执：
+
+```json
+{"checkedAt":"2026-10-30T12:29:26.715Z","checked":10,"open":10,"closed":0,"unknown":0,"discovery":[]}
+{"checkedAt":"2026-10-30T12:34:11.053Z","checked":7,"open":7,"closed":0,"unknown":0,"discovery":[]}
+```
+
+每条来源链接、摘录范围和核验时间保存在 `src/additional-jobs.js`、`src/expanded-category-jobs.js` 与 `public/catalog/recruitment-status.json`。华为岗位需要选择意向才能查看具体要求，未编造其技术要求；OPPO 底层软件/多媒体岗位按真实职责分类，并保留交叉方向。
+
+## 验证结果
+
+- 构建成功。
+- 单元测试：87/87 通过。
+- Playwright：84/84 通过，覆盖 Chromium、Firefox、WebKit。
+- 专项覆盖：球内文字、无外框、重力/边界/碰撞、鼠标推动、拖动防误点、键盘进入详情、筛选重建、减弱动态、原有业务流程及窄屏无横向溢出。
+- 人工检查 1280px 桌面与 390px 窄屏截图；截图见同目录 `Strands桌面预览.png`、`Strands窄屏预览.png`。
+- 本地 `/api/health` 返回 `aiEnabled: false`。main 保持 `c540c717d8cae2dd195b16e7ed394975843c20c4`。

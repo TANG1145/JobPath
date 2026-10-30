@@ -13,7 +13,7 @@ const rows=[
 export const campusJobs=rows.map(([id,category,company,title,city,intent,source,experience,summary,eligibility,sourceUpdated])=>({id,category,categories:[category],company,title,city,intent,source,experience,summary,eligibility,sourceUpdated,checkedAt:'2026-10-30',verification:'官方来源已核验；状态以最近采集记录为准',hiringStatus:'unknown',officialExcerpt:false}));
 export const companies={
  '百度':{intro:'本次岗位来自百度文库、应用模型研发部及智能云等团队。',url:'https://talent.baidu.com/jobs/'},
- 'OPPO':{intro:'本次校招岗位围绕终端智能体、研发平台和算法测试。',url:'https://careers.oppo.com/campus'},
+ 'OPPO':{intro:'OPPO 官方校园招聘，覆盖软件、算法、设计等方向。',url:'https://careers.oppo.com/campus'},
  '哔哩哔哩':{intro:'本次实习岗位来自大语言模型研发方向。',url:'https://jobs.bilibili.com/'},
  '华为':{intro:'本次校园招聘覆盖软件研发等领域，需进一步选择岗位意向。',url:'https://career.huawei.com/cn/campus-recruitment'},
  '字节跳动':{intro:'本目录收录前端、测试与相关研发团队的校园招聘记录。',url:'https://jobs.bytedance.com/campus'},

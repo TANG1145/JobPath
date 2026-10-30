@@ -1,8 +1,0 @@
-{
-  "platform": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
-  "machine": "arm64",
-  "node": "v25.9.0",
-  "data": "synthetic only",
-  "aiEnabled": false,
-  "deployment": false
-}

@@ -1,0 +1,16 @@
+JobPath tb-dev unit / contract verification
+2026-10-30, Node 24.21.0, Windows
+
+$ npm test
+> node --test tests/*.test.js
+
+tests 70
+pass 70
+fail 0
+cancelled 0
+skipped 0
+duration_ms 256.0921
+
+Domains covered: application stages/rounds/history, AI contract and quota,
+catalog/jobs, backup validation, planning/roadmap, workflow matching/scheduling,
+IndexedDB revision writes (fake-indexeddb), drafts.

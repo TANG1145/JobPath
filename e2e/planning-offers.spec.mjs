@@ -1,20 +1,73 @@
-import {test,expect} from '@playwright/test';
-// Linux WebKit on shared CI takes longer for multi-dialog journeys; keep assertions and zero retries.
-test.setTimeout(process.env.CI ? 90000 : 30000);
-const nav=async(page,id)=>page.locator(`[data-page=${id}]`).click();
-async function preview(page,weeks){await page.locator('[data-action=plan]').click();await page.locator('[name=weeks]').selectOption(String(weeks));await page.getByRole('button',{name:'预览计划',exact:true}).click();await expect(page.getByRole('heading',{name:'确认计划差异',exact:true})).toBeVisible();}
-test('4/8周确认、取消、完成证据及跨周期重排',async({page},info)=>{
- await page.goto('/');await preview(page,8);await expect(page.locator('#modal')).toContainText('第 8 周');await page.locator('#cancel').click();await expect(page.locator('[data-task]')).toHaveCount(0);
- await preview(page,4);await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#modal')).not.toBeVisible();await expect(page.getByRole('heading',{name:'4 周预计路线'})).toBeVisible();await page.locator('[data-task]').first().click();await page.locator('[name=status]').selectOption('完成');await page.locator('[name=evidence]').fill('独立实现了最小页面，验证正常与边界输入。');await page.locator('[name=accepted]').check();await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#modal')).not.toBeVisible();
- await preview(page,8);await expect(page.locator('#modal')).toContainText('将保留 1 项已完成');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#modal')).not.toBeVisible();await page.reload();await expect(page.getByRole('heading',{name:'8 周预计路线'})).toBeVisible();await page.getByRole('button',{name:'查看证据',exact:true}).click();await expect(page.locator('[name=evidence]')).toHaveValue('独立实现了最小页面，验证正常与边界输入。');await page.locator('#cancel').click();await expect(page.getByText(/历史计划 2 版/)).toBeVisible();
- for(const width of [320,390,768]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);if(width===390){await page.getByRole('heading',{name:'8 周预计路线'}).scrollIntoViewIfNeeded();await page.screenshot({path:`test-results/plan-${info.project.name}.png`});}}
+import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+
+test('投递、轮次、Offer 与历史可恢复', async ({ page }) => {
+  await page.goto('/#/career');
+  await page.getByRole('button', { name: '+ 添加记录', exact: true }).click();
+  await page.locator('[name=title]').fill('合成前端实习');
+  await page.getByRole('button', { name: '保存', exact: true }).click();
+  await expect(page.locator('.app-card')).toHaveCount(1);
+
+  await page.locator('[data-stage]').first().selectOption('已投递');
+  await page.locator('[name=appliedDate]').fill('2026-10-30');
+  await page.locator('[name=reason]').fill('官网提交完成');
+  await page.getByRole('button', { name: '保存', exact: true }).click();
+  await expect(page.locator('.app-card')).toContainText('投递：2026-10-30');
+
+  await page.getByRole('button', { name: '添加轮次', exact: true }).click();
+  await page.locator('[name=name]').fill('第一轮技术面');
+  await page.locator('[name=date]').fill('2026-11-02');
+  await page.locator('[name=status]').selectOption('已安排');
+  await page.locator('[name=note]').fill('合成问题与准备清单');
+  await page.getByRole('button', { name: '保存', exact: true }).click();
+  await expect(page.locator('.app-card')).toContainText('轮次：1');
+  await page.locator('.app-history summary').click();
+  await expect(page.locator('.app-card')).toContainText('第一轮技术面');
+
+  await page.locator('[data-stage]').first().selectOption('Offer');
+  await page.getByRole('button', { name: '保存', exact: true }).click();
+  await expect(page.locator('.app-card')).toContainText('Offer');
+  await page.locator('[data-offer]').first().click();
+  await page.locator('[name=city]').fill('上海');
+  await page.locator('[name=compensation]').fill('月薪 10000 元，奖金待确认（合成测试）');
+  await page.locator('[name=questions]').fill('<img src=x onerror="window.offerXSS=1">');
+  await page.getByRole('button', { name: '保存', exact: true }).click();
+  await expect(page.locator('.offer-card')).toContainText('上海');
+  expect(await page.locator('img[src=x]').count()).toBe(0);
+  expect(await page.evaluate(() => window.offerXSS)).toBeUndefined();
+
+  await page.reload();
+  await expect(page.locator('.offer-card')).toContainText('上海');
+  await page.locator('.app-history summary').click();
+  await expect(page.locator('.app-card')).toContainText('已投递');
 });
-test('两份Offer条件、取消、阶段回退及备份恢复',async({page},info)=>{
- await page.goto('/');await nav(page,'career');await expect(page.locator('#offer-comparison')).toContainText('暂无已确认的 Offer');
- for(const title of ['合成甲 / 前端','合成乙 / 测试']){await page.locator('[data-action=application]').click();await page.locator('[name=title]').fill(title);await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#modal')).not.toBeVisible();await page.locator('[data-stage]').last().selectOption('Offer');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#modal')).not.toBeVisible();}
- await expect(page.locator('.offer-card')).toHaveCount(2);await page.locator('[data-offer]').first().click();await page.locator('[name=city]').fill('上海');await page.locator('[name=compensation]').fill('月薪 10000 元，奖金待确认（合成测试）');await page.locator('[name=questions]').fill('<img src=x onerror="window.offerXSS=1">');await page.locator('[name=deadline]').fill('2026-12-31');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#modal')).not.toBeVisible();
- await page.locator('[data-offer]').first().click();await page.locator('[name=city]').fill('不应保存');page.once('dialog',d=>d.accept());await page.locator('#cancel').click();await expect(page.locator('.offer-card').first()).toContainText('上海');expect(await page.evaluate(()=>window.offerXSS)).toBeUndefined();await expect(page.locator('img[src=x]')).toHaveCount(0);
- await page.locator('[data-stage]').first().selectOption('面试');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#modal')).not.toBeVisible();await expect(page.locator('.offer-card')).toHaveCount(1);await page.locator('[data-stage]').first().selectOption('Offer');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#modal')).not.toBeVisible();await expect(page.locator('.offer-card').first()).toContainText('10000');
- await nav(page,'settings');const pending=page.waitForEvent('download');await page.getByRole('button',{name:'↓ 导出完整备份',exact:true}).click();const file=await(await pending).path();page.once('dialog',d=>d.accept());await page.locator('#importfile').setInputFiles(file);await expect(page.locator('#toast')).toContainText('备份已恢复');await nav(page,'career');await expect(page.locator('.offer-card')).toHaveCount(2);await expect(page.locator('.offer-card').first()).toContainText('上海');
- for(const width of [320,390,768]){await page.setViewportSize({width,height:844});await page.locator('#offer-comparison').scrollIntoViewIfNeeded();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);if(width===390)await page.screenshot({path:`test-results/offer-${info.project.name}.png`});}
+
+test('备份导出、未来版本拒绝与恢复', async ({ page }) => {
+  await page.goto('/#/career');
+  await page.getByRole('button', { name: '+ 添加记录', exact: true }).click();
+  await page.locator('[name=title]').fill('备份测试岗位');
+  await page.getByRole('button', { name: '保存', exact: true }).click();
+  await page.goto('/#/settings');
+
+  const pending = page.waitForEvent('download');
+  await page.getByRole('button', { name: '导出备份', exact: true }).click();
+  const raw = await readFile(await (await pending).path());
+  const backup = JSON.parse(raw);
+  expect(backup.containsPersonalData).toBe(true);
+  expect(backup.generationNotice).toContain('AI');
+  expect(backup.data.applications).toHaveLength(1);
+  expect(raw.toString()).not.toContain('DEEPSEEK_API_KEY');
+
+  await page.locator('#importfile').setInputFiles({
+    name: 'future.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from('{"app":"jobpath","schemaVersion":99,"data":{}}')
+  });
+  await expect(page.locator('#toast')).toContainText('格式或版本');
+
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('#importfile').setInputFiles({ name: 'backup.json', mimeType: 'application/json', buffer: raw });
+  await expect(page.locator('#toast')).toContainText('备份已恢复');
+  await page.goto('/#/career');
+  await expect(page.locator('.app-card')).toHaveCount(1);
 });

@@ -1,0 +1,27 @@
+JobPath tb-dev frontend verification
+2026-10-30, Node 24.21.0, Windows
+
+$ npx playwright test --headed --workers=1
+Running 24 tests using 1 worker
+
+chromium (8 / 8)
+  ok  history-drafts: 编辑关闭提醒、草稿恢复与保存失败重试
+  ok  history-drafts: 双标签冲突保留正式记录，刷新后可恢复失败输入
+  ok  planning-offers: 投递、轮次、Offer 与历史可恢复
+  ok  planning-offers: 备份导出、未来版本拒绝与恢复
+  ok  workflows: 首访先选岗，生成计划、完成任务并保留目标
+  ok  workflows: 粘贴 JD、XSS 纯文本和来源 URL 校验
+  ok  workflows: 三档宽度无横向溢出，移动端底部导航可见
+  ok  workflows: AI 关闭时隐藏 AI 入口，核心页面不外发请求
+
+firefox (8 / 8)
+  same eight cases, all passed.
+
+webkit (8 / 8)
+  same eight cases, all passed.
+
+24 passed (56.3s)
+
+Note: workflows.spec.mjs installs a fixed Playwright clock (2026-10-30 14:00 +08:00)
+so the checked-in job snapshot remains current during the run. This is a test-only
+guard; the application-side time dependency is still listed as a known blocker.

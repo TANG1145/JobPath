@@ -1,88 +1,1073 @@
-import {stages,changeStage,validateApplication} from './applications.js';
-import {fields,restoreFields,readDraft,writeDraft,clearDrafts} from './drafts.js';
-import {roadmap,offerFields,validateOffer,validDate} from './planning.js';
-import {publicJobs,historicalJobs,jobState,catalogStats,snapshotJob} from './jobs.js';
-import {catalog,types,resourceFor} from './catalog.js';
-import {requirements,match,recommend,templates,schedule,safeUrl,today,weekly} from './workflow.js';
-import {writeRevision} from './storage.js';
-import {skills,plan,validateBackup} from './domain.js';
-const $=s=>document.querySelector(s),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const names={java:'Java 后端',web:'Web 前端',test:'测试开发'},initial=()=>({direction:'web',hours:8,tasks:[],jobs:[],applications:[],answers:['','','','',''],ratings:{}});let state=initial(),page='prep',db,saveText='正在连接本地存储';
-try{db=await new Promise((resolve,reject)=>{let r=indexedDB.open('jobpath-v1',1);r.onupgradeneeded=()=>r.result.createObjectStore('state');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});const saved=await new Promise((resolve,reject)=>{let r=db.transaction('state').objectStore('state').get('main');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});if(saved)state=validateBackup({app:'jobpath',schemaVersion:1,data:saved});saveText='LOCAL / 本机保存';}catch{saveText='临时模式 / 未持久保存';}
-let revision=state.revision||0,queue=Promise.resolve();
-async function save(){pendingSaves++;saveText='LOCAL / 正在保存';const snapshot=structuredClone(state);const operation=queue.then(async()=>{if(!db)throw Error('本地存储不可用，请导出备份');revision=await writeRevision(db,snapshot,revision);state.revision=revision;saveFailed=false;saveText='LOCAL / 已保存';});queue=operation.catch(()=>{});try{await operation}catch(e){saveFailed=true;saveText='保存失败 / 请备份';toast(e.message);throw e}finally{pendingSaves--;const label=document.querySelector('.footer span:last-child');if(label)label.textContent=saveText+' · 不保证跨设备同步';}}
-function event(type,id){state.events??=[];state.events.push({type,id,at:Date.now()});state.events=state.events.slice(-2000)}
-function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',3200)}
-const questions=['用一分钟介绍你自己，以及最能证明能力的项目。','解释一个你实际使用过的核心技术概念。','描述一次排查故障的过程，你怎样缩小问题范围？','你的项目如何处理异常输入和边界情况？','如果重做一次项目，你会改进什么？'];
-const resources={web:[['MDN Web 开发文档','https://developer.mozilla.org/zh-CN/docs/Learn_web_development','DOC / 中文 · 基础'],['React 官方教程','https://react.dev/learn','DOC / 英文 · 组件'],['TypeScript Handbook','https://www.typescriptlang.org/docs/handbook/intro.html','DOC / 英文 · 类型']],java:[['Java 学习入口','https://dev.java/learn/','DOC / 英文 · 语言'],['Spring Guides','https://spring.io/guides','DOC / 英文 · 实践'],['PostgreSQL 文档','https://www.postgresql.org/docs/','DOC / 英文 · SQL']],test:[['Python 官方教程','https://docs.python.org/zh-cn/3/tutorial/','DOC / 中文 · 语言'],['pytest 文档','https://docs.pytest.org/','DOC / 英文 · 测试'],['Playwright 文档','https://playwright.dev/docs/intro','DOC / 英文 · 自动化']]};
-function panel(label,body,cls=''){return `<section class="panel ${cls}"><div class="panel-label"><span>${label}</span><span>●</span></div>${body}</section>`}
-function render(){const done=state.tasks.filter(t=>t.status==='完成').length;$('#app').innerHTML=`<header><div class="brand"><div class="logo">JP</div><div><strong>启职 / JOBPATH</strong><p>CAREER NAVIGATION SYSTEM</p></div><div class="stripes"><i></i><i></i><i></i></div></div><div class="header-right">PERSONAL TERMINAL — 001<br><span class="led"></span>LOCAL SYSTEM ONLINE</div></header><div class="layout"><aside><div class="nav-title">NAV / 主控制模块</div><nav>${[['jobs','01','机会','OPPORTUNITIES'],['prep','02','备战','PREPARATION'],['career','03','求职','APPLICATIONS'],['settings','04','设置','SYSTEM']].map(([id,n,t,en])=>`<button data-page="${id}" class="${page===id?'active':''}"><b>${n}</b><div>${t}<span>${en}</span></div></button>`).join('')}</nav><div class="side-bottom"><span class="led"></span>独立航行模式<p>数据保存在此浏览器<br>建议定期导出备份</p><div class="badge">AI / 按需确认</div><div class="vent"></div></div></aside><main><div class="topline"><span>SYS / ${page.toUpperCase()}　:　启职控制台</span><span>V.0.7 / LOCAL WORKFLOW</span></div><div class="heading"><div><h1>${{prep:'备战控制台',jobs:'发现你的下一站',career:'求职行动记录',settings:'系统与个人配置'}[page]}</h1><span class="muted">${{prep:'目标已锁定。把准备，变成看得见的进展。',jobs:'从一个具体岗位开始，规划你的准备路线。',career:'每一次行动，都有下一步。',settings:'设定航向、时间与本地数据。'}[page]}</span></div><button data-action="${page==='jobs'?'jd':'profile'}">${page==='jobs'?'+ 录入私人 JD':'⚙ 调整画像'}</button></div>${page==='prep'?prep(done):page==='jobs'?jobs():page==='career'?career():settings()}<div class="footer"><span>JOBPATH ━━━ CAREER NAVIGATION SYSTEM</span><span>${saveText} · 不保证跨设备同步</span></div></main></div>`;bind();enhance();extraFeatures();}
-function prep(done){let total=state.tasks.length,pct=total?Math.round(done/total*100):0;return `<div class="grid"><div>${panel('01 / MISSION CONTROL',`<div class="screen"><div class="small">ACTIVE TRACK / 当前准备方向</div><div class="screen-row"><div><h2>${names[state.direction]}<br>能力准备航线<span class="amber">_</span></h2><p>${state.target?esc(state.target):'通用方向模板 · 可前往机会页绑定具体岗位'}</p></div><div><div class="big">${String(pct).padStart(2,'0')}<span style="font-size:16px">%</span></div><span class="small">任务完成度</span></div></div><div class="bar"><i style="width:${pct}%"></i></div><div class="phase"><span>01 方向探索</span><span class="current">● 02 技能备战</span><span>03 投递实践</span><span>04 面试复盘</span></div></div><div class="stats"><div class="stat"><span>WK / 每周时间</span><strong>${state.hours}<small> H</small></strong><span>预留 20% 机动时间</span></div><div class="stat"><span>LOG / 实践证据</span><strong>${String(done).padStart(2,'0')}</strong><span>用户自报 · 非系统认证</span></div><div class="stat"><span>APP / 求职行动</span><strong>${String(state.applications.length).padStart(2,'0')}</strong><span>学习与投递可以并行</span></div></div>`)}${panel('02 / NEXT ACTION',`<div class="row"><h2>当前 7 天行动队列</h2><button data-action="plan" class="primary">${total?'预览并重排计划':'生成 4/8 周计划'} ↗</button></div><p class="muted small">容量 ${Math.floor(state.hours*60*.8)} MIN / WEEK · 每项需要留下实践证据</p>${total?state.tasks.map((t,i)=>`<div class="task"><div class="row"><div><span class="small amber">TASK ${String(i+1).padStart(2,'0')} / ${esc(t.skill)}</span><h3 style="margin:8px 0">${esc(t.title)}</h3><span class="badge">${esc(t.status)}</span> <span class="muted small">${t.minutes} MIN · ${esc(t.date||'未排期')}</span></div><button data-task="${t.id}">${t.status==='完成'?'查看证据':'打开任务 →'}</button></div></div>`).join(''):'<div class="empty">队列待建立<br>根据每周可投入时间生成任务，从一次最小实践开始。</div>'}`)}</div><div>${panel('PWR / TIME ALLOCATION',`<div class="row"><div><h2>保持可持续的节奏</h2><p class="muted">每周 ${state.hours} 小时<br>为学习、项目与投递留出空间</p></div><div class="dial" aria-hidden="true"></div></div><button class="full" data-action="profile">设置时间预算　＋</button>`,'hardware')}${panel('03 / SKILL TELEMETRY',`<h2>准备差距</h2><p class="muted small">通用准备建议 / 自评不代表录用概率</p>${skills[state.direction].map(s=>`<div class="task row"><span>${s}</span><span class="amber">${state.ratings?.[s]===undefined?'待评估':`${state.ratings[s]} / 3`}</span></div>`).join('')}<button data-action="profile" class="full">校准技能自评 →</button>`)}${panel('04 / RESOURCE CHANNEL',`<h2>学习资料信号</h2><p class="muted small">候选入口 · 尚未完成人工发布审核</p>${resources[state.direction].map(([t,u,m])=>`<a class="resource" href="${u}" target="_blank" rel="noopener noreferrer">${t} ↗<small>${m}</small></a>`).join('')}`)}</div></div>`}
-function jobs(){return `${publicJobPanel()}<p class="notice">方向模板用于探索；官方岗位目录按核验快照展示。收藏后保存在本机，招聘条件和状态仍以官网为准。</p><div class="cards">${Object.entries(names).map(([d,n],i)=>panel(`TRACK / 0${i+1}`,`<span class="badge">方向模板 · 非真实职位</span><h2 style="margin:20px 0">${n}</h2><p class="muted">${skills[d].join(' / ')}</p><p>城市、薪资、招聘资格：待确认</p><button data-direction="${d}" class="${state.direction===d?'primary':''}">${state.direction===d?'当前方向':'选择方向'} →</button>`)).join('')}</div><h2 style="margin:30px 0 20px">私人岗位快照 / ${state.jobs.length}</h2><div class="filters"><label>筛选岗位<input id="job-search" placeholder="职位、公司、城市、方向"></label><label>资格筛选<select id="job-qualification"><option value="">全部资格</option><option>待确认</option><option>符合</option><option>不符合</option></select></label></div><p id="filter-empty" hidden>没有符合条件的岗位，请放宽筛选或录入 JD。</p>${state.jobs.length?state.jobs.map(j=>panel(j.publicId?'SNAPSHOT / 本地收藏':'PRIVATE / 用户录入',`<h2>${esc(j.title)}</h2><p>${esc(j.company)} · 来源与在招状态待本人核实</p><p>${esc(j.city||'城市待确认')} / ${esc(j.intent||'类型待确认')} / 资格：${esc(j.qualification||'待确认')} / ${j.expires&&j.expires<today()?'已过截止日期':'在招状态待确认'}</p>${j.source?`<a href="${esc(safeUrl(j.source))}" target="_blank" rel="noopener noreferrer">打开来源 ↗</a>`:''}<p style="white-space:pre-wrap">${esc(j.jd)}</p>${j.sourceNotes?`<p class="muted">其余要求摘要（非原文）：${esc(j.sourceNotes)}</p>`:''}<div class="filters"><button data-target="${j.id}">设为目标岗位</button><button data-apply="${j.id}">加入求职台账</button></div>`)).join(''):'<div class="empty">尚未录入岗位。点击右上方「录入私人 JD」建立你的第一个快照。</div>'}`}
-function career(){return `<div class="grid"><div>${panel('01 / APPLICATION LOG',`<div class="row"><h2>投递台账</h2><button data-action="application" class="primary">＋ 添加记录</button></div><p class="muted small">只有本人确认才记为已投递；打开招聘网站不会修改状态。</p>${state.applications.length?state.applications.map((a,i)=>`<div class="task"><h3>${esc(a.title)}</h3><label>当前阶段<select data-stage="${i}">${['收藏','准备','已投递','笔试','面试','Offer','拒绝','撤回'].map(x=>`<option ${a.stage===x?'selected':''}>${x}</option>`).join('')}</select></label><p>下一步：${esc(a.note)||'待补充'}</p><p>投递日期：${esc(a.appliedDate)||'未知 / 未记录'} · 下一步日期：${esc(a.date)||'未设置'}${a.date&&a.date<today()?' · 已过记录日期，请复核':''}</p><button data-editapp="${i}">编辑下一步</button> <button data-round="${i}">添加面试轮次</button><details class="application-history"><summary>轮次与阶段历史 / ${(a.rounds||[]).length} 轮</summary>${(a.rounds||[]).map((r,n)=>`<div class="task"><h3>${esc(r.name)}</h3><p>${esc(r.date||'日期待定')} · ${esc(r.status)}</p><p>${esc(r.note)}</p><button data-round="${i}" data-round-index="${n}">编辑轮次</button></div>`).join('')}<h3>阶段历史</h3>${(a.history||[]).map(h=>`<p>${esc(new Date(h.at).toLocaleString())} / ${esc(h.from)} → ${esc(h.to)}<br>${esc(h.reason||'未填写说明')}</p>`).join('')||'<p>暂无已记录的变更；旧版历史不补造。</p>'}</details></div>`).join(''):'<div class="empty">还没有行动记录。可以从收藏一个岗位开始。</div>'}`)}${panel('02 / PRACTICE TERMINAL',`<h2>五题文字练习</h2><p class="muted">静态自查可用 · AI 需邀请与发送确认</p>${questions.map((q,i)=>`<label>0${i+1} / ${q}<textarea data-answer="${i}" placeholder="记录你的回答，自动保存…">${esc(state.answers[i])}</textarea></label>`).join('')}<div class="notice">自查要点：说明情境与个人贡献 → 描述具体行动 → 给出验证证据 → 反思限制。不要补造指标或经历。</div>`)}</div><div>${panel('03 / RESUME CHECK',`<h2>简历事实检查</h2>${['教育时间与经历准确','项目与目标岗位相关','明确说明个人贡献','指标具有可核实依据','作品链接已经本人检查'].map((t,i)=>`<label class="check"><input type="checkbox" data-check="${i}" ${state.checks?.[i]?'checked':''}>${t}</label>`).join('')}`)}${panel('04 / DEBRIEF',`<h2>当前进展复盘</h2><p>已完成 ${state.tasks.filter(t=>t.status==='完成').length} 项任务，记录 ${state.applications.length} 条求职行动。</p><p class="muted">${state.tasks.some(t=>t.status==='完成')?'下一步：从成果中选一个案例，练习说明你的个人贡献。':'下一步：完成一个最小实践，记录你做了什么以及如何验证。'}</p><span class="badge">基于当前本地记录 · 非 AI 结论</span>`)}</div></div>`}
-function settings(){return `<div class="grid"><div>${panel('01 / LOCAL DATA',`<h2>数据备份与恢复</h2><p>个人数据保存于当前浏览器 IndexedDB。清理浏览器或换设备可能丢失数据，请定期导出。备份为明文 JSON，请妥善保管。</p><div class="filters"><button data-action="export" class="primary">↓ 导出完整备份</button><button data-action="import">↑ 导入备份</button><input type="file" id="importfile" accept=".json" hidden></div>`)}${panel('02 / MODULE STATUS',`<h2>本地交互初版</h2><p><span class="led"></span>画像、私人 JD、容量计划、证据、文字练习、台账、本地备份</p><p class="notice">AI 模块关闭。当前不会上传 JD、回答或个人信息。AI 网关已接入，真实调用默认关闭。已加入官方岗位核验快照；视频已替换为官方MP4直链；项目请按修复说明运行，资源逐项显示核验范围。未部署公网。</p>`)}${panel('03 / RESET',`<h2>清空本机个人数据</h2><p>仅清除此浏览器的个人记录。此操作不可撤销，建议先导出备份。</p><button data-action="clear">清空个人数据…</button>`)}</div><div>${panel('SYSTEM SPECIFICATION',`<h2>JOBPATH / 001</h2><p>卡带未来主义控制台<br>LOCAL FIRST<br>MANUAL CONTROL<br>AI DISABLED</p><div class="vent"></div>`,'hardware')}</div></div>`}
-let editSession=null,pendingSaves=0,saveFailed=false;
-const draftStorage={getItem:k=>sessionStorage.getItem(k),setItem:(k,v)=>sessionStorage.setItem(k,v),removeItem:k=>sessionStorage.removeItem(k)};
-const dropDraft=key=>{try{draftStorage.removeItem('jobpath-draft:'+key)}catch{}};
-const dropAllDrafts=()=>{try{clearDrafts(sessionStorage)}catch{}};
-window.addEventListener('beforeunload',e=>{if(editSession?.dirty()||pendingSaves||saveFailed){editSession?.capture();e.preventDefault();e.returnValue='';}});
-function modal(title,body,submit,draftKey=title){
- $('#modal').innerHTML=`<form id="form"><div class="row"><h2>${esc(title)}</h2><button type="button" id="close">✕</button></div>${body}<p id="draft-status" role="status"></p><div class="filters"><button type="button" id="restore-draft" hidden>恢复未保存草稿</button><button type="button" id="discard-draft" hidden>丢弃草稿</button></div><div class="filters"><button class="primary" type="submit">确认并保存</button><button type="button" id="cancel">取消</button></div></form>`;
- const form=$('#form'),dialog=$('#modal');let baseline='',ready=false;
- const snapshot=()=>({fields:fields(form),extra:form.readDraftExtra?.()??null});
- const session={dirty:()=>ready&&JSON.stringify(snapshot())!==baseline,capture:()=>{if(!session.dirty())return;try{writeDraft(draftStorage,draftKey,{...snapshot(),at:Date.now()});$('#draft-status').textContent='未提交；草稿仅保留在本标签页，重新打开此编辑窗口可恢复；关闭标签页可能丢失，不代替备份。'}catch{$('#draft-status').textContent='草稿未能保存，请复制输入内容后重试。'}}};editSession=session;
- const close=()=>{if(form.dataset.saving)return;if(session.dirty()&&!confirm('内容尚未正式保存。关闭编辑并保留本标签页草稿？'))return;session.capture();editSession=null;dialog.close();};$('#close').onclick=$('#cancel').onclick=close;dialog.oncancel=e=>{e.preventDefault();close()};
- queueMicrotask(()=>{if($('#form')!==form)return;baseline=JSON.stringify(snapshot());ready=true;const d=readDraft(draftStorage,draftKey);if(d){$('#restore-draft').hidden=$('#discard-draft').hidden=false;$('#draft-status').textContent='发现此编辑窗口的未提交草稿；可恢复或丢弃。';}$('#restore-draft').onclick=()=>{const d=readDraft(draftStorage,draftKey);if(!d)return;form.restoreDraftExtra?.(d.extra);restoreFields(form,d.fields);$('#draft-status').textContent='已恢复草稿，请核对后确认保存；未修改正式记录。';};$('#discard-draft').onclick=()=>{dropDraft(draftKey);$('#restore-draft').hidden=$('#discard-draft').hidden=true;$('#draft-status').textContent='已丢弃暂存草稿；当前输入仍需确认保存。';};form.addEventListener('input',session.capture);form.addEventListener('change',session.capture);form.addEventListener('click',e=>{if(e.target.id==='add-requirement'||e.target.hasAttribute('data-remove'))queueMicrotask(session.capture)});});
- form.onsubmit=async e=>{e.preventDefault();if(form.dataset.saving)return;form.dataset.saving='true';form.querySelectorAll('button').forEach(b=>b.disabled=true);const before=structuredClone(state);try{const data=new FormData(form);form.beforeCommit?.(data);await submit(data);await save();dropDraft(draftKey);editSession=null;dialog.close();render();toast('操作已完成')}catch(err){state=before;session.capture();let error=$('#form-error');if(!error){error=document.createElement('p');error.id='form-error';error.className='notice';error.setAttribute('role','alert');form.append(error)}error.textContent=err.message}finally{delete form.dataset.saving;form.querySelectorAll('button').forEach(b=>b.disabled=false)}};
- dialog.showModal();
-}
+import { changeStage, validateApplication } from './applications.js';
+import { fields, restoreFields, readDraft, writeDraft, clearDrafts } from './drafts.js';
+import { roadmap, offerFields, validateOffer, validDate } from './planning.js';
+import { publicJobs, snapshotJob } from './jobs.js';
+import { resourceFor } from './catalog.js';
+import { templates, safeUrl, today } from './workflow.js';
+import { writeRevision } from './storage.js';
+import { skills, validateBackup } from './domain.js';
+import { esc } from './ui/components.js';
+import { names, opportunities, prepare, career, settings, roadmapView } from './ui/views.js';
 
-async function saveInline(key,value){if(key==='legacy-offer')state.offer=value;else state.answers[Number(key.slice(7))]=value;try{writeDraft(draftStorage,key,{fields:[{key:'text',type:'textarea',value}],at:Date.now()})}catch{toast('文字草稿未能暂存，请保留输入或导出备份')}try{await save();const latest=key==='legacy-offer'?state.offer:state.answers[Number(key.slice(7))];if(latest===value)dropDraft(key)}catch{}}
-function recoverInlineDrafts(){for(const key of [...state.answers.map((_,i)=>'answer-'+i),'legacy-offer']){const d=readDraft(draftStorage,key);if(!d)continue;const input=key==='legacy-offer'?$('#offer'):document.querySelector(`[data-answer="${key.slice(7)}"]`);if(!input)continue;const b=document.createElement('button');b.textContent='恢复未保存文字';b.onclick=async()=>{const value=d.fields[0]?.value;if(typeof value!=='string')return;input.value=value;await saveInline(key,value);if(!saveFailed)b.remove()};input.after(b);}}
+const $ = (selector) => document.querySelector(selector);
+const APP_VERSION = '0.7.0';
+const ROUTES = ['opportunities', 'prepare', 'career', 'settings'];
+const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
 
-function profile(){modal('校准个人画像',`<label>准备方向<select name="direction">${Object.entries(names).map(([d,n])=>`<option value="${d}" ${d===state.direction?'selected':''}>${n}</option>`).join('')}</select></label><label>每周可投入小时（0—80）<input name="hours" type="number" min="0" max="80" value="${state.hours}" required></label><p class="muted">0 未接触 / 1 跟随教程 / 2 独立完成 / 3 解释和扩展</p>${[...new Set([...skills[state.direction],...(state.jobs.find(j=>j.id===state.targetId)?.requirements||[]).flatMap(r=>r.skills)])].map(s=>`<label>${esc(s)}<select name="skill-${esc(s)}"><option value="">未知 / 待评估</option>${[0,1,2,3].map(n=>`<option value="${n}" ${state.ratings?.[s]===n?'selected':''}>${n}</option>`).join('')}</select></label>`).join('')}<p class="muted">更换方向保留原有任务与证据。保存后可再次校准新方向技能。</p>`,f=>{if(state.direction!==f.get('direction')){state.target='';state.targetId=null;}state.direction=f.get('direction');state.hours=Number(f.get('hours'));state.ratings??={};for(const [k,v]of f)if(k.startsWith('skill-')){if(v==='')delete state.ratings[k.slice(6)];else state.ratings[k.slice(6)]=Number(v)}})}
-function application(j,index){let a=index!==undefined?state.applications[index]:{title:j?.title||'',note:'',date:''};modal('记录求职行动',`<label>公司 / 岗位<input name="title" required maxlength="150" value="${esc(a.title)}"></label><label>投递日期（未知可留空）<input type="date" name="appliedDate" value="${esc(a.appliedDate||'')}"></label><p>填写日期不会自动标记已投递；请另行确认阶段。</p><label>下一步行动<input name="note" maxlength="500" value="${esc(a.note)}"></label><label>下一步日期<input type="date" name="date" value="${esc(a.date)}"></label>`,f=>{const next=validateApplication({...a,...Object.fromEntries(f),id:a.id||crypto.randomUUID(),stage:a.stage||'收藏',jobId:j?.id||a.jobId||null});if(index!==undefined)state.applications[index]=next;else state.applications.push(next)},`application:${a.id??index??j?.id??'new'}`)}
-function editRound(index,roundIndex){const a=state.applications[index],r=a.rounds?.[roundIndex]||{name:'',date:'',status:'待安排',note:''};modal('记录面试轮次',`<p>${esc(a.title)} · 轮次不会自动改变申请阶段。</p><label>轮次名称<input name="name" required maxlength="100" value="${esc(r.name)}" placeholder="一面 / 技术面 / HR面"></label><label>轮次日期<input name="date" type="date" value="${esc(r.date)}"></label><label>轮次状态<select name="status">${['待安排','已安排','已完成','取消'].map(v=>`<option ${v===r.status?'selected':''}>${v}</option>`).join('')}</select></label><label>问题、反馈与下一步<textarea name="note" maxlength="4000">${esc(r.note)}</textarea></label>`,f=>{const current=state.applications[index],rounds=structuredClone(current.rounds||[]),next={...Object.fromEntries(f),id:r.id||crypto.randomUUID()};if(roundIndex===undefined)rounds.push(next);else rounds[roundIndex]=next;state.applications[index]=validateApplication({...current,rounds});event('interview_round',current.id||String(index))},`round:${a.id||index}:${r.id||'new'}`)}
-function stageDialog(index,next){const a=state.applications[index];if(a.stage===next)return;modal('确认求职阶段',`<p>${esc(a.title)}：${esc(a.stage)} → ${esc(next)}</p><p>请确认这是真实发生的求职动作或结果。回退也会保留历史，不会删除Offer条件。</p>${next==='已投递'?`<label>实际投递日期（未知可留空）<input type="date" name="appliedDate" value="${esc(a.appliedDate||'')}"></label>`:''}<label>变更说明（可选）<textarea name="reason" maxlength="1000"></textarea></label>`,f=>{state.applications[index]=changeStage(state.applications[index],next,{reason:f.get('reason'),appliedDate:f.get('appliedDate')??a.appliedDate??''});event('application_stage',a.id||String(index))},`stage:${a.id||index}:${next}`)}
+const initial = () => ({
+  direction: 'web',
+  hours: 8,
+  tasks: [],
+  jobs: [],
+  applications: [],
+  answers: ['', '', '', '', ''],
+  ratings: {},
+  events: [],
+  checks: {}
+});
 
-function bind(){document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{if(saveFailed&&!confirm('上次保存失败。切换页面前建议复制内容或导出备份，仍继续？'))return;page=b.dataset.page;render()});document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>actions[b.dataset.action]?.());document.querySelectorAll('[data-direction]').forEach(b=>b.onclick=async()=>{state.direction=b.dataset.direction;state.target='';state.targetId=null;await save();page='prep';render()});document.querySelectorAll('[data-target]').forEach(b=>b.onclick=async()=>{let j=state.jobs.find(j=>j.id===b.dataset.target);state.target=j.title;state.targetId=j.id;state.direction=j.direction;await save();page='prep';render()});document.querySelectorAll('[data-apply]').forEach(b=>b.onclick=()=>{let j=state.jobs.find(j=>j.id===b.dataset.apply);if(state.applications.some(a=>a.jobId===j.id)){toast('该岗位已有台账记录');return}application(j)});document.querySelectorAll('[data-editapp]').forEach(b=>b.onclick=()=>application(null,Number(b.dataset.editapp)));document.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>{const t=state.tasks.find(t=>t.id===b.dataset.task);modal('任务 / '+t.skill,`<p>${esc(t.title)}</p><p>${esc(t.acceptance||'完成可复现的实践并记录个人贡献。')}</p><p>学习入口（候选）：${resourceFor(t.skill,state.direction).map(r=>`<a href="${r.audit?.videoUrl||r.url}" target="_blank" rel="noopener noreferrer">${r.title} (${types[r.type]})</a>`).join(' · ')}</p><p class="notice">验收：提供一个可复现的实例，说明个人实现与验证过程。完成为用户自报，不代表系统通过测试。</p><label>预计分钟（1—90）<input name="minutes" type="number" min="1" max="90" step="1" required value="${t.minutes}" ${t.status==='完成'?'readonly':''}></label><label>任务状态<select name="status">${['待做','进行中','完成','暂缓'].map(s=>`<option ${s===t.status?'selected':''}>${s}</option>`).join('')}</select></label><label>成果证据 / 我做了什么、如何验证、遇到的问题<textarea name="evidence" maxlength="4000">${esc(t.evidence)}</textarea></label><label class="check"><input type="checkbox" name="accepted" ${t.status==='完成'?'checked':''}>我已完成实践并检查验收要求</label>`,f=>{const t=state.tasks.find(x=>x.id===b.dataset.task);if(f.get('status')==='完成'&&(!f.get('accepted')||f.get('evidence').trim().length<10))throw Error('完成任务需要勾选验收并填写至少 10 字的证据');if(t.status!=='完成'&&f.get('status')==='完成')event('task_completed',t.id);const minutes=Number(f.get('minutes'));if(!Number.isInteger(minutes)||minutes<1||minutes>90)throw Error('估时应为1—90分钟');t.minutes=minutes;t.status=f.get('status');t.evidence=f.get('evidence');t.completedAt=t.status==='完成'?Date.now():null},'task:'+t.id)});document.querySelectorAll('[data-round]').forEach(b=>b.onclick=()=>editRound(Number(b.dataset.round),b.dataset.roundIndex===undefined?undefined:Number(b.dataset.roundIndex)));document.querySelectorAll('[data-stage]').forEach(el=>el.onchange=()=>{const next=el.value;el.value=state.applications[el.dataset.stage].stage;stageDialog(Number(el.dataset.stage),next)});document.querySelectorAll('[data-answer]').forEach(t=>t.oninput=()=>{saveInline('answer-'+t.dataset.answer,t.value)});document.querySelectorAll('[data-check]').forEach(t=>t.onchange=()=>{state.checks??={};state.checks[t.dataset.check]=t.checked;save().catch(()=>{})});if($('#importfile'))$('#importfile').onchange=importFile;}
-const actions={profile,application:()=>application(),jd:()=>modal('录入私人岗位 JD',`<label>职位名称<input name="title" required maxlength="100"></label><label>公司<input name="company" required maxlength="100"></label><label>所属方向<select name="direction">${Object.entries(names).map(([d,n])=>`<option value="${d}">${n}</option>`).join('')}</select></label><label>JD 原文 / 明确要求<textarea name="jd" required maxlength="10000" placeholder="粘贴原文，保留要求和资格信息；不进行自动推断。"></textarea></label><p class="muted">本地手动确认模式，不调用 AI，不自动验证在招状态。</p>`,f=>state.jobs.push({id:crypto.randomUUID(),...Object.fromEntries(f)})),plan:async()=>{let used=state.tasks.reduce((sum,t)=>sum+t.minutes,0),available=Math.max(0,Math.floor(state.hours*60*.8)-used);let tasks=plan(state.direction,available/48);if(!tasks.length){toast('当前剩余容量不足 60 分钟，请调整预算；现有任务已保留');return}if(!confirm(`将添加 ${tasks.length} 项任务，共 ${tasks.length*60} 分钟，保留已有任务和证据。确认建立？`))return;state.tasks.push(...tasks);await save();render()},export:()=>{let blob=new Blob([JSON.stringify({app:'jobpath',schemaVersion:1,exportedAt:new Date().toISOString(),data:state},null,2)],{type:'application/json'});let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jobpath-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('备份已导出，请妥善保管')},import:()=>$('#importfile').click(),clear:async()=>{if(!confirm('确定清空所有本地个人数据？请先导出备份。'))return;const previous=state;state=initial();try{await save();dropAllDrafts();saveFailed=false;render()}catch{state=previous}}};
-async function importFile(e){try{const file=e.target.files[0];if(!file)return;if(file.size>2*1024*1024)throw Error('文件超过 2MB');const raw=await file.text();if(/"(?:__proto__|constructor|prototype)"\s*:/.test(raw))throw Error('备份包含不允许的字段');const next=validateBackup(JSON.parse(raw));if(!confirm(`将覆盖当前数据：${next.jobs.length} 个岗位、${next.tasks.length} 个任务、${next.applications.length} 条申请。请先导出当前备份，确认继续？`))return;const previous=state;state=next;try{await save()}catch(error){state=previous;throw error}dropAllDrafts();render();toast('备份已恢复')}catch(err){toast(err.message)}}
-function enhance(){const main=$('main');if(page==='prep'){const job=state.jobs.find(j=>j.id===state.targetId),m=match(job?.requirements||[],state.ratings||{});const section=document.createElement('section');section.innerHTML=panel('05 / JD REQUIREMENTS',`<h2>目标岗位要求与差距</h2><p>${job?esc(job.title):'尚未绑定岗位，请前往机会页选择。'}</p><p class="muted">${job?.requirementsComplete===false?'仅摘录部分要求，不能代表完整JD；':''}已录入要求自评覆盖 ${Math.round(m.coverage*100)}% · ${m.score===null||job?.requirementsComplete===false?'信息不足或仅有摘录，不展示总分':`已知项匹配 ${m.score}/100（非录用概率）`}</p>${m.rows.map(r=>`<div class="task"><span class="badge">${r.kind==='required'?'A 必需':'B 优先'} / ${r.logic==='any'?'任一即可':'需全部达标'}</span><h3>${esc(r.skills.join(r.logic==='any'?' 或 ':' + '))} · 目标 ${r.level}</h3><p>原文依据：${esc(r.quote)}</p><p>${r.met?'已达自评目标':r.coverage<1?'含待评估技能':'存在差距，需实践补齐'}</p></div>`).join('')}<p class="muted">C 通用准备建议：右侧方向技能模板；不计入 JD 匹配。</p>`)+panel('06 / PLAN BACKLOG',`<h2>待办与后续路线</h2><p>${(state.backlog||[]).length} 项暂未排入；不承诺在截止前全部完成。</p>${(state.backlog||[]).map(t=>`<p>${esc(t.title)} · ${t.minutes} MIN · ${esc(t.reason)}</p>`).join('')}${roadmapView(state.activePlan)}<p>历史计划 ${(state.plans||[]).length} 版；已完成任务与证据保留。</p>${(state.plans||[]).map((p,i)=>`<details><summary>归档计划 ${i+1} / ${new Date(p.createdAt).toLocaleDateString()}</summary>${p.tasks.map(t=>`<p>${esc(t.title)} · ${esc(t.status)}<br>${esc(t.evidence)}</p>`).join('')}</details>`).join('')}`);main.insertBefore(section,$('.footer'));}
-if(page==='jobs'){const filter=()=>{let count=0;document.querySelectorAll('[data-target]').forEach(b=>{const j=state.jobs.find(j=>j.id===b.dataset.target),q=$('#job-search').value.toLowerCase(),qual=$('#job-qualification').value,show=[j.title,j.company,j.city,names[j.direction]].join(' ').toLowerCase().includes(q)&&(!qual||(j.qualification||'待确认')===qual);b.closest('.panel').hidden=!show;if(show)count++});$('#filter-empty').hidden=count>0};$('#job-search').oninput=filter;$('#job-qualification').onchange=filter;document.querySelectorAll('[data-target]').forEach(b=>{const j=state.jobs.find(j=>j.id===b.dataset.target);const e=document.createElement('button');e.textContent='编辑要求与来源';e.onclick=()=>editJob(j);b.parentElement.append(e)});const e=document.createElement('section');e.innerHTML=panel('RULE / EXPLAINABLE RECOMMENDATION',`<h2>方向建议与依据</h2>${Object.entries(names).map(([d,n])=>{const r=recommend(d,state.ratings||{},state.interests?.[d],state.projectEvidence);return `<p>${n}：${r.score===null?'信息不足，仅供探索':`规则建议 ${r.score}/100`} · 覆盖 ${Math.round(r.coverage*100)}%<br><span class="muted">依据：已回答技能达标程度、方向兴趣、项目证据自报；未知项不计为零。</span></p>`}).join('')}`);main.insertBefore(e,$('.footer'));}
-if(page==='career'){offerPanel();const w=weekly(state.events||[]);const e=document.createElement('section');e.innerHTML=panel('07 / WEEKLY REVIEW',`<h2>最近 7 天复盘</h2><p>完成事件 ${w.completed} 次 · 求职阶段变更 ${w.applications} 次</p><p>阻塞：${state.tasks.filter(t=>t.status==='暂缓').length} 项任务暂缓。</p><button id="review">记录面试复盘与补缺任务</button><p>${esc(state.review||'暂无复盘')}</p><h3>旧版 Offer 备注（保留）</h3><p>仅整理本人确认的事实，不判断合同或录用结果。</p><textarea id="offer" placeholder="岗位内容、城市、薪酬结构、试用期、学习机会、截止日期和待确认事项">${esc(state.offer||'')}</textarea>`);main.insertBefore(e,$('.footer'));recoverInlineDrafts();$('#offer').onchange=()=>{saveInline('legacy-offer',$('#offer').value)};$('#review').onclick=()=>modal('面试复盘',`<label>遇到的问题与验证计划<textarea name="review" required maxlength="4000">${esc(state.review||'')}</textarea></label><label>补缺任务标题（可选）<input name="task" maxlength="150"></label>`,f=>{state.review=f.get('review');if(f.get('task').trim()){state.tasks.push({id:crypto.randomUUID(),skill:'面试复盘',jobId:state.targetId||null,title:f.get('task'),minutes:30,status:'待做',evidence:'',date:'',key:crypto.randomUUID()});event('review_task','')}event('review','')});}}
-function editJob(j){let draft=structuredClone(j.requirements||[]);modal('岗位要求 / 可视化编辑',`<label>官方来源 URL<input name="source" value="${esc(j.source||'')}"></label><label>城市<input name="city" value="${esc(j.city||'')}"></label><label>招聘类型<select name="intent">${['待确认','实习','校招'].map(x=>`<option ${j.intent===x?'selected':''}>${x}</option>`).join('')}</select></label><label>资格条件原文<input name="eligibility" value="${esc(j.eligibility||'')}"></label><label>资格核对<select name="qualification">${['待确认','符合','不符合'].map(x=>`<option ${j.qualification===x?'selected':''}>${x}</option>`).join('')}</select></label><label>截止日期<input type="date" name="expires" value="${esc(j.expires||'')}"></label><div class="notice">选择必需或优先、全部或任一技能；证据必须复制自下方原文。保存前不会覆盖岗位。</div><div id="requirement-rows"></div><button type="button" id="add-requirement">＋ 新增要求</button><label>原始 JD / 可补充官方全文<textarea name="jd" required maxlength="10000">${esc(j.jd)}</textarea></label><p class="muted">${esc(j.sourceNotes||'')}</p>`,f=>{const req=draft.map(r=>{if(!r.skills.length||!r.quote.trim()||!f.get('jd').includes(r.quote))throw Error('每条要求必须选择技能，并填写 JD 原文中的证据');return r});const source=safeUrl(f.get('source'));Object.assign(state.jobs.find(x=>x.id===j.id),Object.fromEntries(f),{requirements:req,source,checkedAt:Date.now()});event('job_confirmed',j.id)},'job:'+j.id);
-function rows(){$('#requirement-rows').innerHTML=draft.map((r,i)=>`<fieldset class="requirement-row"><legend>要求 ${i+1}</legend><div class="filters"><label>要求性质<select data-r="${i}" data-field="kind"><option value="required" ${r.kind==='required'?'selected':''}>必需</option><option value="preferred" ${r.kind==='preferred'?'selected':''}>优先</option></select></label><label>技能关系<select data-r="${i}" data-field="logic"><option value="all" ${r.logic==='all'?'selected':''}>全部满足</option><option value="any" ${r.logic==='any'?'selected':''}>任一满足</option></select></label><label>目标层级<select data-r="${i}" data-field="level">${[1,2,3].map(n=>`<option ${r.level===n?'selected':''}>${n}</option>`).join('')}</select></label></div><div class="skill-picker">${[...new Set([...Object.values(skills).flat(),'Vue','Playwright',...r.skills])].map(s=>`<label class="check"><input type="checkbox" data-skill="${esc(s)}" data-r="${i}" ${r.skills.includes(s)?'checked':''}>${esc(s)}</label>`).join('')}</div><label>原文证据<textarea data-r="${i}" data-field="quote" maxlength="300">${esc(r.quote)}</textarea></label><button type="button" data-remove="${i}">移除此要求</button></fieldset>`).join('');$('#requirement-rows').querySelectorAll('[data-field]').forEach(el=>el.oninput=()=>{draft[Number(el.dataset.r)][el.dataset.field]=el.dataset.field==='level'?Number(el.value):el.value});$('#requirement-rows').querySelectorAll('[data-skill]').forEach(el=>el.onchange=()=>{let r=draft[Number(el.dataset.r)];r.skills=el.checked?[...r.skills,el.dataset.skill]:r.skills.filter(s=>s!==el.dataset.skill)});$('#requirement-rows').querySelectorAll('[data-remove]').forEach(el=>el.onclick=()=>{draft.splice(Number(el.dataset.remove),1);rows()});}$('#add-requirement').onclick=()=>{if(draft.length>=10){toast('最多 10 条要求');return}draft.push({kind:'required',logic:'all',level:2,skills:[],quote:''});rows()};rows();$('#form').readDraftExtra=()=>structuredClone(draft);$('#form').restoreDraftExtra=value=>{if(Array.isArray(value)){draft=structuredClone(value);rows()}};}
-const oldProfile=actions.profile;
-actions.profile=()=>{profile();const form=$('#form'),box=document.createElement('div');box.innerHTML=`<label>毕业年月<input name="graduation" type="month" value="${esc(state.graduation||'')}"></label><label>求职类型<select name="intent"><option>待确认</option><option ${state.intent==='实习'?'selected':''}>实习</option><option ${state.intent==='校招'?'selected':''}>校招</option></select></label><label>目标城市<input name="cities" value="${esc(state.cities||'')}"></label><label>准备截止日期<input type="date" name="deadline" value="${esc(state.deadline||'')}"></label><p>可投入日期</p>${['日','一','二','三','四','五','六'].map((d,i)=>`<label class="check"><input type="checkbox" name="day" value="${i}" ${(state.days||[0,1,2,3,4,5,6]).includes(i)?'checked':''}>周${d}</label>`).join('')}${Object.entries(names).map(([d,n])=>`<label>${n} 兴趣<select name="interest-${d}"><option value="">未知</option>${[0,1,2,3,4].map(i=>`<option ${state.interests?.[d]===i?'selected':''}>${i}</option>`).join('')}</select></label>`).join('')}<label>已有可复查项目证据<select name="projectEvidence"><option value="">未回答</option><option value="0" ${state.projectEvidence===0?'selected':''}>明确没有</option><option value="1" ${state.projectEvidence===1?'selected':''}>有（自报）</option></select></label>`;form.insertBefore(box,form.querySelector('.filters'));form.beforeCommit=f=>{state.graduation=f.get('graduation');state.intent=f.get('intent');state.cities=f.get('cities');state.deadline=f.get('deadline');state.days=f.getAll('day').map(Number);state.interests={};for(const d of Object.keys(names))if(f.get('interest-'+d)!=='')state.interests[d]=Number(f.get('interest-'+d));state.projectEvidence=f.get('projectEvidence')===''?null:Number(f.get('projectEvidence'));}};
-function roadmapView(p){if(!p)return '<p>尚未建立路线；选择 4 或 8 周预览真实容量和预计任务。</p>';return `<h3>${p.weeks} 周预计路线</h3><p>开始 ${esc(p.start)} · 后续周为预计概览，只有第 1 周写入行动队列。到下一周请再次预览并确认，将待办重排为新的 7 天。空余容量不代表需要填满课程。</p>${p.rows.map(r=>`<details class="task"><summary>第 ${r.number} 周 / ${r.start}—${r.end} · ${r.used} / ${r.capacity} MIN</summary><p>保留已完成 ${r.spent} 分钟；预计 ${r.tasks.length} 项。${p.deadline&&r.end>p.deadline?'部分或全部日期超过截止，不安排超期任务。':''}</p>${r.tasks.map(t=>`<p>${esc(t.date)} · ${esc(t.title)} · ${t.minutes} MIN</p>`).join('')||'<p>没有待排任务或可用容量；可自行复盘、整理证据和准备投递。</p>'}</details>`).join('')}<p class="notice">周期内仍有 ${p.backlog.length} 项未排入。${p.backlog.length?'请缩小目标、增加可用时间或延后截止；不会删除先修要求来宣称可完成。':'预计安排不等于已完成或达到岗位资格。'}</p>`;}
-actions.plan=()=>{
- modal('设置计划周期',`<label>预计周期<select name="weeks"><option value="4">4 周</option><option value="8" ${state.activePlan?.weeks===8?'selected':''}>8 周</option></select></label><label>开始日期<input name="start" type="date" value="${today()}" required></label><p>按画像中的每周 ${state.hours} 小时、可用日和截止日期计算。下一步先预览，最后确认才保存。</p>`,()=>{});
- $('#form button[type=submit]').textContent='预览计划';$('#form').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);try{previewPlan(Number(f.get('weeks')),f.get('start'))}catch(err){toast(err.message)}};
+let state = initial();
+let page = 'opportunities';
+let db = null;
+let revision = 0;
+let saveText = '正在连接本地存储';
+let saveFailed = false;
+let pendingSaves = 0;
+let queue = Promise.resolve();
+let aiEnabled = false;
+let appVersion = APP_VERSION;
+let pendingNav = '';
+let lastFocused = null;
+let editSession = null;
+
+const draftStorage = {
+  getItem: (key) => sessionStorage.getItem(key),
+  setItem: (key, value) => sessionStorage.setItem(key, value),
+  removeItem: (key) => sessionStorage.removeItem(key)
 };
-function previewPlan(weeks,start){
- const job=state.jobs.find(j=>j.id===state.targetId),scope=t=>(t.jobId||null)===(state.targetId||null),done=state.tasks.filter(t=>t.status==='完成'),pending=[...(state.backlog||[]).filter(scope),...state.tasks.filter(t=>t.status!=='完成'&&scope(t))],items=new Map(templates(state.direction,job?.requirements,state.ratings).map(t=>[t.key,t]));
- for(const t of pending)items.set(t.key,{...t,deps:t.deps||[]});
- const completed=done.filter(scope).map(t=>t.key),result=roadmap([...items.values()],{weeks,start,hours:state.hours,deadline:state.deadline||'',days:state.days||[0,1,2,3,4,5,6],completed,reserved:done});
- const old=state.tasks.filter(t=>t.status!=='完成');
- modal('确认计划差异',`<p>将保留 ${done.length} 项已完成任务及证据，归档 ${old.length} 项未完成记录；第 1 周安排 ${result.rows[0].tasks.length} 项。相同任务的未完成笔记随任务保留。</p><details><summary>查看受影响的未完成任务</summary>${old.map(t=>`<p>${esc(t.title)} · ${esc(t.status)} · ${esc(t.date||'未排期')}</p>`).join('')||'<p>无</p>'}</details>${roadmapView(result)}`,()=>{
- state.plans??=[];state.plans.push({id:crypto.randomUUID(),createdAt:Date.now(),tasks:structuredClone(state.tasks),overview:state.activePlan||null,jobId:state.targetId||null});
- const id=crypto.randomUUID();state.activePlan={...result,id,createdAt:Date.now(),jobId:state.targetId||null};state.tasks=done.concat(result.rows[0].tasks.map(t=>({...t,id:crypto.randomUUID(),planId:id,status:t.status==='进行中'?'进行中':'待做',evidence:t.evidence||'',jobId:state.targetId||null})));state.backlog=result.rows.slice(1).flatMap(r=>r.tasks.map(t=>({...t,jobId:state.targetId||null,reason:`预计第 ${r.number} 周；尚未写入行动队列`}))).concat(result.backlog.map(t=>({...t,jobId:state.targetId||null,reason:'周期容量、截止或先修限制'})));event('plan_created',id);
- });
-}
-function offerPanel(){const el=document.createElement('section');el.id='offer-comparison';const offers=state.applications.map((a,i)=>({a,i})).filter(({a})=>a.stage==='Offer');el.innerHTML=panel('06 / OFFER COMPARISON',`<h2>Offer 事实对比</h2><p>只展示本人确认进入 Offer 阶段的记录；未知项留空显示“待确认”。薪酬按原始口径记录，不自动年化、排名或判断合同。</p>${offers.length?`<div class="offer-grid">${offers.map(({a,i})=>`<article class="offer-card"><h3>${esc(a.title)}</h3>${offerFields.map(([k,label])=>`<div class="offer-field"><strong>${label}</strong><p>${esc(a.offer?.[k]||'待确认')}${k==='deadline'&&a.offer?.deadline&&a.offer.deadline<today()?' · 已过记录日期，请核对':''}</p></div>`).join('')}<button data-offer="${i}">编辑 Offer 条件</button></article>`).join('')}</div>`:'<p class="empty">暂无已确认的 Offer。请先在投递台账中手动确认阶段，再填写对比条件。</p>'}`);$('main').insertBefore(el,$('.footer'));el.querySelectorAll('[data-offer]').forEach(b=>b.onclick=()=>{const a=state.applications[Number(b.dataset.offer)];modal('编辑 Offer 条件',`<p>${esc(a.title)} · 不会自动修改申请阶段。</p>${offerFields.map(([k,label])=>`<label>${label}${k==='deadline'?`<input type="date" name="${k}" value="${esc(a.offer?.[k]||'')}">`:`<textarea name="${k}" maxlength="2000" placeholder="未知请留空">${esc(a.offer?.[k]||'')}</textarea>`}</label>`).join('')}`,f=>{const offer=Object.fromEntries(offerFields.map(([k])=>[k,f.get(k).trim()]));validateOffer(offer);state.applications[Number(b.dataset.offer)].offer=offer;event('offer_updated',a.jobId||a.title)},'offer:'+(a.id||b.dataset.offer));});}
 
-function extraFeatures(){if(page==='jobs')bindPublicJobs();if(page==='prep'){const el=document.createElement('section');el.innerHTML=panel('08 / RESOURCE LIBRARY',`<h2>任务资源库 / 24 条</h2><p>每方向 4 文档、2 项目、2 视频。核验按入口、许可、运行和播放分别记录；最小实践通过不等于全项目认证。</p><div class="filters"><label>类型<select id="resource-type"><option value="">全部</option>${Object.entries(types).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label><label>搜索<input id="resource-query" placeholder="标题或技能"></label></div><div id="resource-results"></div>`);$('main').insertBefore(el,$('.footer'));const show=()=>{$('#resource-results').innerHTML=catalog.filter(r=>r.direction===state.direction&&(!$('#resource-type').value||r.type===$('#resource-type').value)&&[r.title,...r.skills].join(' ').toLowerCase().includes($('#resource-query').value.toLowerCase())).map(r=>`<details class="task"><summary>${types[r.type]} / ${r.title} · ${r.language}</summary><p>练习片段：${r.section} · 建议 ${r.minutes} 分钟（非全课时长）</p><p>先修：${r.prerequisite}</p><p>${r.license}</p><p>${esc(r.reviewStatus)}${r.reviewedAt?` · ${r.reviewedAt.slice(0,10)}`:''} </p><p>${esc(r.audit?.scope||'尚未完成章节实践核验')}${r.audit?.revision?`<br>版本：<code>${r.audit.revision.slice(0,12)}</code>`:''}</p><a href="${r.audit?.videoUrl||r.url}" target="_blank" rel="noopener noreferrer">${r.type==='video'?'直接播放（官方MP4）':'原站学习'} ↗</a> ${r.type==='video'?`· <a href="${r.url}" target="_blank" rel="noopener noreferrer">课程出处</a>`:''} ${r.audit?.guideUrl?`· <a href="${r.audit.guideUrl}" target="_blank" rel="noopener noreferrer">修复与运行说明（先阅读）</a>`:''} · <a href="${catalog.find(x=>x.id===r.fallbackId).url}" target="_blank" rel="noopener noreferrer">文档替代 ↗</a></details>`).join('')||'<p>没有匹配资源，请放宽条件。</p>'};$('#resource-type').onchange=$('#resource-query').oninput=show;show();}
-if(page==='settings'){const el=document.createElement('section');el.innerHTML=panel('AI / INVITATION',`<h2>AI 模块与限额</h2><p id="ai-health">正在检查本地网关…</p><p>每邀请每天 2 次、窗口 20 次；全站每天 40 次、窗口 400 次。失败或超时可能计费，不自动重试。</p><label>邀请令牌（仅当前会话，不导出）<input type="password" id="invite" autocomplete="off"></label><div class="filters"><button id="save-invite">保存邀请并查询额度</button><button id="clear-invite">退出 AI 邀请</button></div><p id="quota-status" role="status"></p>`);$('main').insertBefore(el,$('.footer'));fetch('/api/health').then(r=>r.json()).then(h=>{if(!$('#ai-health'))return;$('#ai-health').textContent=h.aiEnabled?'AI 网关已开启；每次发送仍需预览确认':'AI 关闭：手动 JD、计划和静态练习均可用'}).catch(()=>{if($('#ai-health'))$('#ai-health').textContent='网关不可达，已保留手动模式'});$('#save-invite').onclick=async()=>{const token=$('#invite').value.trim();sessionStorage.setItem('jobpath-invite',token);try{const r=await fetch('/api/quota',{headers:{Authorization:'Bearer '+token}}),q=await r.json();$('#quota-status').textContent=r.ok?`今日剩余 ${q.dailyRemaining} 次 / 窗口 ${q.windowRemaining} 次 · ${q.resetTimezone} 重置`:q.message||'邀请无效'}catch{$('#quota-status').textContent='无法查询，手动功能不受影响'}};$('#clear-invite').onclick=()=>{sessionStorage.removeItem('jobpath-invite');$('#invite').value='';$('#quota-status').textContent='已清除会话邀请'};}
-if(page==='jobs')document.querySelectorAll('[data-target]').forEach(b=>{let j=state.jobs.find(j=>j.id===b.dataset.target);const ai=document.createElement('button');ai.textContent='AI 整理要求（预览）';ai.onclick=()=>aiPreview('jd_extract',{text:j.jd},data=>{const copy={...j,requirements:data.requirements.map(r=>({kind:r.kind,logic:r.logic,level:2,skills:r.skillIds,quote:r.sourceQuote}))};editJob(copy)});b.parentElement.append(ai)});
-if(page==='career')document.querySelectorAll('[data-answer]').forEach(t=>{const b=document.createElement('button');b.textContent='AI 反馈（预览）';b.onclick=()=>aiPreview('answer_feedback',{questionId:'q'+(Number(t.dataset.answer)+1),answer:t.value},data=>{modal('AI 辅助反馈 / 需核实',`<p>仅基于提供的文字，不代表技术验收。</p>${Object.entries(data).map(([k,v])=>`<h3>${({strengths:'已覆盖',gaps:'待加强',evidenceQuotes:'原文依据',nextActions:'下一步'})[k]}</h3>${v.map(s=>`<p>${esc(s)}</p>`).join('')}`).join('')}`,()=>{state.feedback??={};state.feedback[t.dataset.answer]={data,generatedBy:'AI',generatedAt:new Date().toISOString(),needsReview:true}})});t.parentElement.append(b)});}
-function aiPreview(mode,payload,onDraft){modal('AI 发送预览',`<p class="notice">以下内容会发送至本地服务端和 DeepSeek。请删除个人及第三方联系方式。每次请求消耗额度，失败也可能计费。结果需再次确认。</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${esc(mode==='jd_extract'?payload.text:payload.answer)}</pre><label class="check"><input type="checkbox" id="ai-consent">我同意仅发送上述内容</label><button type="button" id="send-ai">发送一次请求</button><p id="ai-result" role="status"></p>`,()=>{});$('#form button[type="submit"]').hidden=true;$('#send-ai').onclick=async()=>{if(!$('#ai-consent').checked){$('#ai-result').textContent='请先确认发送内容';return}const form=$('#form'),button=$('#send-ai'),result=$('#ai-result');button.disabled=true;try{const token=sessionStorage.getItem('jobpath-invite')||'';const r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({mode,payload,consentVersion:'2026-10-16-v1'}),signal:AbortSignal.timeout(25000)});const data=await r.json();if(!r.ok)throw Error(data.message||'AI 不可用，请继续手动编辑');if(!$('#modal').open||$('#form')!==form)return;$('#modal').close();onDraft(data.data)}catch(e){result.textContent=(e.name==='TimeoutError'?'请求超时，可能已占用额度':e.message)+'。原文已保留，可关闭此窗口使用手动入口。'}finally{button.textContent='本次请求已结束（不会自动重试）'}}}
+const targetJob = () => state.jobs.find((job) => job.id === state.targetId) || null;
+
+async function openDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('jobpath-v1', 1);
+    request.onupgradeneeded = () => request.result.createObjectStore('state');
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+const readRecord = (database) => new Promise((resolve, reject) => {
+  const request = database.transaction('state').objectStore('state').get('main');
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+
+function setSaveState() {
+  document.querySelectorAll('.js-save-state').forEach((element) => {
+    element.textContent = saveText;
+    element.classList.toggle('is-error', saveFailed);
+  });
+}
+
+async function save() {
+  pendingSaves += 1;
+  saveText = '保存中…';
+  setSaveState();
+  const snapshot = structuredClone(state);
+  const operation = queue.then(async () => {
+    if (!db) throw Error('本地存储不可用，请先导出备份');
+    revision = await writeRevision(db, snapshot, revision);
+    state.revision = revision;
+    saveFailed = false;
+    saveText = '已保存到此设备';
+  });
+  queue = operation.catch(() => {});
+  try {
+    await operation;
+  } catch (error) {
+    saveFailed = true;
+    saveText = '保存失败';
+    toast(error.message);
+    throw error;
+  } finally {
+    pendingSaves -= 1;
+    setSaveState();
+  }
+}
+
+function event(type, id = '') {
+  state.events ??= [];
+  state.events.push({ type, id, at: Date.now() });
+  state.events = state.events.slice(-2000);
+}
+
+let toastTimer = 0;
+function toast(message) {
+  const element = $('#toast');
+  if (!element) return;
+  element.textContent = message;
+  element.classList.add('is-visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => element.classList.remove('is-visible'), 3200);
+}
+
+function routeFromHash() {
+  const raw = location.hash.replace(/^#\/?/, '').split('?')[0];
+  return ROUTES.includes(raw) ? raw : '';
+}
+
+function navigate(next, { replace = false } = {}) {
+  if (!ROUTES.includes(next)) return;
+  if (location.hash === `#/${next}`) {
+    page = next;
+    render();
+    return;
+  }
+  if (replace) {
+    history.replaceState(null, '', `#/${next}`);
+    page = next;
+    render();
+    return;
+  }
+  location.hash = `#/${next}`;
+}
+
+function navLinks() {
+  const items = [
+    ['opportunities', '机会'],
+    ['prepare', '备战'],
+    ['career', '求职'],
+    ['settings', '设置']
+  ];
+  return items.map(([id, label]) => `<a class="nav-link${page === id ? ' is-active' : ''}" href="#/${id}"${page === id ? ' aria-current="page"' : ''}>${label}</a>`).join('');
+}
+
+function topbar(target) {
+  return `<header class="topbar">
+    <a class="brand" href="#/opportunities" aria-label="启职 JobPath 首页">
+      <span class="brand-mark">JP</span>
+      <span class="brand-text"><strong>启职</strong><small>JOBPATH</small></span>
+    </a>
+    <div class="target-chip${target ? '' : ' is-empty'}">
+      <span class="target-label">${target ? '当前目标' : '尚未选岗'}</span>
+      ${target ? `<a class="target-name" href="#/prepare" title="${esc(target.title)}">${esc(target.company)} · ${esc(target.title)}</a>` : '<a class="target-name" href="#/opportunities">先选一个岗位 →</a>'}
+    </div>
+    <nav class="top-nav" aria-label="主导航">${navLinks()}</nav>
+    <div class="top-status"><span class="save-state js-save-state" role="status">${esc(saveText)}</span><a class="icon-btn" href="#/settings" aria-label="设置">⚙</a></div>
+  </header>`;
+}
+
+function footer() {
+  return `<footer class="site-foot">
+    <span>数据只保存在此浏览器 · 建议每周导出一次</span>
+    <span>本地证据版 · v${esc(appVersion)}</span>
+  </footer>`;
+}
+
+function bottomNav() {
+  return `<nav class="bottom-nav" aria-label="移动端主导航">${navLinks()}</nav>`;
+}
+
+function render() {
+  const target = targetJob();
+  if (page === 'prepare' && !target) {
+    page = 'opportunities';
+    history.replaceState(null, '', '#/opportunities');
+  }
+  const content = page === 'opportunities'
+    ? opportunities({ state })
+    : page === 'prepare'
+      ? prepare({ state, target })
+      : page === 'career'
+        ? career({ state, aiEnabled })
+        : settings({ state, aiEnabled, version: appVersion });
+  $('#app').innerHTML = `<a class="skip-link" href="#main" data-scroll="main">跳到主要内容</a>${topbar(target)}<main id="main" class="page" tabindex="-1">${content}</main>${footer()}${bottomNav()}`;
+  setSaveState();
+  bind();
+  if (page === 'career') recoverInlineDrafts();
+}
+
+/* ---------- navigation and target ---------- */
+
+async function setTarget(localId) {
+  const job = state.jobs.find((item) => item.id === localId);
+  if (!job) return;
+  state.targetId = job.id;
+  state.target = job.title;
+  state.direction = job.direction || state.direction;
+  try {
+    await save();
+    toast('已设为目标岗位');
+    navigate('prepare');
+  } catch {
+    /* save() already surfaced the error */
+  }
+}
+
+async function targetPublic(publicId) {
+  try {
+    const source = publicJobs.find((job) => job.id === publicId);
+    if (!source) return;
+    let local = state.jobs.find((job) => job.publicId === source.id);
+    if (!local) {
+      local = snapshotJob(source, crypto.randomUUID());
+      state.jobs.push(local);
+    }
+    await setTarget(local.id);
+  } catch (error) {
+    toast(error.message);
+  }
+}
+
+async function savePublic(publicId) {
+  try {
+    if (state.jobs.some((job) => job.publicId === publicId)) {
+      toast('该岗位已在你的岗位库中');
+      return;
+    }
+    const source = publicJobs.find((job) => job.id === publicId);
+    if (!source) return;
+    state.jobs.push(snapshotJob(source, crypto.randomUUID()));
+    await save();
+    toast('已收藏岗位快照');
+    render();
+  } catch (error) {
+    toast(error.message);
+  }
+}
+
+/* ---------- modal and drafts ---------- */
+
+function modal(title, body, submit = async () => {}, draftKey = title) {
+  const dialog = $('#modal');
+  lastFocused = document.activeElement;
+  dialog.innerHTML = `<form id="form" class="modal-form">
+    <header class="modal-head">
+      <div><p class="eyebrow">编辑</p><h2 id="modal-title">${esc(title)}</h2></div>
+      <button type="button" id="close" class="icon-btn" aria-label="关闭">✕</button>
+    </header>
+    <div class="modal-body">${body}</div>
+    <p id="draft-status" class="draft-status" role="status"></p>
+    <footer class="modal-actions">
+      <div class="draft-actions"><button type="button" id="restore-draft" class="btn btn-ghost btn-sm" hidden>恢复草稿</button><button type="button" id="discard-draft" class="btn btn-ghost btn-sm" hidden>丢弃草稿</button></div>
+      <span class="spacer"></span>
+      <button type="button" id="cancel" class="btn">取消</button>
+      <button type="submit" class="btn btn-primary">保存</button>
+    </footer>
+  </form>`;
+  const form = $('#form');
+  let baseline = '';
+  let ready = false;
+  const snapshot = () => ({ fields: fields(form), extra: form.readDraftExtra?.() ?? null });
+  const session = {
+    dirty: () => ready && JSON.stringify(snapshot()) !== baseline,
+    capture: () => {
+      if (!session.dirty()) return;
+      try {
+        writeDraft(draftStorage, draftKey, { ...snapshot(), at: Date.now() });
+        $('#draft-status').textContent = '未提交；草稿只保留在本标签页，重新打开可恢复。';
+      } catch {
+        $('#draft-status').textContent = '草稿未能保存，请复制输入内容后重试。';
+      }
+    }
+  };
+  editSession = session;
+  const close = () => {
+    if (form.dataset.saving) return;
+    if (session.dirty() && !confirm('内容尚未正式保存。关闭并保留本标签页草稿？')) return;
+    session.capture();
+    editSession = null;
+    dialog.close();
+    lastFocused?.focus?.();
+  };
+  $('#close').onclick = close;
+  $('#cancel').onclick = close;
+  dialog.oncancel = (event) => {
+    event.preventDefault();
+    close();
+  };
+  queueMicrotask(() => {
+    if ($('#form') !== form) return;
+    baseline = JSON.stringify(snapshot());
+    ready = true;
+    if (readDraft(draftStorage, draftKey)) {
+      $('#restore-draft').hidden = false;
+      $('#discard-draft').hidden = false;
+      $('#draft-status').textContent = '发现未提交草稿；可恢复或丢弃。';
+    }
+    $('#restore-draft').onclick = () => {
+      const draft = readDraft(draftStorage, draftKey);
+      if (!draft) return;
+      form.restoreDraftExtra?.(draft.extra);
+      restoreFields(form, draft.fields);
+      $('#draft-status').textContent = '已恢复草稿，请核对后保存。';
+    };
+    $('#discard-draft').onclick = () => {
+      dropDraft(draftKey);
+      $('#restore-draft').hidden = true;
+      $('#discard-draft').hidden = true;
+      $('#draft-status').textContent = '已丢弃暂存草稿。';
+    };
+    form.addEventListener('input', session.capture);
+    form.addEventListener('change', session.capture);
+  });
+  form.onsubmit = async (event) => {
+    event.preventDefault();
+    if (form.dataset.saving) return;
+    form.dataset.saving = 'true';
+    form.querySelectorAll('button').forEach((button) => { button.disabled = true; });
+    const before = structuredClone(state);
+    try {
+      const data = new FormData(form);
+      form.beforeCommit?.(data);
+      await submit(data);
+      await save();
+      dropDraft(draftKey);
+      editSession = null;
+      dialog.close();
+      if (pendingNav) {
+        const next = pendingNav;
+        pendingNav = '';
+        navigate(next);
+      } else {
+        render();
+      }
+      toast('已保存');
+    } catch (error) {
+      state = before;
+      pendingNav = '';
+      session.capture();
+      let message = $('#form-error');
+      if (!message) {
+        message = document.createElement('p');
+        message.id = 'form-error';
+        message.className = 'form-error';
+        message.setAttribute('role', 'alert');
+        form.querySelector('.modal-body').append(message);
+      }
+      message.textContent = error.message;
+    } finally {
+      delete form.dataset.saving;
+      form.querySelectorAll('button').forEach((button) => { button.disabled = false; });
+    }
+  };
+  if (dialog.open) dialog.close();
+  dialog.showModal();
+}
+
+const dropDraft = (key) => {
+  try { draftStorage.removeItem(`jobpath-draft:${key}`); } catch { /* storage may be unavailable */ }
+};
+const dropAllDrafts = () => {
+  try { clearDrafts(sessionStorage); } catch { /* storage may be unavailable */ }
+};
+
+async function saveInline(key, value) {
+  if (key === 'legacy-offer') state.offer = value;
+  else state.answers[Number(key.slice(7))] = value;
+  try {
+    writeDraft(draftStorage, key, { fields: [{ key: 'text', type: 'textarea', value }], at: Date.now() });
+  } catch {
+    toast('文字草稿未能暂存，请保留输入或导出备份');
+  }
+  try {
+    await save();
+    const latest = key === 'legacy-offer' ? state.offer : state.answers[Number(key.slice(7))];
+    if (latest === value) dropDraft(key);
+  } catch { /* the form still shows the text */ }
+}
+
+function recoverInlineDrafts() {
+  for (const key of [...state.answers.map((_, index) => `answer-${index}`), 'legacy-offer']) {
+    const draft = readDraft(draftStorage, key);
+    if (!draft) continue;
+    const input = key === 'legacy-offer' ? $('#offer') : document.querySelector(`[data-answer="${key.slice(7)}"]`);
+    if (!input) continue;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-ghost btn-sm';
+    button.textContent = '恢复未保存文字';
+    button.onclick = async () => {
+      const value = draft.fields[0]?.value;
+      if (typeof value !== 'string') return;
+      input.value = value;
+      await saveInline(key, value);
+      if (!saveFailed) button.remove();
+    };
+    input.after(button);
+  }
+}
+
+/* ---------- forms ---------- */
+
+function profile() {
+  const target = targetJob();
+  const skillIds = [...new Set([...skills[state.direction], ...((target?.requirements || []).flatMap((requirement) => requirement.skills))])];
+  const daySet = new Set(state.days || [0, 1, 2, 3, 4, 5, 6]);
+  const body = `<p class="notice">方向由目标岗位决定：<strong>${esc(names[state.direction])}</strong>。选定新岗位后会自动切换；技能自评会保留。</p>
+    <div class="form-grid">
+      <label class="field"><span>每周可投入小时（0—80）</span><input name="hours" type="number" min="0" max="80" required value="${esc(state.hours)}"></label>
+      <label class="field"><span>准备截止日期</span><input name="deadline" type="date" value="${esc(state.deadline || '')}"></label>
+      <label class="field"><span>毕业年月</span><input name="graduation" type="month" value="${esc(state.graduation || '')}"></label>
+      <label class="field"><span>求职类型</span><select name="intent"><option>待确认</option><option ${state.intent === '实习' ? 'selected' : ''}>实习</option><option ${state.intent === '校招' ? 'selected' : ''}>校招</option></select></label>
+      <label class="field"><span>目标城市</span><input name="cities" value="${esc(state.cities || '')}" placeholder="例如：上海、杭州"></label>
+      <label class="field"><span>项目证据</span><select name="projectEvidence"><option value="">未回答</option><option value="0" ${state.projectEvidence === 0 ? 'selected' : ''}>明确没有</option><option value="1" ${state.projectEvidence === 1 ? 'selected' : ''}>有（自报）</option></select></label>
+    </div>
+    <p class="field-label">每周可用日期</p>
+    <div class="check-row">${dayNames.map((day, index) => `<label class="check"><input type="checkbox" name="day" value="${index}" ${daySet.has(index) ? 'checked' : ''}>周${day}</label>`).join('')}</div>
+    <p class="field-label">方向兴趣（未知可留空）</p>
+    <div class="form-grid">${Object.entries(names).map(([id, label]) => `<label class="field"><span>${esc(label)}</span><select name="interest-${id}"><option value="">未知</option>${[0, 1, 2, 3, 4].map((value) => `<option ${state.interests?.[id] === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label>`).join('')}</div>
+    <p class="field-label">技能自评（0 未接触 / 1 跟随教程 / 2 独立完成 / 3 可解释扩展）</p>
+    <div class="form-grid">${skillIds.map((skill) => `<label class="field"><span>${esc(skill)}</span><select name="skill-${esc(skill)}"><option value="">未知</option>${[0, 1, 2, 3].map((value) => `<option value="${value}" ${state.ratings?.[skill] === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label>`).join('')}</div>`;
+  modal('个人画像', body, (data) => {
+    const hours = Number(data.get('hours'));
+    if (!Number.isFinite(hours) || hours < 0 || hours > 80) throw Error('每周小时应在 0—80 之间');
+    const deadline = data.get('deadline') || '';
+    if (deadline && !validDate(deadline)) throw Error('截止日期无效');
+    state.hours = hours;
+    state.deadline = deadline;
+    state.graduation = data.get('graduation') || '';
+    state.intent = data.get('intent') || '待确认';
+    state.cities = data.get('cities') || '';
+    state.days = data.getAll('day').map(Number);
+    state.interests = {};
+    for (const id of Object.keys(names)) {
+      const value = data.get(`interest-${id}`);
+      if (value !== '') state.interests[id] = Number(value);
+    }
+    const evidence = data.get('projectEvidence');
+    state.projectEvidence = evidence === '' ? null : Number(evidence);
+    state.ratings ??= {};
+    for (const [key, value] of data) {
+      if (!key.startsWith('skill-')) continue;
+      const skill = key.slice(6);
+      if (value === '') delete state.ratings[skill];
+      else state.ratings[skill] = Number(value);
+    }
+    event('profile_updated');
+  }, 'profile');
+}
+
+function application(job, index) {
+  const current = index !== undefined ? state.applications[index] : { title: job?.title || '', note: '', date: '' };
+  const body = `${job ? `<p class="notice">绑定岗位：${esc(job.company || '')} · ${esc(job.title)}</p>` : ''}
+    <label class="field"><span>公司 / 岗位</span><input name="title" required maxlength="150" value="${esc(current.title)}"></label>
+    <div class="form-grid">
+      <label class="field"><span>实际投递日期（未知可留空）</span><input name="appliedDate" type="date" value="${esc(current.appliedDate || '')}"></label>
+      <label class="field"><span>下一步日期（可选）</span><input name="date" type="date" value="${esc(current.date || '')}"></label>
+    </div>
+    <label class="field"><span>下一步行动</span><input name="note" maxlength="500" value="${esc(current.note || '')}" placeholder="例如：补完项目后投递"></label>
+    <p class="muted small">填写日期不会自动标记已投递；阶段仍需单独确认。</p>`;
+  modal(current.id ? '编辑求职记录' : '添加求职记录', body, (data) => {
+    const next = validateApplication({
+      ...current,
+      ...Object.fromEntries(data),
+      id: current.id || crypto.randomUUID(),
+      stage: current.stage || '收藏',
+      jobId: job?.id || current.jobId || null
+    });
+    if (index !== undefined) state.applications[index] = next;
+    else state.applications.push(next);
+    event('application_saved', next.id);
+  }, `application:${current.id || index || job?.id || 'new'}`);
+}
+
+function editRound(index, roundIndex) {
+  const current = state.applications[index];
+  const round = current.rounds?.[roundIndex] || { name: '', date: '', status: '待安排', note: '' };
+  const body = `<p class="notice">${esc(current.title)} · 轮次不会自动改变申请阶段。</p>
+    <label class="field"><span>轮次名称</span><input name="name" required maxlength="100" value="${esc(round.name)}" placeholder="一面 / 技术面 / HR 面"></label>
+    <div class="form-grid">
+      <label class="field"><span>日期</span><input name="date" type="date" value="${esc(round.date || '')}"></label>
+      <label class="field"><span>状态</span><select name="status">${['待安排', '已安排', '已完成', '取消'].map((status) => `<option ${round.status === status ? 'selected' : ''}>${status}</option>`).join('')}</select></label>
+    </div>
+    <label class="field"><span>问题、反馈与下一步</span><textarea name="note" maxlength="4000">${esc(round.note || '')}</textarea></label>`;
+  modal('面试轮次', body, (data) => {
+    const rounds = structuredClone(current.rounds || []);
+    const next = { ...Object.fromEntries(data), id: round.id || crypto.randomUUID() };
+    if (roundIndex === undefined) rounds.push(next);
+    else rounds[roundIndex] = next;
+    state.applications[index] = validateApplication({ ...current, rounds });
+    event('interview_round', current.id || String(index));
+  }, `round:${current.id || index}:${round.id || 'new'}`);
+}
+
+function stageDialog(index, next) {
+  const current = state.applications[index];
+  if (!current || current.stage === next) return;
+  const body = `<p class="notice">${esc(current.title)}：${esc(current.stage)} → ${esc(next)}</p>
+    <p class="muted">请确认这是真实发生的求职动作或结果。回退会保留历史，但不会删除 Offer 条件。</p>
+    ${next === '已投递' ? `<label class="field"><span>实际投递日期（未知可留空）</span><input name="appliedDate" type="date" value="${esc(current.appliedDate || '')}"></label>` : ''}
+    <label class="field"><span>变更说明（可选）</span><textarea name="reason" maxlength="1000"></textarea></label>`;
+  modal('确认求职阶段', body, (data) => {
+    state.applications[index] = changeStage(state.applications[index], next, {
+      reason: data.get('reason'),
+      appliedDate: data.has('appliedDate') ? data.get('appliedDate') : current.appliedDate || ''
+    });
+    event('application_stage', current.id || String(index));
+  }, `stage:${current.id || index}:${next}`);
+}
+
+function taskModal(task) {
+  const resources = resourceFor(task.skill, state.direction).slice(0, 4)
+    .map((resource) => `<a href="${esc(resource.audit?.videoUrl || resource.url)}" target="_blank" rel="noopener noreferrer">${esc(resource.title)}</a>`)
+    .join(' · ');
+  const body = `<p class="notice">验收：提供一个可复现的实例，说明个人实现与验证过程。完成为用户自报，不代表系统通过测试。</p>
+    <p class="prewrap">${esc(task.acceptance || '完成可复现的实践并记录个人贡献。')}</p>
+    ${resources ? `<p class="muted small">学习入口：${resources}</p>` : ''}
+    <div class="form-grid">
+      <label class="field"><span>预计分钟（1—90）</span><input name="minutes" type="number" min="1" max="90" step="1" required value="${esc(task.minutes)}" ${task.status === '完成' ? 'readonly' : ''}></label>
+      <label class="field"><span>状态</span><select name="status">${['待做', '进行中', '完成', '暂缓'].map((status) => `<option ${task.status === status ? 'selected' : ''}>${status}</option>`).join('')}</select></label>
+    </div>
+    <label class="field"><span>成果证据：我做了什么、如何验证、遇到的问题</span><textarea name="evidence" maxlength="4000">${esc(task.evidence || '')}</textarea></label>
+    <label class="check"><input type="checkbox" name="accepted" ${task.status === '完成' ? 'checked' : ''}>我已完成实践并检查验收要求</label>`;
+  modal(`任务 / ${task.skill || ''}`, body, (data) => {
+    const current = state.tasks.find((item) => item.id === task.id);
+    if (!current) throw Error('任务不存在');
+    const status = data.get('status');
+    const evidence = data.get('evidence') || '';
+    if (status === '完成' && (!data.get('accepted') || evidence.trim().length < 10)) {
+      throw Error('完成任务需要勾选验收，并填写至少 10 个字的证据');
+    }
+    const minutes = Number(data.get('minutes'));
+    if (!Number.isInteger(minutes) || minutes < 1 || minutes > 90) throw Error('估时应为 1–90 分钟');
+    if (current.status !== '完成' && status === '完成') event('task_completed', current.id);
+    current.minutes = minutes;
+    current.status = status;
+    current.evidence = evidence;
+    current.completedAt = status === '完成' ? Date.now() : null;
+  }, `task:${task.id}`);
+}
+
+function addJob() {
+  const body = `<div class="form-grid">
+      <label class="field"><span>职位名称</span><input name="title" required maxlength="100" placeholder="例如：前端开发实习生"></label>
+      <label class="field"><span>公司</span><input name="company" required maxlength="100"></label>
+      <label class="field"><span>方向</span><select name="direction">${Object.entries(names).map(([id, label]) => `<option value="${esc(id)}">${esc(label)}</option>`).join('')}</select></label>
+      <label class="field"><span>城市（可选）</span><input name="city" maxlength="60"></label>
+      <label class="field"><span>招聘类型</span><select name="intent"><option>待确认</option><option>实习</option><option>校招</option></select></label>
+      <label class="field"><span>来源 URL（可选，仅 HTTPS）</span><input name="source" type="url" placeholder="https://..."></label>
+    </div>
+    <label class="field"><span>JD 原文 / 明确要求</span><textarea name="jd" required maxlength="10000" placeholder="粘贴原文，保留要求和资格信息；不做自动推断。"></textarea></label>
+    <p class="muted small">保存后只留在本机；可在岗位卡里继续把要求结构化。</p>`;
+  modal('粘贴岗位 JD', body, (data) => {
+    const title = String(data.get('title') || '').trim();
+    const company = String(data.get('company') || '').trim();
+    if (!title || !company) throw Error('职位名称和公司不能为空');
+    const source = data.get('source') ? safeUrl(data.get('source')) : '';
+    const job = {
+      id: crypto.randomUUID(),
+      title,
+      company,
+      direction: data.get('direction'),
+      city: String(data.get('city') || '').trim(),
+      intent: data.get('intent') || '待确认',
+      qualification: '待确认',
+      sourceNotes: '',
+      requirements: [],
+      checkedAt: Date.now(),
+      jd: String(data.get('jd') || ''),
+      source
+    };
+    if (!job.jd.trim()) throw Error('JD 原文不能为空');
+    state.jobs.push(job);
+    event('job_created', job.id);
+    if (!state.targetId) {
+      state.targetId = job.id;
+      state.target = job.title;
+      state.direction = job.direction;
+      pendingNav = 'prepare';
+    }
+  }, 'jd:new');
+}
+
+function editJob(job) {
+  let draft = structuredClone(job.requirements || []);
+  const body = `<div class="form-grid">
+      <label class="field"><span>官方来源 URL</span><input name="source" value="${esc(job.source || '')}" placeholder="https://..."></label>
+      <label class="field"><span>城市</span><input name="city" value="${esc(job.city || '')}"></label>
+      <label class="field"><span>招聘类型</span><select name="intent">${['待确认', '实习', '校招'].map((value) => `<option ${job.intent === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label>
+      <label class="field"><span>资格核对</span><select name="qualification">${['待确认', '符合', '不符合'].map((value) => `<option ${job.qualification === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label>
+      <label class="field"><span>截止日期</span><input name="expires" type="date" value="${esc(job.expires || '')}"></label>
+      <label class="field"><span>资格条件原文</span><input name="eligibility" value="${esc(job.eligibility || '')}"></label>
+    </div>
+    <div class="notice">选择必需/优先、全部/任一技能；证据必须出现在下方 JD 原文里。保存前不会覆盖岗位。</div>
+    <div id="requirement-rows"></div>
+    <button type="button" id="add-requirement" class="btn btn-ghost btn-sm">+ 新增要求</button>
+    <label class="field"><span>原始 JD / 可补充官方全文</span><textarea name="jd" required maxlength="10000">${esc(job.jd || '')}</textarea></label>`;
+  modal('编辑岗位要求', body, (data) => {
+    const requirements = draft.map((requirement) => {
+      if (!requirement.skills.length || !requirement.quote.trim() || !data.get('jd').includes(requirement.quote)) {
+        throw Error('每条要求必须选择技能，并填写 JD 原文中的证据');
+      }
+      return requirement;
+    });
+    const source = data.get('source') ? safeUrl(data.get('source')) : '';
+    Object.assign(job, Object.fromEntries(data), {
+      requirements,
+      source,
+      checkedAt: Date.now()
+    });
+    event('job_confirmed', job.id);
+  }, `job:${job.id}`);
+
+  const rows = () => {
+    $('#requirement-rows').innerHTML = draft.map((requirement, index) => `<fieldset class="requirement-row">
+      <legend>要求 ${index + 1}</legend>
+      <div class="form-grid three">
+        <label class="field"><span>性质</span><select data-r="${index}" data-field="kind"><option value="required" ${requirement.kind === 'required' ? 'selected' : ''}>必需</option><option value="preferred" ${requirement.kind === 'preferred' ? 'selected' : ''}>优先</option></select></label>
+        <label class="field"><span>关系</span><select data-r="${index}" data-field="logic"><option value="all" ${requirement.logic === 'all' ? 'selected' : ''}>全部满足</option><option value="any" ${requirement.logic === 'any' ? 'selected' : ''}>任一满足</option></select></label>
+        <label class="field"><span>目标层级</span><select data-r="${index}" data-field="level">${[1, 2, 3].map((level) => `<option ${requirement.level === level ? 'selected' : ''}>${level}</option>`).join('')}</select></label>
+      </div>
+      <div class="skill-picker">${[...new Set([...Object.values(skills).flat(), 'Vue', 'Playwright', 'Git', ...requirement.skills])].map((skill) => `<label class="check"><input type="checkbox" data-skill="${esc(skill)}" data-r="${index}" ${requirement.skills.includes(skill) ? 'checked' : ''}>${esc(skill)}</label>`).join('')}</div>
+      <label class="field"><span>原文证据</span><textarea data-r="${index}" data-field="quote" maxlength="300">${esc(requirement.quote)}</textarea></label>
+      <button type="button" class="btn btn-ghost btn-sm" data-remove="${index}">移除此要求</button>
+    </fieldset>`).join('');
+    $('#requirement-rows').querySelectorAll('[data-field]').forEach((element) => {
+      element.oninput = () => {
+        draft[Number(element.dataset.r)][element.dataset.field] = element.dataset.field === 'level' ? Number(element.value) : element.value;
+      };
+    });
+    $('#requirement-rows').querySelectorAll('[data-skill]').forEach((element) => {
+      element.onchange = () => {
+        const requirement = draft[Number(element.dataset.r)];
+        requirement.skills = element.checked
+          ? [...requirement.skills, element.dataset.skill]
+          : requirement.skills.filter((skill) => skill !== element.dataset.skill);
+      };
+    });
+    $('#requirement-rows').querySelectorAll('[data-remove]').forEach((element) => {
+      element.onclick = () => {
+        draft.splice(Number(element.dataset.remove), 1);
+        rows();
+      };
+    });
+  };
+  $('#add-requirement').onclick = () => {
+    if (draft.length >= 10) {
+      toast('最多 10 条要求');
+      return;
+    }
+    draft.push({ kind: 'required', logic: 'all', level: 2, skills: [], quote: '' });
+    rows();
+  };
+  rows();
+  $('#form').readDraftExtra = () => structuredClone(draft);
+  $('#form').restoreDraftExtra = (value) => {
+    if (Array.isArray(value)) {
+      draft = structuredClone(value);
+      rows();
+    }
+  };
+}
+
+/* ---------- planning ---------- */
+
+function previewPlan(weeks, start) {
+  const target = targetJob();
+  if (!target) {
+    toast('先选一个目标岗位');
+    return;
+  }
+  const keyOf = (task) => task.key || `legacy-${task.id || crypto.randomUUID()}`;
+  const scope = (task) => !task.jobId || task.jobId === state.targetId;
+  const done = state.tasks.filter((task) => task.status === '完成' && scope(task)).map((task) => ({ ...task, key: keyOf(task) }));
+  const pending = [...(state.backlog || []).filter(scope), ...state.tasks.filter((task) => task.status !== '完成' && scope(task))]
+    .map((task) => ({ ...task, key: keyOf(task), deps: task.deps || [] }));
+  const items = new Map(templates(state.direction, target.requirements || [], state.ratings || {}).map((task) => [task.key, task]));
+  for (const task of pending) items.set(task.key, task);
+  const completed = done.map((task) => task.key);
+  const result = roadmap([...items.values()], {
+    weeks,
+    start,
+    hours: state.hours,
+    deadline: state.deadline || '',
+    days: state.days || [0, 1, 2, 3, 4, 5, 6],
+    completed,
+    reserved: done
+  });
+  const affected = state.tasks.filter((task) => task.status !== '完成' && scope(task));
+  modal('确认计划差异', `<p>将保留 ${done.length} 项已完成任务及证据；第 1 周安排 ${result.rows[0].tasks.length} 项。相同任务的未完成笔记会尽量保留。</p>
+    <details class="inline-details"><summary>查看受影响的未完成任务 / ${affected.length}</summary>${affected.map((task) => `<p class="muted small">${esc(task.title)} · ${esc(task.status)} · ${esc(task.date || '未排期')}</p>`).join('') || '<p class="muted small">无</p>'}</details>
+    ${roadmapView(result)}`, () => {
+    state.plans ??= [];
+    state.plans.push({ id: crypto.randomUUID(), createdAt: Date.now(), tasks: structuredClone(state.tasks), overview: state.activePlan || null, jobId: state.targetId || null });
+    const id = crypto.randomUUID();
+    state.activePlan = { ...result, id, createdAt: Date.now(), jobId: state.targetId || null };
+    const allDone = state.tasks.filter((task) => task.status === '完成');
+    state.tasks = allDone.concat(result.rows[0].tasks.map((task) => ({
+      ...task,
+      id: crypto.randomUUID(),
+      planId: id,
+      status: task.status === '进行中' ? '进行中' : '待做',
+      evidence: task.evidence || '',
+      jobId: state.targetId || null
+    })));
+    state.backlog = result.rows.slice(1).flatMap((row) => row.tasks.map((task) => ({
+      ...task,
+      jobId: state.targetId || null,
+      reason: `预计第 ${row.number} 周；尚未写入行动队列`
+    }))).concat(result.backlog.map((task) => ({
+      ...task,
+      jobId: state.targetId || null,
+      reason: '周期容量、截止或先修限制'
+    })));
+    event('plan_created', id);
+  }, 'plan-confirm');
+}
+
+function openPlan() {
+  modal('设置计划周期', `<label class="field"><span>预计周期</span><select name="weeks"><option value="4">4 周</option><option value="8" ${state.activePlan?.weeks === 8 ? 'selected' : ''}>8 周</option></select></label>
+    <label class="field"><span>开始日期</span><input name="start" type="date" value="${today()}" required></label>
+    <p class="muted">按每周 ${esc(state.hours)} 小时、可用日和截止日期计算。下一步先预览，最后确认才写入行动队列。</p>`, () => {}, 'plan');
+  $('#form button[type="submit"]').textContent = '预览计划';
+  $('#form').onsubmit = (event) => {
+    event.preventDefault();
+    try {
+      const data = new FormData(event.target);
+      previewPlan(Number(data.get('weeks')), data.get('start'));
+    } catch (error) {
+      toast(error.message);
+    }
+  };
+}
+
+/* ---------- review, backup, AI ---------- */
+
+function openReview() {
+  const target = targetJob();
+  modal('面试复盘', `<label class="field"><span>这次面试暴露了什么？</span><textarea name="review" required maxlength="4000">${esc(state.review || '')}</textarea></label>
+    <label class="field"><span>补缺任务标题（可选）</span><input name="task" maxlength="150" placeholder="例如：补充一次边界输入测试"></label>`, (data) => {
+    state.review = data.get('review');
+    const title = String(data.get('task') || '').trim();
+    if (title) {
+      state.tasks.push({
+        id: crypto.randomUUID(),
+        key: crypto.randomUUID(),
+        skill: '面试复盘',
+        jobId: target?.id || null,
+        title,
+        minutes: 30,
+        status: '待做',
+        evidence: '',
+        date: ''
+      });
+      event('review_task');
+    }
+    event('review');
+  }, 'review');
+}
+
+function exportBackup() {
+  const payload = {
+    app: 'jobpath',
+    schemaVersion: 1,
+    exportedAt: new Date().toISOString(),
+    containsPersonalData: true,
+    generationNotice: '部分反馈可能为 AI 辅助，需核实',
+    data: state
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `jobpath-backup-${today()}.json`;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('备份已导出，请妥善保管');
+}
+
+async function importFile(event) {
+  const input = event.target;
+  try {
+    const file = input.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) throw Error('文件超过 2MB');
+    const raw = await file.text();
+    if (/"(?:__proto__|constructor|prototype)"\s*:/.test(raw)) throw Error('备份包含不允许的字段');
+    const next = validateBackup(JSON.parse(raw));
+    if (!confirm(`将覆盖当前数据：${next.jobs.length} 个岗位、${next.tasks.length} 个任务、${next.applications.length} 条申请。请先导出当前备份，确认继续？`)) return;
+    const previous = state;
+    state = next;
+    try {
+      await save();
+    } catch (error) {
+      state = previous;
+      throw error;
+    }
+    dropAllDrafts();
+    render();
+    toast('备份已恢复');
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    input.value = '';
+  }
+}
+
+async function clearAll() {
+  if (!confirm('确定清空所有本地个人数据？请先导出备份。')) return;
+  const previous = state;
+  state = initial();
+  try {
+    await save();
+    dropAllDrafts();
+    saveFailed = false;
+    render();
+    toast('已清空本机数据');
+  } catch {
+    state = previous;
+  }
+}
+
+function aiPreview(mode, payload, onDraft) {
+  modal('AI 发送预览', `<p class="notice">以下内容会发送至本地服务端和 DeepSeek。请删除个人及第三方联系方式。每次请求消耗额度，失败也可能计费。</p>
+    <pre class="preview">${esc(mode === 'jd_extract' ? payload.text : payload.answer)}</pre>
+    <label class="check"><input id="ai-consent" type="checkbox">我同意仅发送上述内容</label>
+    <button type="button" id="send-ai" class="btn btn-primary">发送一次请求</button>
+    <p id="ai-result" class="muted small" role="status"></p>`, () => {}, 'ai');
+  $('#form button[type="submit"]').hidden = true;
+  $('#send-ai').onclick = async () => {
+    if (!$('#ai-consent').checked) {
+      $('#ai-result').textContent = '请先确认发送内容';
+      return;
+    }
+    const button = $('#send-ai');
+    button.disabled = true;
+    try {
+      const token = sessionStorage.getItem('jobpath-invite') || '';
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Idempotency-Key': crypto.randomUUID()
+        },
+        body: JSON.stringify({ mode, payload, consentVersion: '2026-10-16-v1' }),
+        signal: AbortSignal.timeout(25000)
+      });
+      const data = await response.json();
+      if (!response.ok) throw Error(data.message || 'AI 不可用，请继续手动编辑');
+      $('#modal').close();
+      onDraft(data.data);
+    } catch (error) {
+      $('#ai-result').textContent = `${error.name === 'TimeoutError' ? '请求超时，可能已占用额度' : error.message}。原文已保留，可关闭此窗口使用手动入口。`;
+    } finally {
+      button.textContent = '本次请求已结束（不会自动重试）';
+    }
+  };
+}
+
+/* ---------- bindings ---------- */
+
+function applyJobFilter() {
+  const query = ($('#job-search')?.value || '').trim().toLowerCase();
+  const direction = $('#job-direction')?.value || '';
+  let shown = 0;
+  document.querySelectorAll('[data-job-card]').forEach((card) => {
+    const text = card.dataset.search || '';
+    const visible = (!query || text.includes(query)) && (!direction || card.dataset.direction === direction);
+    card.hidden = !visible;
+    if (visible) shown += 1;
+  });
+  const empty = $('#job-empty');
+  if (empty) empty.hidden = shown > 0;
+}
+
+function bind() {
+  document.querySelectorAll('[data-action]').forEach((element) => {
+    element.addEventListener('click', (event) => {
+      event.preventDefault();
+      const action = actions[element.dataset.action];
+      if (!action) return;
+      const result = action();
+      if (result?.catch) result.catch((error) => toast(error.message));
+    });
+  });
+  document.querySelectorAll('[data-scroll]').forEach((element) => {
+    element.addEventListener('click', (event) => {
+      event.preventDefault();
+      const target = document.getElementById(element.dataset.scroll);
+      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target?.focus?.({ preventScroll: true });
+    });
+  });
+  document.querySelectorAll('[data-target-job]').forEach((element) => {
+    element.addEventListener('click', () => setTarget(element.dataset.targetJob));
+  });
+  document.querySelectorAll('[data-target-public]').forEach((element) => {
+    element.addEventListener('click', () => targetPublic(element.dataset.targetPublic));
+  });
+  document.querySelectorAll('[data-save-public]').forEach((element) => {
+    element.addEventListener('click', () => savePublic(element.dataset.savePublic));
+  });
+  document.querySelectorAll('[data-edit-job]').forEach((element) => {
+    element.addEventListener('click', () => {
+      const job = state.jobs.find((item) => item.id === element.dataset.editJob);
+      if (job) editJob(job);
+    });
+  });
+  document.querySelectorAll('[data-apply-job]').forEach((element) => {
+    element.addEventListener('click', () => {
+      const job = state.jobs.find((item) => item.id === element.dataset.applyJob);
+      if (!job) return;
+      if (state.applications.some((application) => application.jobId === job.id)) {
+        toast('该岗位已有台账记录');
+        return;
+      }
+      application(job);
+    });
+  });
+  document.querySelectorAll('[data-task]').forEach((element) => {
+    element.addEventListener('click', () => {
+      const task = state.tasks.find((item) => item.id === element.dataset.task);
+      if (task) taskModal(task);
+    });
+  });
+  document.querySelectorAll('[data-stage]').forEach((element) => {
+    const index = Number(element.dataset.stage);
+    element.value = state.applications[index]?.stage || element.value;
+    element.addEventListener('change', () => stageDialog(index, element.value));
+  });
+  document.querySelectorAll('[data-editapp]').forEach((element) => {
+    element.addEventListener('click', () => application(null, Number(element.dataset.editapp)));
+  });
+  document.querySelectorAll('[data-round]').forEach((element) => {
+    element.addEventListener('click', () => {
+      const index = Number(element.dataset.round);
+      editRound(index, element.dataset.roundIndex === undefined ? undefined : Number(element.dataset.roundIndex));
+    });
+  });
+  document.querySelectorAll('[data-offer]').forEach((element) => {
+    element.addEventListener('click', () => {
+      const application = state.applications[Number(element.dataset.offer)];
+      if (!application) return;
+      const body = `<p class="notice">只记录本人确认的条件，不自动排名、不判断合同。</p>${offerFields.map(([key, label]) => key === 'deadline'
+        ? `<label class="field"><span>${esc(label)}</span><input type="date" name="${key}" value="${esc(application.offer?.[key] || '')}"></label>`
+        : `<label class="field"><span>${esc(label)}</span><textarea name="${key}" maxlength="2000" placeholder="未知请留空">${esc(application.offer?.[key] || '')}</textarea></label>`).join('')}`;
+      modal(`Offer 条件 / ${application.title}`, body, (data) => {
+        const offer = Object.fromEntries(offerFields.map(([key]) => [key, String(data.get(key) || '').trim()]));
+        validateOffer(offer);
+        application.offer = offer;
+        event('offer_updated', application.id || application.title);
+      }, `offer:${application.id || element.dataset.offer}`);
+    });
+  });
+  document.querySelectorAll('[data-answer]').forEach((textarea) => {
+    textarea.addEventListener('input', () => saveInline(`answer-${textarea.dataset.answer}`, textarea.value));
+  });
+  document.querySelectorAll('[data-check]').forEach((checkbox) => {
+    checkbox.addEventListener('change', () => {
+      state.checks ??= {};
+      state.checks[checkbox.dataset.check] = checkbox.checked;
+      save().catch(() => {});
+    });
+  });
+  document.querySelectorAll('[data-ai-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const index = Number(button.dataset.aiAnswer);
+      const textarea = document.querySelector(`[data-answer="${index}"]`);
+      aiPreview('answer_feedback', { questionId: `q${index + 1}`, answer: textarea.value }, async (data) => {
+        state.feedback ??= {};
+        state.feedback[index] = { data, generatedBy: 'AI', generatedAt: new Date().toISOString(), needsReview: true };
+        await save();
+        render();
+      });
+    });
+  });
+  const offer = $('#offer');
+  if (offer) offer.addEventListener('change', () => saveInline('legacy-offer', offer.value));
+  const importInput = $('#importfile');
+  if (importInput) importInput.addEventListener('change', importFile);
+  const search = $('#job-search');
+  if (search) search.addEventListener('input', applyJobFilter);
+  const direction = $('#job-direction');
+  if (direction) direction.addEventListener('change', applyJobFilter);
+  const saveInvite = $('#save-invite');
+  if (saveInvite) {
+    saveInvite.addEventListener('click', async () => {
+      const token = String($('#invite').value || '').trim();
+      sessionStorage.setItem('jobpath-invite', token);
+      try {
+        const response = await fetch('/api/quota', { headers: { Authorization: `Bearer ${token}` } });
+        const quota = await response.json();
+        $('#quota-status').textContent = response.ok
+          ? `今日剩余 ${quota.dailyRemaining} 次 / 窗口 ${quota.windowRemaining} 次 · ${quota.resetTimezone} 重置`
+          : quota.message || '邀请无效';
+      } catch {
+        $('#quota-status').textContent = '无法查询；手动功能不受影响';
+      }
+    });
+  }
+  const clearInvite = $('#clear-invite');
+  if (clearInvite) {
+    clearInvite.addEventListener('click', () => {
+      sessionStorage.removeItem('jobpath-invite');
+      $('#invite').value = '';
+      $('#quota-status').textContent = '已清除会话邀请';
+    });
+  }
+}
+
+const actions = {
+  profile,
+  application: () => application(targetJob()),
+  jd: addJob,
+  plan: openPlan,
+  review: openReview,
+  export: exportBackup,
+  import: () => $('#importfile')?.click(),
+  clear: clearAll
+};
+
+window.addEventListener('beforeunload', (event) => {
+  if (editSession?.dirty() || pendingSaves || saveFailed) {
+    editSession?.capture();
+    event.preventDefault();
+    event.returnValue = '';
+  }
+});
+
+window.addEventListener('hashchange', () => {
+  const next = routeFromHash();
+  if (!next) {
+    history.replaceState(null, '', `#/${page}`);
+    return;
+  }
+  page = next;
+  render();
+});
+
+/* ---------- boot ---------- */
+
+try {
+  db = await openDatabase();
+  const saved = await readRecord(db);
+  if (saved) {
+    state = validateBackup({ app: 'jobpath', schemaVersion: 1, data: saved });
+    revision = state.revision || 0;
+  }
+  saveText = '已保存到此设备';
+} catch {
+  saveText = '临时模式 · 未持久保存';
+  saveFailed = true;
+}
+
+try {
+  const response = await fetch('/api/health', { cache: 'no-store' });
+  if (response.ok) {
+    const health = await response.json();
+    aiEnabled = Boolean(health.aiEnabled);
+    appVersion = health.version || appVersion;
+  }
+} catch {
+  aiEnabled = false;
+}
+
+const initialPage = routeFromHash() || (state.targetId ? 'prepare' : 'opportunities');
+if (!routeFromHash()) history.replaceState(null, '', `#/${initialPage}`);
+page = initialPage;
 render();
-
-function publicJobPanel(){const stats=catalogStats(publicJobs);return panel('CATALOG / OFFICIAL SOURCES',`<h2>官方岗位核验目录</h2><p>当前快照 ${stats.count} 条 / ${stats.companies} 个招聘品牌 · Java/后端 ${stats.directions.java} · 前端 ${stats.directions.web} · 测试 ${stats.directions.test}</p><p class="muted">核验日期 2026-10-30；只确认页面、要求摘录与投递入口，不保证实时在招或本人资格。薪资、截止日未披露则不推测。超过7天提醒复核，超过30天转历史。</p><div class="filters"><label>目录方向<select id="public-direction"><option value="">全部方向</option>${Object.entries(names).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label><label>目录状态<select id="public-status"><option value="current">当前机会快照</option><option value="history">历史 / 待核验</option></select></label><label>搜索官方岗位<input id="public-query" placeholder="公司、岗位、城市"></label></div><div id="public-results"></div>`)}
-function bindPublicJobs(){
- const show=()=>{const q=$('#public-query').value.toLowerCase(),d=$('#public-direction').value,current=$('#public-status').value==='current';const rows=[...publicJobs,...historicalJobs].filter(j=>jobState(j).current===current&&(!d||j.direction===d)&&[j.company,j.title,j.city].join(' ').toLowerCase().includes(q));
- $('#public-results').innerHTML=rows.map(j=>`<details class="task"><summary>${esc(j.company)} / ${esc(j.title)} · ${esc(jobState(j).label)}</summary><p>${esc(j.city||'未记录')} · ${esc(j.intent||'历史记录')} · 薪资：未披露</p><p>资格：${esc(j.eligibility||'不作为当前机会展示')}</p><p>原文摘录：${esc(j.jd||'要求不完整')}</p><p>其余要求摘要：${esc(j.notes||'请查看官方来源')}</p><p>可访问：${j.pageReachable?'是':'未核验'} / 要求摘录：${j.requirementsVerified?'已核验':'未核验'} / ${esc(j.applicationEvidence)}</p><p class="muted">${j.checkedAt.slice(0,10)} · ${esc(j.version)} · 摘录不等于完整JD，技能级别为准备建议，不是雇主评分。</p><a href="${esc(j.source)}" target="_blank" rel="noopener noreferrer">官方详情 ↗</a>${jobState(j).current?` <button data-save-public="${j.id}">${state.jobs.some(x=>x.publicId===j.id)?'已收藏':'收藏岗位快照'}</button>`:''}</details>`).join('')||'<p>没有符合筛选条件的岗位。</p>';
- document.querySelectorAll('[data-save-public]').forEach(b=>b.onclick=()=>{const j=publicJobs.find(x=>x.id===b.dataset.savePublic);if(state.jobs.some(x=>x.publicId===j.id)){toast('已收藏，目录更新不会覆盖你的历史快照');return}modal('收藏官方岗位快照',`<h3>${esc(j.company)} / ${esc(j.title)}</h3><p>${esc(j.eligibility)}</p><p>只保存要求摘录和来源。资格默认为待确认；不会提交申请或更改当前计划。</p>`,()=>{if(state.jobs.some(x=>x.publicId===j.id))throw Error('该岗位已收藏');state.jobs.push(snapshotJob(j,crypto.randomUUID()));event('job_saved',j.id)})});
- };$('#public-direction').onchange=$('#public-status').onchange=$('#public-query').oninput=show;show();
-}

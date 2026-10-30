@@ -10,7 +10,8 @@
     "invite": "node scripts/create-invite.mjs",
     "catalog": "node scripts/export-catalog.mjs",
     "test:e2e": "playwright test",
-    "verify:videos": "node scripts/verify-resource-videos.mjs"
+    "verify:videos": "node scripts/verify-resource-videos.mjs",
+    "recruitment:update": "node scripts/update-recruitment.mjs"
   },
   "engines": {
     "node": ">=22.13.0"
@@ -23,6 +24,7 @@
   "dependencies": {
     "ogl": "^1.0.11",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "playwright": "^1.64.1"
   }
 }

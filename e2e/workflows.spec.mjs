@@ -1,3 +1,4 @@
+import {finishSaved,openSaved,openEdit,openAI} from './saved-helpers.mjs';
 import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
 async function jobs(page){await page.goto('/');await page.getByRole('button',{name:'01 机会 OPPORTUNITIES',exact:true}).click();}
@@ -12,14 +13,14 @@ test('实际尺寸下四页面与目录详情没有横向溢出',async({page},in
  }}
 });
 test('私人JD恶意文本不执行且编辑拒绝危险链接',async({page})=>{
- await jobs(page);await page.getByRole('button',{name:'+ 录入私人 JD',exact:true}).click();await page.locator('[name=title]').fill('合成安全测试');await page.locator('[name=company]').fill('虚构测试');await page.locator('[name=jd]').fill('熟悉 JavaScript <img src=x onerror="document.body.dataset.xss=1">');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.getByRole('heading',{name:'合成安全测试',exact:true})).toBeVisible();expect(await page.locator('img[src=x]').count()).toBe(0);expect(await page.locator('body').getAttribute('data-xss')).toBeNull();
- await page.getByRole('button',{name:'编辑要求与来源',exact:true}).click();await page.locator('[name=source]').fill('javascript:alert(1)');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#form-error')).toContainText('HTTPS');
+ await jobs(page);await page.getByRole('button',{name:'+ 录入私人 JD',exact:true}).click();await page.locator('[name=title]').fill('合成安全测试');await page.locator('[name=company]').fill('虚构测试');await page.locator('[name=jd]').fill('熟悉 JavaScript <img src=x onerror="document.body.dataset.xss=1">');await page.locator('[name=direction]').selectOption('web');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await finishSaved(page);await expect(page.getByRole('heading',{name:'合成安全测试',exact:true})).toBeVisible();expect(await page.locator('img[src=x]').count()).toBe(0);expect(await page.locator('body').getAttribute('data-xss')).toBeNull();
+ await openEdit(page);await page.locator('[name=source]').fill('javascript:alert(1)');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await expect(page.locator('#form-error')).toContainText('HTTPS');
 });
 test('备份回导与未来版本拒绝不破坏数据',async({page})=>{
- await jobs(page);await page.locator('[data-action=jd]').click();await page.locator('[name=title]').fill('备份合成岗位');await page.locator('[name=company]').fill('合成公司');await page.locator('[name=jd]').fill('需要 JavaScript');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await page.getByRole('button',{name:'04 设置 SYSTEM',exact:true}).click();
+ await jobs(page);await page.locator('[data-action=jd]').click();await page.locator('[name=title]').fill('备份合成岗位');await page.locator('[name=company]').fill('合成公司');await page.locator('[name=jd]').fill('需要 JavaScript');await page.locator('[name=direction]').selectOption('web');await page.getByRole('button',{name:'确认并保存',exact:true}).click();await finishSaved(page);await page.getByRole('button',{name:'04 设置 SYSTEM',exact:true}).click();
  const downloadWait=page.waitForEvent('download');await page.getByRole('button',{name:'↓ 导出完整备份',exact:true}).click();const raw=await readFile(await(await downloadWait).path());const backup=JSON.parse(raw);expect(backup.data.jobs).toHaveLength(1);expect(backup.data.jobs[0].jd).toBe('需要 JavaScript');expect(raw.toString()).not.toContain('DEEPSEEK_API_KEY');
  await page.locator('#importfile').setInputFiles({name:'future.json',mimeType:'application/json',buffer:Buffer.from('{"app":"jobpath","schemaVersion":99,"data":{}}')});await expect(page.locator('#toast')).toContainText('格式或版本');
- page.once('dialog',dialog=>dialog.accept());await page.locator('#importfile').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:raw});await expect(page.locator('#toast')).toContainText('备份已恢复');await page.getByRole('button',{name:'01 机会 OPPORTUNITIES',exact:true}).click();await expect(page.getByRole('heading',{name:'已保存的理想 JD / 1'})).toBeVisible();
+ page.once('dialog',dialog=>dialog.accept());await page.locator('#importfile').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:raw});await expect(page.locator('#toast')).toContainText('备份已恢复');await page.getByRole('button',{name:'01 机会 OPPORTUNITIES',exact:true}).click();await expect(page.locator('#saved-count')).toHaveText('找到 1 条 / 共 1 条');
 });
 test('AI关闭且核心页面不向外部发起请求',async({page,request})=>{
  const external=[];page.on('request',r=>{if(!r.url().startsWith('http://127.0.0.1:5197/')&&!r.url().startsWith('data:'))external.push(r.url())});await page.goto('/');await page.getByRole('button',{name:'04 设置 SYSTEM',exact:true}).click();await expect(page.locator('#ai-health')).toContainText('AI 关闭');expect((await(await request.get('/api/health')).json()).aiEnabled).toBe(false);expect(external).toEqual([]);

@@ -182,10 +182,19 @@ function render() {
       : page === 'career'
         ? career({ state, aiEnabled })
         : settings({ state, aiEnabled, version: appVersion });
-  $('#app').innerHTML = `<a class="skip-link" href="#main" data-scroll="main">跳到主要内容</a>${topbar(target)}<main id="main" class="page" tabindex="-1">${content}</main>${footer()}${bottomNav()}`;
+  $('#app').innerHTML = `<a class="skip-link" href="#main" data-scroll="main">跳到主要内容</a><div class="scroll-rail" aria-hidden="true"><i></i></div>${topbar(target)}<main id="main" class="page" tabindex="-1">${content}</main>${footer()}${bottomNav()}`;
   setSaveState();
   bind();
+  updateScrollRail();
   if (page === 'career') recoverInlineDrafts();
+}
+
+function updateScrollRail() {
+  const rail = document.querySelector('.scroll-rail i');
+  if (!rail) return;
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+  rail.style.width = `${pct}%`;
 }
 
 /* ---------- navigation and target ---------- */
@@ -1010,6 +1019,19 @@ function bind() {
       $('#quota-status').textContent = '已清除会话邀请';
     });
   }
+  if (window.matchMedia('(pointer: fine)').matches) {
+    document.querySelectorAll('.job-card, .focus-card').forEach((card) => {
+      card.addEventListener('pointermove', (pointer) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', `${pointer.clientX - rect.left}px`);
+        card.style.setProperty('--my', `${pointer.clientY - rect.top}px`);
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.setProperty('--mx', '50%');
+        card.style.setProperty('--my', '50%');
+      });
+    });
+  }
 }
 
 const actions = {
@@ -1040,6 +1062,9 @@ window.addEventListener('hashchange', () => {
   page = next;
   render();
 });
+
+window.addEventListener('scroll', updateScrollRail, { passive: true });
+window.addEventListener('resize', updateScrollRail);
 
 /* ---------- boot ---------- */
 

@@ -1,4 +1,4 @@
-import { badge, card, emptyState, esc, kv, meter } from './components.js';
+import { badge, card, emptyState, esc, kv } from './components.js';
 import { catalog, types } from '../catalog.js';
 import { publicJobs, historicalJobs, jobState, catalogStats } from '../jobs.js';
 import { match, recommend, weekly } from '../workflow.js';
@@ -33,6 +33,79 @@ function feedbackText(entry) {
   return body || '<p class="muted small">没有可展示的反馈。</p>';
 }
 
+const radarPoint = (angle, radius, cx = 110, cy = 110) => {
+  const radians = (angle * Math.PI) / 180;
+  return [cx + Math.cos(radians) * radius, cy + Math.sin(radians) * radius];
+};
+
+function directionRadar(state) {
+  const angles = [-90, 30, 150];
+  const rows = Object.entries(names).map(([id, label], index) => {
+    const result = recommend(id, state.ratings || {}, state.interests?.[id], state.projectEvidence);
+    return { id, label, ...result, angle: angles[index] };
+  });
+  const hasSignal = rows.some((row) => row.score !== null);
+  const summary = rows.map((row) => `${row.label} ${row.score === null ? '信息不足' : `${row.score}分`}`).join('；');
+  return `<div class="radar-wrap">
+    <svg class="radar" viewBox="0 0 220 220" role="img" aria-label="方向建议雷达：${esc(summary)}">
+      <circle class="radar-ring" cx="110" cy="110" r="88"></circle>
+      <circle class="radar-ring" cx="110" cy="110" r="58"></circle>
+      <circle class="radar-ring" cx="110" cy="110" r="28"></circle>
+      ${rows.map((row) => {
+        const [x, y] = radarPoint(row.angle, 88);
+        return `<line class="radar-axis" x1="110" y1="110" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"></line>`;
+      }).join('')}
+      <g class="radar-sweep"><line x1="110" y1="110" x2="110" y2="22"></line></g>
+      <circle class="radar-origin" cx="110" cy="110" r="3"></circle>
+      ${rows.filter((row) => row.score !== null).map((row) => {
+        const radius = 18 + Math.min(68, row.score * 0.68);
+        const [x, y] = radarPoint(row.angle, radius);
+        return `<g class="radar-blip"><circle class="blip-ping" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8"></circle><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4"></circle></g>`;
+      }).join('')}
+      ${hasSignal ? '' : '<text class="radar-empty" x="110" y="114" text-anchor="middle">NO SIGNAL</text>'}
+    </svg>
+  </div>`;
+}
+
+function capacityDial(used, capacity) {
+  const pct = capacity > 0 ? Math.min(100, Math.round((used / capacity) * 100)) : 0;
+  return `<div class="dial" style="--pct:${pct}" role="img" aria-label="本周已排 ${used} / ${capacity} 分钟">
+    <div class="dial-face"><strong>${pct}<span>%</span></strong><small>${used}/${capacity} MIN</small></div>
+  </div>`;
+}
+
+function flightPath(state, target) {
+  const scoped = (task) => !task.jobId || !target || task.jobId === target.id;
+  const activeTasks = state.tasks.filter((task) => task.status !== '完成' && scoped(task));
+  const hasTarget = Boolean(target);
+  const hasPlan = Boolean(state.activePlan);
+  const hasApplication = state.applications.length > 0;
+  const hasInterview = state.applications.some((application) => ['面试', 'Offer'].includes(application.stage));
+  const hasOffer = state.applications.some((application) => application.stage === 'Offer');
+  let active = 0;
+  if (!hasTarget) active = 0;
+  else if (!hasPlan || activeTasks.length > 0) active = 1;
+  else if (!hasApplication) active = 2;
+  else if (!hasInterview) active = 3;
+  else active = 4;
+  const steps = [
+    ['选岗', hasTarget],
+    ['备战', hasPlan && activeTasks.length === 0],
+    ['投递', hasApplication],
+    ['面试', hasInterview],
+    ['Offer', hasOffer]
+  ];
+  return `<ol class="flightpath" aria-label="求职主线进度">
+    ${steps.map(([label, done], index) => `<li class="${done ? 'is-done' : ''}${index === active ? ' is-active' : ''}"${index === active ? ' aria-current="step"' : ''}><span class="fp-num">${String(index + 1).padStart(2, '0')}</span><span>${label}</span></li>`).join('')}
+  </ol>`;
+}
+
+function signalTicker(items) {
+  return `<div class="signal-ticker" aria-hidden="true">
+    <div class="ticker-track">${[...items, ...items].map((item) => `<span>${esc(item)}</span><i>◆</i>`).join('')}</div>
+  </div>`;
+}
+
 const statusTone = (label = '') => {
   if (/历史|关闭|下线/.test(label)) return 'muted';
   if (/异常|待|未知|未核验|超过7天/.test(label)) return 'warn';
@@ -43,14 +116,6 @@ const safeDate = (value) => String(value || '').slice(0, 10);
 
 function recommendationCard(state) {
   const rated = Object.keys(state.ratings || {}).length;
-  if (!rated) {
-    return card({
-      eyebrow: '方向建议',
-      title: '先完成画像',
-      actions: '<button class="btn btn-ghost btn-sm" data-action="profile">去设置</button>',
-      body: '<p class="card-lede">给 3—5 项技能做自评，再选择兴趣和项目证据，这里才会给出方向建议。</p><p class="muted small">规则建议，不是录用概率。</p>'
-    });
-  }
   const rows = Object.entries(names)
     .map(([id, label]) => {
       const result = recommend(id, state.ratings || {}, state.interests?.[id], state.projectEvidence);
@@ -60,15 +125,13 @@ function recommendationCard(state) {
 
   return card({
     eyebrow: '方向建议',
-    title: '从哪里开始？',
+    title: '从哪个方向开始？',
     actions: '<button class="btn btn-ghost btn-sm" data-action="profile">调整画像</button>',
-    body: `<p class="card-lede">按技能自评、兴趣和项目证据计算。规则建议，不是录用概率。</p>
-      <div class="rec-list">${rows.map((row) => `
-        <div class="rec-row">
-          <div class="rec-top"><span>${esc(row.label)}</span><strong>${row.score === null ? '信息不足' : `${row.score}/100`}</strong></div>
-          ${meter(row.score ?? 0, 100, `${row.label} 规则建议`)}
-          <p class="muted small">信息覆盖 ${Math.round(row.coverage * 100)}%</p>
-        </div>`).join('')}</div>`
+    body: `${directionRadar(state)}
+      ${rated
+        ? `<div class="rec-list compact">${rows.map((row) => `<div class="rec-row"><div class="rec-top"><span>${esc(row.label)}</span><strong>${row.score === null ? '信息不足' : `${row.score}/100`}</strong></div><p class="muted small">信息覆盖 ${Math.round(row.coverage * 100)}%</p></div>`).join('')}</div>`
+        : '<p class="card-lede">给 3—5 项技能做自评，再选择兴趣和项目证据，雷达才会出现信号。</p>'}
+      <p class="muted small">规则建议，不是录用概率。</p>`
   });
 }
 
@@ -88,7 +151,7 @@ function profileCard(state) {
   });
 }
 
-function officialJobCard(job, state, { archived = false } = {}) {
+function officialJobCard(job, state, { archived = false, index = null } = {}) {
   const status = jobState(job);
   const local = state.jobs.find((item) => item.publicId === job.id);
   const isTarget = Boolean(local && local.id === state.targetId);
@@ -96,6 +159,7 @@ function officialJobCard(job, state, { archived = false } = {}) {
   const searchText = [job.company, job.title, job.city, job.intent, requirementText].filter(Boolean).join(' ').toLowerCase();
 
   return `<article class="job-card${isTarget ? ' is-target' : ''}${archived ? ' is-archived' : ''}" data-job-card data-direction="${esc(job.direction)}" data-search="${esc(searchText)}">
+    ${index === null ? '' : `<span class="job-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>`}
     <div class="job-row">
       <p class="job-meta">${esc(job.company)}<span>·</span>${esc(job.city || '城市待确认')}<span>·</span>${esc(job.intent || '类型待确认')}</p>
       ${badge(status.label, statusTone(status.label))}
@@ -127,12 +191,13 @@ function officialJobCard(job, state, { archived = false } = {}) {
   </article>`;
 }
 
-function localJobCard(job, state) {
+function localJobCard(job, state, index = null) {
   const isTarget = job.id === state.targetId;
   const requirements = job.requirements || [];
   const searchText = [job.company, job.title, job.city, job.jd].filter(Boolean).join(' ').toLowerCase();
 
   return `<article class="job-card${isTarget ? ' is-target' : ''}" data-job-card data-direction="${esc(job.direction)}" data-search="${esc(searchText)}">
+    ${index === null ? '' : `<span class="job-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>`}
     <div class="job-row">
       <p class="job-meta">${job.publicId ? '官方快照' : '私人 JD'}<span>·</span>${esc(job.city || '城市待确认')}<span>·</span>${esc(job.intent || '类型待确认')}</p>
       ${isTarget ? badge('当前目标', 'ok') : badge(job.qualification || '资格待确认', 'neutral')}
@@ -157,12 +222,18 @@ function localJobCard(job, state) {
   </article>`;
 }
 
-function startCard() {
+function startCard(stats, currentCount) {
   return `<section class="start-card">
     <div class="start-copy">
       <p class="eyebrow">开始</p>
       <h2>先定一个目标，再谈计划</h2>
       <p>选一个真实岗位，JobPath 才会围绕它算差距、排任务。没有目标时，不做泛泛的"学习计划"。</p>
+      <div class="start-stats">
+        <div><strong>${currentCount}</strong><span>核验岗位</span></div>
+        <div><strong>${stats.companies}</strong><span>招聘品牌</span></div>
+        <div><strong>${catalog.length}</strong><span>学习资源</span></div>
+      </div>
+      <p class="start-route"><span>选岗</span><i>→</i><span>差距</span><i>→</i><span>今日</span><i>→</i><span>证据</span><i>→</i><span>投递</span></p>
     </div>
     <ol class="start-steps">
       <li><span>1</span><div><strong>设定每周时间</strong><p>每周几小时、哪几天有空。</p><button class="btn btn-sm" data-action="profile">设置</button></div></li>
@@ -181,7 +252,7 @@ export function opportunities({ state }) {
   return `<div class="page-head">
     <div>
       <p class="eyebrow">机会 / Opportunities</p>
-      <h1>先选一个目标岗位</h1>
+      <h1 aria-label="先选一个目标岗位">先选一个<span class="mark">目标岗位</span></h1>
       <p class="lede">从官方核验目录挑一个，或粘贴你手上的 JD。选定后，备战页只围绕它。</p>
     </div>
     <div class="page-actions">
@@ -189,7 +260,8 @@ export function opportunities({ state }) {
       <button class="btn" data-action="profile">调整时间</button>
     </div>
   </div>
-  ${target ? '' : startCard()}
+  ${signalTicker([`${current.length} VERIFIED ROLES`, `${stats.companies} HIRING BRANDS`, `${safeDate(current[0]?.checkedAt) || 'SNAPSHOT'} SNAPSHOT`, 'LOCAL-FIRST', 'AI OFF'])}
+  ${target ? '' : startCard(stats, current.length)}
   <div class="filterbar" role="search">
     <label class="search-field"><span class="sr-only">搜索岗位</span><input id="job-search" type="search" placeholder="搜索公司、岗位或技能"></label>
     <label class="select-field"><span>方向</span><select id="job-direction"><option value="">全部方向</option>${Object.entries(names).map(([id, label]) => `<option value="${esc(id)}">${esc(label)}</option>`).join('')}</select></label>
@@ -197,11 +269,11 @@ export function opportunities({ state }) {
   <div class="content-grid">
     <div class="main-col">
       ${myJobs.length ? `<div class="section-head"><h2>我的岗位</h2><span>${myJobs.length}</span></div>
-        <div class="job-list">${myJobs.map((job) => localJobCard(job, state)).join('')}</div>` : ''}
+        <div class="job-list">${myJobs.map((job, index) => localJobCard(job, state, index)).join('')}</div>` : ''}
       <div class="section-head" id="official-jobs"><h2>官方岗位目录</h2><span>${current.length} 条当前机会 · ${stats.companies} 个招聘品牌</span></div>
-      <div class="job-list">${current.length ? current.map((job) => officialJobCard(job, state)).join('') : emptyState('目录快照已过期', '当前没有仍在核验期内的官方岗位；你仍可以粘贴 JD，或查看历史岗位。')}</div>
+      <div class="job-list">${current.length ? current.map((job, index) => officialJobCard(job, state, { index })).join('') : emptyState('目录快照已过期', '当前没有仍在核验期内的官方岗位；你仍可以粘贴 JD，或查看历史岗位。')}</div>
       <p id="job-empty" class="empty-inline" hidden>没有匹配的岗位。试试放宽搜索，或直接粘贴一份 JD。</p>
-      ${archived.length ? `<details class="archive"><summary>历史与已关闭岗位 / ${archived.length}</summary><div class="job-list">${archived.map((job) => officialJobCard(job, state, { archived: true })).join('')}</div></details>` : ''}
+      ${archived.length ? `<details class="archive"><summary>历史与已关闭岗位 / ${archived.length}</summary><div class="job-list">${archived.map((job, index) => officialJobCard(job, state, { archived: true, index })).join('')}</div></details>` : ''}
     </div>
     <aside class="side-col">
       ${recommendationCard(state)}
@@ -302,12 +374,13 @@ export function prepare({ state, target }) {
       <a class="btn" href="#/opportunities">换目标</a>
     </div>
   </div>
+  ${flightPath(state, target)}
   <div class="content-grid">
     <div class="main-col">
       <section class="card focus-card">
         <header class="card-head">
           <div class="card-title"><p class="eyebrow">今天</p><h2>${todayTasks.length ? '先做这一件事' : '还没有本周任务'}</h2></div>
-          <span class="pill">本周 ${used} / ${capacity} 分钟</span>
+          <div class="focus-meter">${capacityDial(used, capacity)}<span class="muted small">本周容量</span></div>
         </header>
         <div class="card-body">
           ${todayTasks.length ? todayTasks.map(taskRow).join('') : '<p class="card-lede">按每周可投入时间生成 4 或 8 周路线；只有第 1 周会写入行动队列，后续周只是预计。</p>'}
@@ -405,7 +478,7 @@ export function career({ state, aiEnabled = false }) {
   <div class="stage-strip">${counts.map(({ stage, count }) => `<span class="stage-chip${count ? ' has-items' : ''}">${esc(stage)}<b>${count}</b></span>`).join('')}</div>
   <div class="content-grid">
     <div class="main-col">
-      ${state.applications.length ? `<div class="app-list">${state.applications.map(applicationCard).join('')}</div>` : emptyState('还没有投递记录', '从目标岗位开始，把一次真实的投递记下来；没有投递也可以先记录准备中的岗位。', '<button class="btn btn-primary btn-sm" data-action="application">添加第一条</button>')}
+      ${state.applications.length ? `<div class="app-list">${state.applications.map(applicationCard).join('')}</div>` : emptyState('还没有投递记录', '从目标岗位开始，把一次真实的投递记下来；没有投递也可以先记录准备中的岗位。', '<button class="btn btn-sm" data-action="application">添加第一条</button>')}
       <details class="card disclosure"${state.applications.some((application) => application.stage === 'Offer') ? ' open' : ''}>
         <summary>Offer 事实对比 <span class="muted small">只整理本人确认的信息</span></summary>
         <div class="card-body">${offerSection(state)}</div>

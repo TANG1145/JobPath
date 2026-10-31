@@ -28,7 +28,7 @@ test('AI关闭且核心页面不向外部发起请求',async({page,request})=>{
 
 test('三方向资源直链、出处、技能替代与修复说明',async({page})=>{
  await jobs(page);for(const direction of ['java','web','test']){
- await page.locator(`[data-category-open="${direction}"]`).click();await page.locator('.direction-info summary').click();await page.locator(`[data-detail-direction="${direction}"]`).click();await page.locator('#resource-type').selectOption('video');await expect(page.locator('#resource-results details')).toHaveCount(2);
+ await page.locator('[data-page=prep]').click();await page.locator('#resource-direction').selectOption(direction);await page.locator('#resource-type').selectOption('video');await expect(page.locator('#resource-results details')).toHaveCount(2);
  for(const item of await page.locator('#resource-results details').all()){await item.locator('summary').click();await expect(item).toContainText('已抽样播放');await expect(item.getByRole('link',{name:'直接播放（官方MP4）'})).toHaveAttribute('href',/^https:\/\/cdn\.cs50\.net\/.+\.mp4$/);await expect(item.getByRole('link',{name:'课程出处'})).toHaveAttribute('href',/^https:\/\/cs50\.harvard\.edu\//);}
  await page.locator('#resource-type').selectOption('project');if(direction==='web'||direction==='test'){await page.locator('#resource-results summary').nth(direction==='web'?0:1).click();await expect(page.getByRole('link',{name:'修复与运行说明（先阅读）'})).toHaveAttribute('href','/public/resource-guide.html');}
  await page.locator('[data-page=jobs]').click();

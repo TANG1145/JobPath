@@ -1,6 +1,5 @@
 import {categories} from './opportunity-categories.js';
 export const occupationName=id=>categories.find(c=>c.id===id)?.title||'方向待确认';
-export const hasTemplate=id=>['web','java','test'].includes(id);
 export const recordStage=j=>j.recordStage||(j.publicId&&j.requirementsComplete===false?'summary':'full');
 export const contentLabel=j=>recordStage(j)==='summary'?'招聘摘要':j.requirements?.length?'要求已整理':'已补充原文';
 export function savedRecords(state){return [...state.jobs.filter(j=>!j.removed).map(j=>({...j,key:'job:'+j.id})),...(state.recruitmentSaves||[]).map(r=>({...r,key:'recruit:'+r.id,direction:r.category,jd:r.summary||'',recordStage:'summary'}))]}

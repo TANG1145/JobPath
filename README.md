@@ -2,9 +2,11 @@
 
 岗位要求驱动的本地求职备战工作台，卡带未来主义风格。私有仓库：https://github.com/TANG1145/JobPath 。不部署上线，真实 AI 默认关闭。
 
+> `tb-b-integrate` 在 tjj 基座上增加 `/explore.html`：18 方向水晶球探索，使用真实 Strands WebGL 纹理、36 条招聘记录与 96 条资源；从「机会 → 探索岗位」工具栏进入。说明见 [B 集成记录](docs/EXPLORE_B_INTEGRATION.md)。
+
 ## 运行与测试
 
-Node.js 24/25 推荐（最低22.13）。运行应用无需第三方生产依赖。
+Node.js 24/25 推荐（最低22.13）。前端球体导航使用 React 19 与 matter-js；`npm ci` 安装依赖，`npm run dev` 会先构建 Strands bundle，再启动本地服务。
 
 ```sh
 npm ci

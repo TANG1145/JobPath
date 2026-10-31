@@ -1,0 +1,15 @@
+JobPath tb-explore unit / contract verification
+2026-10-31, Node 24.21.0, Windows
+
+$ npm test
+> node --test tests/*.test.js
+
+tests 70
+pass 70
+fail 0
+cancelled 0
+skipped 0
+duration_ms 291.5269
+
+The exploration prototype is presentation-only and does not change the domain,
+storage, AI gateway or backup contract.

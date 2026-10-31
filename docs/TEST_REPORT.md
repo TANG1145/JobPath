@@ -7,9 +7,9 @@
 本分支只改前端展示层，不改领域、存储、后端和备份 schema。验收记录：
 
 - 单元/接口：70 / 70 通过（Node 24）。
-- Playwright：重写为 24 条（3 文件 × 8），Chromium、Firefox、WebKit 各 8 / 8，共 24 / 24 通过；日志见 [audit/v08/e2e.txt](audit/v08/e2e.txt)。
-- 覆盖：首访选岗、计划生成、任务完成、刷新保留、粘贴 JD + XSS、来源 URL 校验、投递/轮次/Offer、备份导出/导入/未来版本拒绝、草稿恢复、双标签冲突、保存失败重试、320/390/768 无溢出、AI 关闭无外发请求。
-- 构建：`npm run build` 通过；截图见 [v08](audit/v08)。
+- Playwright：30 条（4 文件 × 10 / 浏览器），Chromium、Firefox、WebKit 各 10 / 10，共 30 / 30 通过；日志见 [audit/v09/e2e.txt](audit/v09/e2e.txt)。
+- 覆盖：首访选岗、计划生成、任务完成、刷新保留、粘贴 JD + XSS、来源 URL 校验、投递/轮次/Offer、备份导出/导入/未来版本拒绝、草稿恢复、双标签冲突、保存失败重试、320/390/768 无溢出、AI 关闭无外发请求、18 方向探索页。
+- 构建：`npm run build` 通过；截图见 [v09](audit/v09)（探索原型）与 [v08](audit/v08)（主工作台）。
 - 设计与分工见 [前端重塑说明](FRONTEND_REDESIGN.md)、[分工文档](TEAM_PLAN.md)。
 - 已知阻断：应用侧岗位 `checkedAt` 时间依赖未修；E2E 已固定时钟，真实演示仍建议在合并前更新快照。
 

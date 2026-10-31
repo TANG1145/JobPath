@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="JobPath 探索原型：18 个职业方向的水晶球导航。">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231b1d16'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='14' fill='%23ece5d2' text-anchor='middle'%3EJP%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/explore.css">
+  <title>探索 18 个方向 · JobPath</title>
+</head>
+<body class="explore-body">
+  <header class="explore-bar">
+    <a class="brand" href="/" aria-label="启职 JobPath 首页">
+      <span class="brand-mark">JP</span>
+      <span class="brand-text"><strong>启职</strong><small>JOBPATH / EXPLORE</small></span>
+    </a>
+    <div class="explore-context">
+      <span class="eyebrow">探索 / Explore</span>
+      <strong>18 个方向</strong>
+    </div>
+    <label class="explore-search">
+      <span class="sr-only">搜索方向或技能</span>
+      <input id="explore-search" type="search" autocomplete="off" placeholder="搜索方向、技能或关键词">
+      <kbd>/</kbd>
+    </label>
+    <div class="explore-tools">
+      <button id="view-toggle" class="btn btn-sm" type="button" aria-pressed="false">列表视图</button>
+      <a class="btn btn-ghost btn-sm" href="/">返回工作台 ↗</a>
+    </div>
+  </header>
+
+  <main class="explore-main">
+    <section class="explore-side">
+      <div class="explore-intro">
+        <p class="eyebrow">Career field / 18 signals</p>
+        <h1>先看看，<br><span class="mark">你可能去哪</span>。</h1>
+        <p class="lede">拖动、点击一颗水晶球。每个方向都不是岗位保证，只是一条可以继续查证的路。</p>
+        <p class="explore-hint"><span class="lede-dot"></span> 拖动球体 / 点击查看 / 支持键盘 Tab</p>
+      </div>
+      <section id="category-detail" class="category-detail" aria-live="polite">
+        <p class="eyebrow">Select / 选择一个方向</p>
+        <h2>先选一颗球</h2>
+        <p class="category-copy">这里会显示方向的职责、能力关键词，以及当前目录里可核验的岗位数量。</p>
+      </section>
+    </section>
+
+    <section class="orb-stage" aria-label="18 个职业方向的水晶球">
+      <div class="orb-field" id="orb-field">
+        <div class="field-hud">
+          <span>FIELD / 18 SIGNALS</span>
+          <button id="random-orb" class="btn btn-ghost btn-sm" type="button">随机一颗</button>
+        </div>
+        <div class="orb-layer" id="orb-layer"></div>
+        <div class="field-foot">
+          <span>LOCAL / NO CLOUD</span>
+          <span>DRAG · CLICK · TYPE TO SEARCH</span>
+        </div>
+      </div>
+      <div id="explore-list" class="explore-list" hidden></div>
+    </section>
+  </main>
+
+  <noscript><p class="explore-noscript">需要 JavaScript 才能拖动水晶球；请使用支持 JavaScript 的浏览器。</p></noscript>
+  <script type="module" src="/src/explore.js"></script>
+</body>
+</html>

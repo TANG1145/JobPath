@@ -256,6 +256,7 @@ export function opportunities({ state }) {
       <p class="lede">从官方核验目录挑一个，或粘贴你手上的 JD。选定后，备战页只围绕它。</p>
     </div>
     <div class="page-actions">
+      <a class="btn" href="/explore.html">◎ 探索 18 个方向</a>
       <button class="btn btn-primary" data-action="jd">+ 粘贴岗位 JD</button>
       <button class="btn" data-action="profile">调整时间</button>
     </div>

@@ -1,0 +1,23 @@
+JobPath tb-explore prototype verification
+2026-10-31, Node 24.21.0, Windows
+
+$ npx playwright test --headed --workers=1
+Running 30 tests using 1 worker
+
+Chromium (10 / 10), Firefox (10 / 10), WebKit (10 / 10)
+  30 passed (1.2m)
+
+Includes:
+- all 8 existing mainline/career/draft flows per browser
+- explore.html: 18 orbs, selection, search, list view, back to workbench
+- explore.html at 390px: three-column grid, no horizontal overflow, detail visible
+
+Note: orb clicks use force clicks in the exploration spec because the field is a
+deliberately moving physics canvas. Production users can still click/tap the spheres;
+hovering pauses an orb's drift for easier selection.
+
+$ npm test
+70 tests, 70 pass, 0 fail
+
+$ npm run build
+Built dist/

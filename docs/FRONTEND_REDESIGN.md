@@ -140,10 +140,10 @@ src/ui/views.js             四个页面的纯渲染函数
 ## 7. 本地验证
 
 - 单元/接口：70 / 70 通过。
-- Playwright：24 条用例（3 文件 × 8），Chromium、Firefox、WebKit 各 8 / 8，共 24 / 24 通过。
-- 覆盖：首访选岗、计划生成、任务完成、刷新保留、粘贴 JD + XSS、来源 URL 校验、投递/轮次/Offer、备份导出/导入/未来版本拒绝、草稿恢复、双标签冲突、保存失败重试、320/390/768 无溢出、AI 关闭无外发请求。
+- Playwright：30 条用例（4 文件 × 10 / 浏览器），Chromium、Firefox、WebKit 各 10 / 10，共 30 / 30 通过。
+- 覆盖：首访选岗、计划生成、任务完成、刷新保留、粘贴 JD + XSS、来源 URL 校验、投递/轮次/Offer、备份导出/导入/未来版本拒绝、草稿恢复、双标签冲突、保存失败重试、320/390/768 无溢出、AI 关闭无外发请求、18 方向探索页。
 - 浏览器检查无 pageerror；控制台 404 已通过内联 favicon 修复。
-- 构建：`npm run build` 通过。日志见 [e2e.txt](audit/v08/e2e.txt)、[unit.txt](audit/v08/unit.txt)。
+- 构建：`npm run build` 通过。日志见 [e2e.txt](audit/v09/e2e.txt)、[unit.txt](audit/v09/unit.txt)。
 
 ```sh
 npm ci
@@ -167,3 +167,15 @@ npm run build
 - P0：修时间快照；合并 `tb-dev`。
 - P1：拆 `app.js`；补 a11y axe；AI 三个上下文入口；旧备份任务 key 迁移。
 - P2：静态降级 demo、README 同步、依赖与许可证治理。
+
+## 10. 探索原型（tb-explore）
+
+`tb-explore` 从 `tb-dev` 切出，新增独立 `/explore.html`：
+
+- 18 个方向的水晶球场地，DOM/CSS 球体 + 轻量物理；
+- 拖动、悬停暂停、点击详情、搜索、列表降级、随机一颗；
+- 移动端 760px 以下切换三列网格；`prefers-reduced-motion` 停止漂移；
+- 方向数据来自 `tjj` 的 taxonomy，但岗位计数只统计现有 3 方向目录，不伪造 18 方向岗位；
+- 不引入 React/matter.js/WebGL；如果原型通过，再把 Strands 接进 `tjj` 基座。
+
+截图：[桌面](audit/v09/explore-desktop.png)、[手机](audit/v09/explore-mobile.png)、[列表](audit/v09/explore-list.png)。细节见 [EXPLORE_PROTOTYPE.md](EXPLORE_PROTOTYPE.md)。

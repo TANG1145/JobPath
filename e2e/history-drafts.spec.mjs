@@ -1,4 +1,4 @@
-import {finishSaved,openSaved,openEdit,openAI} from './saved-helpers.mjs';
+import {finishSaved,openSaved,openEdit} from './saved-helpers.mjs';
 import {test,expect} from '@playwright/test';
 test.setTimeout(process.env.CI?90000:30000);
 async function confirm(page){await page.getByRole('button',{name:'确认并保存',exact:true}).click();await finishSaved(page);await expect(page.locator('#modal')).not.toBeVisible()}

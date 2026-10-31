@@ -1,4 +1,4 @@
-import {finishSaved,openSaved,openEdit,openAI} from './saved-helpers.mjs';
+import {finishSaved,openSaved,openEdit} from './saved-helpers.mjs';
 import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
 async function jobs(page){await page.goto('/');await page.getByRole('button',{name:'01 机会 OPPORTUNITIES',exact:true}).click();}

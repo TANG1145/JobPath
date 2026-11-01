@@ -1,5 +1,5 @@
 JobPath tb-b-integrate verification
-2026-10-31, Node 24.21.0, Windows
+2026-10-31—11-01, Node 24.21.0, Windows
 
 $ npm test
 tests 94
@@ -10,13 +10,16 @@ $ npm run build
 Built dist/
 Generated public/visuals/strands.js (esbuild bundle)
 
-$ npx playwright test
+$ npx playwright test (full suite, before the job-chain round)
 49 tests per browser; Chromium, Firefox, WebKit
 147 passed total
-- Includes the full tjj suite (47 per browser)
-- Includes 2 B integration tests:
-  - opportunities toolbar -> /explore.html -> 18 orbs, real job counts, search, list, back
-  - 390px three-column grid, no horizontal overflow, detail visible
+
+$ npx playwright test --grep "B 集成" (after direction -> job list -> job detail chain)
+2 tests per browser; Chromium, Firefox, WebKit
+6 passed
+- opportunities toolbar -> /explore.html -> 18 orbs, real job counts, search, list, back
+- direction -> job list (4 records) -> job detail (official source https) -> back to list -> back to direction
+- 390px three-column grid, no horizontal overflow, detail visible
 
 Chromium was run headed because the local headless-shell binary was not installed;
 Firefox and WebKit were run headless. The same assertions passed in all three.

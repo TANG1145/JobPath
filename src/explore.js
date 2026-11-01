@@ -25,6 +25,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const pointer = { x: 0, y: 0, inside: false };
 const orbs = [];
 let selectedId = '';
+let detailView = 'direction';
 let view = 'field';
 let grid = false;
 let dragging = null;
@@ -34,6 +35,19 @@ let frameRequest = 0;
 
 const countFor = (id) => jobsForCategory(id).length;
 const resourcesFor = (id) => expandedResources.filter((resource) => resource.direction === id).length;
+const currentCategory = () => categories.find((category) => category.id === selectedId);
+const safeDate = (value) => String(value || '').slice(0, 10);
+const safeSource = (value) => {
+  try {
+    const url = new URL(String(value || ''));
+    return url.protocol === 'https:' ? url.href : '';
+  } catch {
+    return '';
+  }
+};
+const statusBadge = (job) => (job.hiringStatus === 'open'
+  ? '<span class="status-badge is-open">可投（核验时）</span>'
+  : '<span class="status-badge is-pending">待核验</span>');
 
 function renderOrb(orb) {
   if (grid) return;
@@ -111,6 +125,7 @@ function renderDetail(category) {
   const count = jobs.length;
   const resources = resourcesFor(category.id);
   const samples = jobs.slice(0, 2).map((job) => `<li><strong>${esc(job.company || '未注明公司')}</strong> · ${esc(job.title)}<span>${esc(job.city || '城市待确认')} · ${esc(job.intent || '类型待确认')}</span></li>`).join('');
+  detailView = 'direction';
   detail.innerHTML = `<p class="eyebrow">Selected / ${esc(category.code)}</p>
     <p class="category-code">${esc(category.code)}</p>
     <h2>${esc(category.title)}</h2>
@@ -121,19 +136,100 @@ function renderDetail(category) {
     <p class="empty-category">招聘记录包含待核验状态；它不是实时在招保证，也不会自动替你做投递决定。</p>
     <div class="keyword-row">${category.keywords.slice(0, 8).map((keyword) => `<span>${esc(keyword)}</span>`).join('')}</div>
     <div class="category-actions">
-      <a class="btn btn-primary btn-sm" href="/">去机会页</a>
+      <button class="btn btn-primary btn-sm" type="button" data-jobs-view="${esc(category.id)}">查看 ${count} 条岗位 →</button>
       <button class="btn btn-sm" type="button" id="copy-keywords">复制关键词</button>
     </div>`;
-  const copy = $('#copy-keywords');
-  copy.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(category.keywords.join(' '));
-      copy.textContent = '已复制';
-      setTimeout(() => { copy.textContent = '复制关键词'; }, 1600);
-    } catch {
-      copy.textContent = '复制失败';
+}
+
+function renderJobList(category) {
+  const jobs = jobsForCategory(category.id)
+    .slice()
+    .sort((a, b) => (a.hiringStatus === 'open' ? 0 : 1) - (b.hiringStatus === 'open' ? 0 : 1));
+  detailView = 'jobs';
+  detail.innerHTML = `<div class="back-row">
+      <button class="btn btn-ghost btn-sm" type="button" data-back-direction="${esc(category.id)}">← ${esc(category.title)}</button>
+      <span class="eyebrow">Jobs / ${jobs.length}</span>
+    </div>
+    <h2>${esc(category.title)} · ${jobs.length} 条招聘记录</h2>
+    <p class="empty-category">包含待核验记录；状态与资格以官网为准，本页不自动投递。</p>
+    ${jobs.length
+      ? `<div class="job-list-panel">${jobs.map((job) => `<button type="button" class="job-row" data-job-id="${esc(job.id)}">
+          <span class="job-row-head"><strong>${esc(job.company || '未注明公司')} · ${esc(job.title)}</strong>${statusBadge(job)}</span>
+          <span class="job-row-meta">${esc(job.city || '城市待确认')} · ${esc(job.intent || '类型待确认')} · 核验 ${safeDate(job.checkedAt)}</span>
+          <span class="job-row-verification">${esc(job.verification || '')}</span>
+        </button>`).join('')}</div>`
+      : '<p class="empty-category">这个方向暂时没有招聘记录；回到机会页，粘贴一份真实 JD 先当目标。</p>'}
+    <div class="category-actions"><a class="btn btn-sm" href="/">回机会页</a></div>`;
+}
+
+function renderJobDetail(job, category) {
+  const source = safeSource(job.source);
+  const experience = String(job.experience || '').trim();
+  const eligibility = String(job.eligibility || '').trim();
+  detailView = 'job';
+  detail.innerHTML = `<div class="back-row">
+      <button class="btn btn-ghost btn-sm" type="button" data-back-jobs="${esc(category.id)}">← 岗位列表</button>
+      <span class="eyebrow">Job / ${esc(job.id)}</span>
+    </div>
+    <h2>${esc(job.title)}</h2>
+    <p class="job-detail-company">${esc(job.company || '未注明公司')} · ${esc(job.city || '城市待确认')} · ${esc(job.intent || '类型待确认')}</p>
+    <div class="job-meta-grid">
+      <div><span>状态</span>${statusBadge(job)}</div>
+      <div><span>来源更新</span>${esc(safeDate(job.sourceUpdated) || '未记录')}</div>
+      <div><span>核验时间</span>${esc(safeDate(job.checkedAt))}</div>
+    </div>
+    ${eligibility ? `<section class="job-section"><h3>资格与要求</h3><p class="prewrap">${esc(eligibility)}</p></section>` : ''}
+    ${experience && experience !== eligibility ? `<section class="job-section"><h3>经验与备注</h3><p class="prewrap">${esc(experience)}</p></section>` : ''}
+    <section class="job-section"><h3>岗位摘要</h3><p class="prewrap">${esc(job.summary || '官方来源未提供摘要；请打开原站核对。')}</p></section>
+    <section class="job-section"><h3>核验说明</h3><p class="job-verification">${esc(job.verification || '未记录')}</p></section>
+    <div class="category-actions">
+      ${source ? `<a class="btn btn-primary btn-sm" href="${esc(source)}" target="_blank" rel="noopener noreferrer">官方来源 ↗</a>` : ''}
+      <button class="btn btn-sm" type="button" data-back-jobs="${esc(category.id)}">返回列表</button>
+    </div>
+    <p class="empty-category">薪资、截止日期与最新在招状态以官网为准；本页不会替你投递或自动推进阶段。</p>`;
+}
+
+function onDetailClick(event) {
+  const jobsButton = event.target.closest('[data-jobs-view]');
+  if (jobsButton) {
+    const category = categories.find((item) => item.id === jobsButton.dataset.jobsView);
+    if (category) {
+      renderJobList(category);
+      if (grid) detail.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
     }
-  });
+    return;
+  }
+  const jobRow = event.target.closest('[data-job-id]');
+  if (jobRow) {
+    const category = currentCategory();
+    const job = category ? jobsForCategory(category.id).find((item) => item.id === jobRow.dataset.jobId) : null;
+    if (job) {
+      renderJobDetail(job, category);
+      if (grid) detail.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
+    }
+    return;
+  }
+  const backDirection = event.target.closest('[data-back-direction]');
+  if (backDirection) {
+    const category = categories.find((item) => item.id === backDirection.dataset.backDirection);
+    if (category) renderDetail(category);
+    return;
+  }
+  const backJobs = event.target.closest('[data-back-jobs]');
+  if (backJobs) {
+    const category = categories.find((item) => item.id === backJobs.dataset.backJobs);
+    if (category) renderJobList(category);
+    return;
+  }
+  if (event.target.closest('#copy-keywords')) {
+    const category = currentCategory();
+    if (!category) return;
+    const button = $('#copy-keywords');
+    navigator.clipboard.writeText(category.keywords.join(' ')).then(() => {
+      button.textContent = '已复制';
+      setTimeout(() => { button.textContent = '复制关键词'; }, 1600);
+    }).catch(() => { button.textContent = '复制失败'; });
+  }
 }
 
 function selectCategory(id, { scroll = false } = {}) {
@@ -361,6 +457,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 toggle.addEventListener('click', () => setView(view === 'list' ? 'field' : 'list'));
+detail.addEventListener('click', onDetailClick);
 randomButton.addEventListener('click', () => {
   const visible = orbs.filter((orb) => !orb.element.hidden);
   const pick = visible[Math.floor(Math.random() * visible.length)] || orbs[0];

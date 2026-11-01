@@ -15,6 +15,17 @@ test('B 集成：从机会页进入 18 方向探索，选择与筛选可用', as
   await expect(page.locator('#category-detail h2')).toHaveText('产品策划');
   await expect(page.locator('.category-count')).toContainText('4');
 
+  await page.getByRole('button', { name: /查看 4 条岗位/ }).click();
+  await expect(page.locator('.job-row')).toHaveCount(4);
+  await page.locator('.job-row').first().click();
+  await expect(page.locator('#category-detail h2')).not.toHaveText('产品策划');
+  await expect(page.locator('a:has-text("官方来源")')).toHaveCount(1);
+  await expect(page.locator('a:has-text("官方来源")')).toHaveAttribute('href', /^https:\/\//);
+  await page.getByRole('button', { name: '← 岗位列表' }).first().click();
+  await expect(page.locator('.job-row')).toHaveCount(4);
+  await page.getByRole('button', { name: '← 产品策划' }).click();
+  await expect(page.locator('#category-detail h2')).toHaveText('产品策划');
+
   await page.locator('#explore-search').fill('数据');
   await expect(page.locator('.orb:visible')).toHaveCount(5);
   await page.locator('#view-toggle').click();
@@ -36,5 +47,9 @@ test('B 集成移动端：三列水晶球、无横向溢出、详情可见', asy
   await page.locator('.orb[data-id="operations"]').click({ force: true });
   await expect(page.locator('#category-detail h2')).toHaveText('产品与内容运营');
   await expect(page.locator('#category-detail h2')).toBeVisible();
+  await page.locator('[data-jobs-view]').click();
+  expect(await page.locator('.job-row').count()).toBeGreaterThan(0);
+  await page.locator('.job-row').first().click();
+  await expect(page.locator('a:has-text("官方来源")')).toHaveCount(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });

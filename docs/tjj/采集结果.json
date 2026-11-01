@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-30T11:57:56.431Z",
+  "checked": 36,
+  "open": 16,
+  "closed": 0,
+  "unknown": 20,
+  "discovery": [
+    {
+      "company": "百度",
+      "added": 6,
+      "note": "仅检查公开列表首页，非全量"
+    },
+    {
+      "company": "哔哩哔哩",
+      "added": 0,
+      "note": "当前列表没有可解析详情链接，未宣称没有新岗位"
+    }
+  ]
+}

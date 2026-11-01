@@ -1,0 +1,27 @@
+// Maintainer / institutional documentation and repositories; these are optional learning materials, not a syllabus.
+const pairs={
+web:[['Vue','Vue 官方指南','https://vuejs.org/guide/','Vue 核心实现','vuejs/core','组件与响应式机制'],['无障碍','W3C WAI 教程','https://www.w3.org/WAI/tutorials/','GOV.UK Frontend','alphagov/govuk-frontend','表单与键盘可访问性']],
+java:[['Spring Boot','Spring Boot 文档','https://docs.spring.io/spring-boot/','Spring Boot','spring-projects/spring-boot','配置与服务测试'],['JVM','OpenJDK 开发指南','https://openjdk.org/guide/','OpenJDK JDK','openjdk/jdk','阅读集合实现与测试']],
+test:[['Vitest','Vitest 指南','https://vitest.dev/guide/','Vitest','vitest-dev/vitest','单元测试与隔离'],['性能测试','k6 官方文档','https://grafana.com/docs/k6/latest/','Grafana k6','grafana/k6','负载脚本与指标解释']],
+ai:[['PyTorch','PyTorch 官方教程','https://docs.pytorch.org/tutorials/','PyTorch Examples','pytorch/examples','训练循环与评估'],['Transformers','Hugging Face LLM 课程','https://huggingface.co/learn/llm-course/chapter1/1','Transformers','huggingface/transformers','模型推理与小规模实验']],
+data:[['pandas','pandas 入门教程','https://pandas.pydata.org/docs/getting_started/intro_tutorials/','pandas','pandas-dev/pandas','清洗、聚合与可视化'],['数据分析','Apache Superset 文档','https://superset.apache.org/docs/intro','Apache Superset','apache/superset','指标查询与仪表盘']],
+security:[['应用安全','OWASP Juice Shop 指南','https://pwning.owasp-juice.shop/','OWASP Juice Shop','juice-shop/juice-shop','仅在本地靶场分析漏洞与修复'],['安全测试','OWASP WebGoat','https://owasp.org/www-project-webgoat/','OWASP WebGoat','WebGoat/WebGoat','仅在授权环境完成教学实验']],
+product:[['用户研究','GOV.UK 用户研究指南','https://www.gov.uk/service-manual/user-research','GOV.UK Prototype Kit','alphagov/govuk-prototype-kit','用户问题与可测试原型'],['产品协作','Taiga 官方文档','https://docs.taiga.io/','Taiga 前端','taigaio/taiga-front','需求拆分与迭代协作']],
+game:[['Godot','Godot 入门文档','https://docs.godotengine.org/en/stable/getting_started/introduction/','Godot Demo Projects','godotengine/godot-demo-projects','场景、输入与交互'],['Bevy','Bevy 学习入口','https://bevy.org/learn/','Bevy','bevyengine/bevy','ECS 与示例游戏']],
+mobile:[['Android','Android Compose 教程','https://developer.android.com/develop/ui/compose/tutorial','Now in Android','android/nowinandroid','Compose 界面与应用架构'],['Flutter','Flutter 学习文档','https://docs.flutter.dev/learn','Flutter Samples','flutter/samples','跨端界面与状态管理']],
+embedded:[['Zephyr','Zephyr 入门','https://docs.zephyrproject.org/latest/develop/getting_started/index.html','Zephyr','zephyrproject-rtos/zephyr','仿真示例与驱动接口'],['ESP-IDF','ESP-IDF 编程指南','https://docs.espressif.com/projects/esp-idf/en/stable/esp32/','ESP-IDF','espressif/esp-idf','固件构建与外设示例']],
+multimedia:[['FFmpeg','FFmpeg 官方文档','https://github.com/FFmpeg/FFmpeg/tree/master/doc','FFmpeg','FFmpeg/FFmpeg','转码参数与媒体元数据'],['OpenCV','OpenCV 教程','https://github.com/opencv/opencv/tree/4.x/doc/tutorials','OpenCV','opencv/opencv','图像处理与小样本验证']],
+robotics:[['ROS 2','ROS 2 Jazzy 教程','https://docs.ros.org/en/jazzy/Tutorials.html','ROS 2 Examples','ros2/examples','节点通信与仿真'],['机器人学习','LeRobot 官方文档','https://huggingface.co/docs/lerobot/index','LeRobot','huggingface/lerobot','数据集、策略与离线评估']],
+cloud:[['Kubernetes','Kubernetes 教程','https://kubernetes.io/docs/tutorials/','Kubernetes Examples','kubernetes/examples','容器部署与故障排查'],['Prometheus','Prometheus 入门','https://prometheus.io/docs/introduction/first_steps/','Prometheus','prometheus/prometheus','采集指标与告警规则']],
+database:[['PostgreSQL','PostgreSQL 内部结构','https://www.postgresql.org/docs/current/internals.html','PostgreSQL','postgres/postgres','查询执行与存储结构'],['DuckDB','DuckDB 文档','https://duckdb.org/docs/stable/','DuckDB','duckdb/duckdb','分析查询与执行计划']],
+hardware:[['KiCad','KiCad 官方文档','https://docs.kicad.org/','KiCad 源码与 demos','KiCad/kicad-source-mirror','原理图、PCB 与设计规则'],['Raspberry Pi','Raspberry Pi Pico 文档','https://github.com/raspberrypi/documentation','Pico Examples','raspberrypi/pico-examples','GPIO 与板级接口实验']],
+chip:[['Verilator','Verilator 入门','https://verilator.org/guide/latest/','Verilator','verilator/verilator','RTL 仿真与波形'],['cocotb','cocotb 官方文档','https://docs.cocotb.org/en/stable/','cocotb','cocotb/cocotb','Python 测试平台与验证']],
+design:[['设计系统','GOV.UK Design System','https://design-system.service.gov.uk/','GOV.UK Design System 源码','alphagov/govuk-design-system','组件规范与可用性'],['Penpot','Penpot 使用指南','https://help.penpot.app/','Penpot','penpot/penpot','交互原型与设计交付']],
+operations:[['内容运营','WordPress 学习中心','https://learn.wordpress.org/','WordPress','WordPress/WordPress','内容结构与发布流程'],['数据复盘','Matomo 用户指南','https://matomo.org/guides/','Matomo','matomo-org/matomo','访问分析、目标与隐私设置']]
+};
+export const expandedResources=Object.entries(pairs).flatMap(([direction,rows])=>rows.flatMap(([skill,docTitle,url,repoTitle,repo,section],i)=>{
+ const id=`learn-${direction}-${i+1}`;
+ const prerequisites={ai:'需 Python 与基础数学；先选择小模型/小数据，按设备条件缩小实验',robotics:'先选仿真或离线样例；真机实验需要兼容硬件及安全条件',hardware:'先阅读电路与器件说明；板级实践需要匹配的开发板和测量设备',embedded:'确认工具链、板型与烧录环境；可先做源码阅读或仿真实验',chip:'确认仿真器与 HDL 基础；先用小规模 RTL 和测试平台',cloud:'优先在本机测试集群练习；使用付费云服务前自行核算费用',security:'仅使用本地靶场或明确授权的测试环境',game:'确认引擎版本及显卡条件，从单个示例场景开始'};
+ const common={direction,skills:[skill],section,language:'英文为主 / 部分含中文',minutes:30,prerequisite:prerequisites[direction]||'先阅读项目安装与前置知识；可缩小为文档阅读或单个示例',reviewStatus:'待检查链接 / 未运行项目',reviewedAt:null,license:'遵守来源许可；仓库许可见原站 LICENSE，不将克隆计为个人成果',fallbackId:id+'-doc',audit:null};
+ return [{...common,id:id+'-doc',type:'doc',title:docTitle,url},{...common,id:id+'-project',type:'project',title:repoTitle,url:'https://github.com/'+repo,minutes:60}];
+}));

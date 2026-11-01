@@ -1,6 +1,9 @@
 import { categories } from './opportunity-categories.js';
 import { jobsForCategory } from './recruitment-catalog.js';
 import { expandedResources } from './learning-resources.js';
+import { validateBackup } from './domain.js';
+import { writeRevision } from './storage.js';
+import { fromRecruitment } from './saved-records.js';
 
 const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const palette = ['#f2a33c', '#8ed6a5', '#d9c48a', '#e28b76', '#b9c7a1', '#f2b45c', '#c9b79c', '#e0996a', '#9fcf9a', '#d6b36a', '#d98f8f', '#a9c9b4', '#9fbfae', '#d5c28a', '#d9a76a', '#c7b18a', '#e6b8a0', '#b7c79a'];
@@ -32,6 +35,7 @@ let dragging = null;
 let layoutRect = { width: 0, height: 0 };
 let lastFrame = 0;
 let frameRequest = 0;
+let currentJobId = '';
 
 const countFor = (id) => jobsForCategory(id).length;
 const resourcesFor = (id) => expandedResources.filter((resource) => resource.direction === id).length;
@@ -48,6 +52,159 @@ const safeSource = (value) => {
 const statusBadge = (job) => (job.hiringStatus === 'open'
   ? '<span class="status-badge is-open">可投（核验时）</span>'
   : '<span class="status-badge is-pending">待核验</span>');
+
+/* ---- 收藏 / 设为目标：与主应用共享 jobpath-v1 IndexedDB ---- */
+let saveStore;            // undefined = 未加载；null = 不可用；object = { db, state, revision }
+let saveLoading = null;
+let saveQueue = Promise.resolve();
+
+const initialData = () => ({ direction: 'web', hours: 8, tasks: [], jobs: [], applications: [], answers: ['', '', '', '', ''], ratings: {} });
+const openJobDb = () => new Promise((resolve, reject) => {
+  const request = indexedDB.open('jobpath-v1', 1);
+  request.onupgradeneeded = () => request.result.createObjectStore('state');
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+const readJobDb = (db) => new Promise((resolve, reject) => {
+  const request = db.transaction('state').objectStore('state').get('main');
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+function loadSaveStore() {
+  if (saveStore !== undefined) return Promise.resolve(saveStore);
+  if (!saveLoading) {
+    saveLoading = (async () => {
+      try {
+        const db = await openJobDb();
+        const saved = await readJobDb(db);
+        const state = saved ? validateBackup({ app: 'jobpath', schemaVersion: 1, data: saved }) : initialData();
+        saveStore = { db, state, revision: state.revision || 0 };
+      } catch {
+        saveStore = null;
+      }
+      saveLoading = null;
+      return saveStore;
+    })();
+  }
+  return saveLoading;
+}
+function persistSave() {
+  const snapshot = structuredClone(saveStore.state);
+  const operation = saveQueue.then(async () => {
+    validateBackup({ app: 'jobpath', schemaVersion: 1, data: snapshot });
+    saveStore.revision = await writeRevision(saveStore.db, snapshot, saveStore.revision);
+    saveStore.state.revision = saveStore.revision;
+  });
+  saveQueue = operation.catch(() => {});
+  return operation;
+}
+async function mutateSave(change) {
+  const store = await loadSaveStore();
+  if (!store) throw new Error('本地存储不可用（隐私模式或数据库被禁用），收藏未保存');
+  const before = structuredClone(store.state);
+  change(store.state);
+  try {
+    await persistSave();
+  } catch (error) {
+    store.state = before;
+    throw error;
+  }
+}
+const currentJob = () => {
+  const category = currentCategory();
+  return category ? jobsForCategory(category.id).find((job) => job.id === currentJobId) : null;
+};
+const savedJobFor = (jobId) => {
+  if (!saveStore) return null;
+  return saveStore.state.jobs.find((job) => job.publicId === jobId && !job.removed) || null;
+};
+const sanitizeJob = (job, category) => ({ ...job, category: category.id, source: safeSource(job.source) });
+function setSaveStatus(html) {
+  const status = $('#job-save-status');
+  if (status) status.innerHTML = html;
+}
+async function toggleSaveJob(job, category) {
+  const store = await loadSaveStore();
+  if (!store) {
+    setSaveStatus('本地存储不可用（隐私模式或数据库被禁用）；仅可查看，未保存。');
+    return;
+  }
+  const existing = store.state.jobs.find((item) => item.publicId === job.id);
+  const wasSaved = Boolean(existing && !existing.removed);
+  try {
+    await mutateSave((state) => {
+      if (wasSaved) {
+        existing.removed = true;
+        if (state.targetId === existing.id) {
+          state.targetId = null;
+          state.target = '';
+        }
+      } else if (existing) {
+        existing.removed = false;
+        existing.archived = false;
+        existing.savedAt = existing.updatedAt = Date.now();
+      } else {
+        state.jobs.push(fromRecruitment(sanitizeJob(job, category)));
+      }
+    });
+    updateJobActions();
+    setSaveStatus(wasSaved
+      ? '已取消收藏。既有台账与任务会保留；若此前设为目标，已同步解除。'
+      : '已收藏到本机。可在 <a href="/">机会页「我的理想 JD」</a> 查看与整理要求。');
+  } catch (error) {
+    setSaveStatus(`保存失败：${esc(error.message)}`);
+  }
+}
+async function setTargetJob(job, category) {
+  const store = await loadSaveStore();
+  if (!store) {
+    setSaveStatus('本地存储不可用（隐私模式或数据库被禁用）；未设置目标。');
+    return;
+  }
+  try {
+    await mutateSave((state) => {
+      let saved = state.jobs.find((item) => item.publicId === job.id && !item.removed);
+      if (!saved) {
+        const existing = state.jobs.find((item) => item.publicId === job.id);
+        if (existing) {
+          existing.removed = false;
+          existing.archived = false;
+          existing.savedAt = existing.updatedAt = Date.now();
+          saved = existing;
+        } else {
+          saved = fromRecruitment(sanitizeJob(job, category));
+          state.jobs.push(saved);
+        }
+      }
+      if (state.activePlan?.jobId) {
+        state.targetSchedules ??= {};
+        state.targetSchedules[state.activePlan.jobId] = structuredClone(state.activePlan);
+      }
+      state.targetId = saved.id;
+      state.target = saved.title;
+      state.direction = saved.direction;
+      state.activePlan = state.targetSchedules?.[saved.id] || null;
+    });
+    updateJobActions();
+    setSaveStatus('已设为目标岗位。备战页的当前目标、学习计划与时间安排都会围绕它展开，可 <a href="/">回备战控制台</a> 查看。');
+  } catch (error) {
+    setSaveStatus(`保存失败：${esc(error.message)}`);
+  }
+}
+function updateJobActions() {
+  const saveButton = $('[data-save-job]');
+  const targetButton = $('[data-target-job]');
+  if (!saveButton || !targetButton) return;
+  const job = currentJob();
+  if (!job) return;
+  const saved = savedJobFor(job.id);
+  const target = Boolean(saved && saveStore && saveStore.state.targetId === saved.id);
+  saveButton.textContent = saved ? '已收藏' : '收藏';
+  saveButton.classList.toggle('is-saved', Boolean(saved));
+  saveButton.setAttribute('aria-pressed', String(Boolean(saved)));
+  targetButton.textContent = target ? '当前目标' : '设为目标';
+  targetButton.disabled = Boolean(target);
+}
 
 function renderOrb(orb) {
   if (grid) return;
@@ -167,6 +324,7 @@ function renderJobDetail(job, category) {
   const experience = String(job.experience || '').trim();
   const eligibility = String(job.eligibility || '').trim();
   detailView = 'job';
+  currentJobId = job.id;
   detail.innerHTML = `<div class="back-row">
       <button class="btn btn-ghost btn-sm" type="button" data-back-jobs="${esc(category.id)}">← 岗位列表</button>
       <span class="eyebrow">Job / ${esc(job.id)}</span>
@@ -182,11 +340,18 @@ function renderJobDetail(job, category) {
     ${experience && experience !== eligibility ? `<section class="job-section"><h3>经验与备注</h3><p class="prewrap">${esc(experience)}</p></section>` : ''}
     <section class="job-section"><h3>岗位摘要</h3><p class="prewrap">${esc(job.summary || '官方来源未提供摘要；请打开原站核对。')}</p></section>
     <section class="job-section"><h3>核验说明</h3><p class="job-verification">${esc(job.verification || '未记录')}</p></section>
+    <div class="job-actions">
+      <button class="btn btn-sm" type="button" data-save-job="${esc(job.id)}">收藏</button>
+      <button class="btn btn-sm" type="button" data-target-job="${esc(job.id)}">设为目标</button>
+      <span class="job-actions-hint">保存到本机「我的理想 JD」，不会自动投递</span>
+    </div>
     <div class="category-actions">
       ${source ? `<a class="btn btn-primary btn-sm" href="${esc(source)}" target="_blank" rel="noopener noreferrer">官方来源 ↗</a>` : ''}
       <button class="btn btn-sm" type="button" data-back-jobs="${esc(category.id)}">返回列表</button>
     </div>
+    <p class="job-save-status" id="job-save-status" role="status" aria-live="polite"></p>
     <p class="empty-category">薪资、截止日期与最新在招状态以官网为准；本页不会替你投递或自动推进阶段。</p>`;
+  updateJobActions();
 }
 
 function onDetailClick(event) {
@@ -207,6 +372,20 @@ function onDetailClick(event) {
       renderJobDetail(job, category);
       if (grid) detail.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
     }
+    return;
+  }
+  const saveJobButton = event.target.closest('[data-save-job]');
+  if (saveJobButton) {
+    const job = currentJob();
+    const category = currentCategory();
+    if (job && category) toggleSaveJob(job, category);
+    return;
+  }
+  const targetJobButton = event.target.closest('[data-target-job]');
+  if (targetJobButton) {
+    const job = currentJob();
+    const category = currentCategory();
+    if (job && category) setTargetJob(job, category);
     return;
   }
   const backDirection = event.target.closest('[data-back-direction]');
@@ -414,6 +593,7 @@ layout();
 selectCategory('web');
 frame(performance.now());
 mountStrands();
+loadSaveStore().then(() => { if (detailView === 'job') updateJobActions(); });
 window.addEventListener('resize', layout);
 if ('ResizeObserver' in window) new ResizeObserver(layout).observe(field);
 

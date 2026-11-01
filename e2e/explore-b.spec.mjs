@@ -38,6 +38,28 @@ test('B 集成：从机会页进入 18 方向探索，选择与筛选可用', as
   await expect(page).toHaveURL('http://127.0.0.1:5197/');
 });
 
+test('B 集成：岗位详情收藏并设为目标，主应用立即可见', async ({ page }) => {
+  await page.goto('/explore.html');
+  await expect(page.locator('#category-detail h2')).toHaveText('Web 前端开发');
+  await page.locator('[data-jobs-view]').click();
+  await page.locator('.job-row').first().click();
+  const title = (await page.locator('#category-detail h2').innerText()).trim();
+
+  await page.locator('[data-save-job]').click();
+  await expect(page.locator('[data-save-job]')).toHaveText('已收藏');
+  await page.locator('[data-target-job]').click();
+  await expect(page.locator('[data-target-job]')).toHaveText('当前目标');
+  await expect(page.locator('[data-target-job]')).toBeDisabled();
+  await expect(page.locator('#job-save-status')).toContainText('已设为目标岗位');
+
+  await page.goto('/');
+  await expect(page.locator('.screen h2')).toContainText(title);
+  await page.locator('[data-page=jobs]').click();
+  await page.locator('[data-job-view=saved]').click();
+  await expect(page.locator('#current-target')).toContainText(title);
+  await expect(page.locator('.saved-count')).toHaveText('1');
+});
+
 test('B 集成移动端：三列水晶球、无横向溢出、详情可见', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/explore.html');

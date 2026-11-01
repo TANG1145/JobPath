@@ -23,3 +23,7 @@ $ npx playwright test --grep "B 集成" (after direction -> job list -> job deta
 
 Chromium was run headed because the local headless-shell binary was not installed;
 Firefox and WebKit were run headless. The same assertions passed in all three.
+
+--- 2026-11-01 tb-b-integrate: 收藏/设为目标 chain ---
+B spec (3 tests) x Chromium/Firefox/WebKit: 9 passed
+Full suite chromium: 50 passed

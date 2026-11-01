@@ -3,6 +3,8 @@ test('Strands球内文字、无外框，重力落地后鼠标推动并保持点�
 test('拖动释放后不误打开详情，筛选重建物理场，减弱动态后静止',async({page})=>{await page.goto('/');await page.locator('[data-page=jobs]').click();await expect(page.locator('.bubble-field')).toHaveAttribute('data-physics','running');await page.waitForTimeout(2000);const ball=page.locator('[data-category]').first(),r=await ball.boundingBox();await page.mouse.move(r.x+r.width/2,r.y+r.height/2);await page.mouse.down();await page.mouse.move(r.x+r.width/2+80,r.y+r.height/2-80,{steps:12});await page.mouse.up();await expect(page.locator('#category-view')).toBeVisible();await expect(page.locator('#category-jobs-view')).toBeHidden();await page.getByLabel('搜索岗位分类').fill('测试');await expect(page.locator('[data-category]:visible')).toHaveCount(1);await page.emulateMedia({reducedMotion:'reduce'});await expect(page.locator('.bubble-field')).toHaveAttribute('data-physics','static');await expect(page.locator('[data-category=test]')).toHaveCSS('position','static');});
 
 test('18个球共享同款渲染且只有一个WebGL源，减弱动态使用同款静态帧',async({page})=>{
+ const glProbe=await page.evaluate(()=>{const c=document.createElement('canvas');return Boolean(c.getContext('webgl2')||c.getContext('webgl')||c.getContext('experimental-webgl'))});
+ test.skip(!glProbe,'此环境没有可用 WebGL 上下文（例如无 GPU/软件 GL 的 headless Firefox），共享渲染无法验证；静态降级路径由其余用例覆盖');
  await page.setViewportSize({width:1920,height:1400});await page.goto('/');await page.locator('[data-page=jobs]').click();
  await expect(page.locator('[data-visual-state=shared]')).toHaveCount(18);
  await expect(page.locator('.strands-copy')).toHaveCount(18);

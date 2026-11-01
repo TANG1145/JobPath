@@ -59,6 +59,7 @@
   - 新增 3 条 B 集成测试：工具栏入口/18 球/真实计数/搜索/列表/返回、390px 三列与无溢出、详情页「收藏 + 设为目标」后主应用备战页与「我的理想 JD」立即可见。
 - B 集成 3 条单独回归：Chromium / Firefox / WebKit 全部通过。
 - Strands WebGL1 回退单独验证：三引擎强制禁用 WebGL2 后 `data-visual-state=shared` × 18、单一 WebGL 源、采样像素 `[11,11,11,235]`（暗色且不透明）与 WebGL2 路径一致。
+- CI 的 headless Firefox 没有任何 WebGL 上下文（`AllowWebgl2:false` + GL 驱动耗尽）：共享渲染用例先探测 WebGL 能力，无 WebGL 时显式跳过（静态降级路径由其余用例覆盖），本地 Firefox 有 WebGL 时仍真实执行并通过。
 - `npm run build` 通过，生成 `public/visuals/strands.js`。
 - 日志：[e2e.txt](audit/v10/e2e.txt)、[unit.txt](audit/v10/unit.txt)。
 - 截图：[桌面](audit/v10/explore-desktop.png)、[选择产品策划](audit/v10/explore-product.png)、[岗位列表](audit/v10/jobs-list.png)、[岗位详情](audit/v10/job-detail.png)、[收藏后](audit/v10/job-detail-save.png)、[设为目标后](audit/v10/job-detail-target.png)、[备战页当前目标](audit/v10/prep-target.png)、[手机](audit/v10/explore-mobile.png)、[入口](audit/v10/entry.png)。

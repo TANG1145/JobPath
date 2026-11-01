@@ -15,6 +15,7 @@
 - 球体内部使用 tjj 真实的 **React Bits Strands** WebGL 纹理（`public/visuals/strands.js`），由 `build.mjs` 用 esbuild 生成；
 - 保留我们自己的轻量 DOM 物理（拖动、碰撞、hover 暂停），没有引入 tjj 的 matter-js bubble-field；
 - 机会页工具栏加入「◎ 探索 18 个方向」入口；
+- 修复 tjj 原有 CI 红：Strands 增加 WebGL1 回退（GLSL ES 1.00 版 shader），Firefox headless / 老硬件没有 WebGL2 时渲染同款光带而不是静态替代；`dFdx/dFdy` 依赖 `GL_OES_standard_derivatives`，必须在上下文先 `getExtension` 启用，否则 `#extension` 指令会被编译期判为“not supported”；
 - 静态服务器与构建脚本加入 `explore.html` / `explore.css` / `public/visuals/strands.css`。
 
 ## 2. 交互
@@ -57,6 +58,7 @@
   - 保留 tjj 原有 47 条；
   - 新增 3 条 B 集成测试：工具栏入口/18 球/真实计数/搜索/列表/返回、390px 三列与无溢出、详情页「收藏 + 设为目标」后主应用备战页与「我的理想 JD」立即可见。
 - B 集成 3 条单独回归：Chromium / Firefox / WebKit 全部通过。
+- Strands WebGL1 回退单独验证：三引擎强制禁用 WebGL2 后 `data-visual-state=shared` × 18、单一 WebGL 源、采样像素 `[11,11,11,235]`（暗色且不透明）与 WebGL2 路径一致。
 - `npm run build` 通过，生成 `public/visuals/strands.js`。
 - 日志：[e2e.txt](audit/v10/e2e.txt)、[unit.txt](audit/v10/unit.txt)。
 - 截图：[桌面](audit/v10/explore-desktop.png)、[选择产品策划](audit/v10/explore-product.png)、[岗位列表](audit/v10/jobs-list.png)、[岗位详情](audit/v10/job-detail.png)、[收藏后](audit/v10/job-detail-save.png)、[设为目标后](audit/v10/job-detail-target.png)、[备战页当前目标](audit/v10/prep-target.png)、[手机](audit/v10/explore-mobile.png)、[入口](audit/v10/entry.png)。

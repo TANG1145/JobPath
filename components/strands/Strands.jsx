@@ -277,6 +277,14 @@ void main() {
   }
 }
 `;
+// WebGL1 (GLSL ES 1.00) variants: Firefox headless and older hardware stacks can lack WebGL2.
+// Identical math; tanh() is spelled out and derivatives come from GL_OES_standard_derivatives.
+const VERT1 = VERT.replace('#version 300 es\n', '').replace('in vec2 position;', 'attribute vec2 position;');
+const FRAG1 = FRAG
+  .replace('#version 300 es', '#extension GL_OES_standard_derivatives : enable')
+  .replace('out vec4 fragColor;', '')
+  .replace(/fragColor = /g, 'gl_FragColor = ')
+  .replace('tanh(cphi / 0.6)', '((1.0 - exp(-2.0 * (cphi / 0.6))) / (1.0 + exp(-2.0 * (cphi / 0.6))))');
 
 const hexToRgb = hex => {
   let h = String(hex).replace('#', '').trim();
@@ -292,13 +300,16 @@ const compile = (gl, type, source) => {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.error('[strands] shader compile failed:', gl.getShaderInfoLog(shader));
+  }
   return shader;
 };
 
-const createProgram = gl => {
+const createProgram = (gl, es3 = true) => {
   const program = gl.createProgram();
-  gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, VERT));
-  gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, FRAG));
+  gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, es3 ? VERT : VERT1));
+  gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, es3 ? FRAG : FRAG1));
   gl.bindAttribLocation(program, 0, 'position');
   gl.linkProgram(program);
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
@@ -392,8 +403,16 @@ export default function Strands({
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.setAttribute('aria-hidden', 'true');
-    const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false });
+    const attrs = { alpha: true, premultipliedAlpha: true, antialias: false };
+    const gl2 = canvas.getContext('webgl2', attrs);
+    // Firefox headless and older hardware can lack WebGL2; fall back to WebGL1.
+    const gl = gl2 || canvas.getContext('webgl', attrs);
     if (!gl) return;
+    const es3 = Boolean(gl2);
+    // WebGL1 shaders use dFdx/dFdy, which requires enabling the derivatives
+    // extension on the context before compiling (a #extension directive alone
+    // is rejected as "not supported" when the extension is not enabled).
+    if (!es3 && !gl.getExtension('OES_standard_derivatives')) return;
     container.appendChild(canvas);
 
     let program = null;
@@ -427,7 +446,7 @@ export default function Strands({
       'uOpacity'
     ];
     const setup = () => {
-      const next = createProgram(gl);
+      const next = createProgram(gl, es3);
       if (!next) return false;
       program = next;
       buffer = gl.createBuffer();

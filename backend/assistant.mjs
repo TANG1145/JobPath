@@ -4,7 +4,7 @@ export const toolNames=['get_profile','get_learning_tasks','find_catalog_jobs','
 export function collectContext(context={}){
  const text=(v,n=500)=>typeof v==='string'?v.slice(0,n):'';
  const profile={direction:text(context.direction,50),hours:Number.isFinite(context.hours)?Math.max(0,Math.min(80,context.hours)):8,cities:text(context.cities,150),intent:text(context.intent,30),graduation:text(context.graduation,10),today:text(context.today,10),deadline:text(context.deadline,10),availableDays:Array.isArray(context.days)?context.days.filter(d=>Number.isInteger(d)&&d>=0&&d<=6):[0,1,2,3,4,5,6],target:text(context.target,200),weeks:Number.isInteger(context.weeks)?Math.max(1,Math.min(52,context.weeks)):4};
- const tasks=Array.isArray(context.tasks)?context.tasks.slice(0,10).map(t=>({title:text(t.title,100),status:text(t.status,20),minutes:Math.min(90,Math.max(1,Number(t.minutes)||30))})):[];
+ const tasks=Array.isArray(context.tasks)?context.tasks.slice(0,10).map(t=>({title:text(t.title,100),status:text(t.status,20),date:text(t.date,10),minutes:Math.min(90,Math.max(1,Number(t.minutes)||30))})):[];
  const applications=Array.isArray(context.applications)?context.applications.slice(0,10).map(a=>({title:text(a.title,100),stage:text(a.stage,20),date:text(a.date,10),rounds:(Array.isArray(a.rounds)?a.rounds:[]).slice(-3).map(r=>({name:text(r.name,50),date:text(r.date,10),status:text(r.status,20),note:text(r.note,200)}))})):[];
  const candidates=jobsForCategory(profile.direction).filter(j=>j.hiringStatus!=='closed'&&(!profile.intent||profile.intent==='待确认'||!j.intent||j.intent===profile.intent)).sort((a,b)=>Number(!!profile.cities&&String(b.city).includes(profile.cities))-Number(!!profile.cities&&String(a.city).includes(profile.cities))).slice(0,6).map(j=>({id:j.id,title:j.title,company:j.company,city:j.city,intent:j.intent,eligibility:j.eligibility,summary:String(j.summary||'').slice(0,180),source:j.source,checkedAt:j.checkedAt,hiringStatus:j.hiringStatus||'unknown',expires:j.expires||''}));
  return {profile,tasks,applications,candidates};
@@ -23,3 +23,4 @@ export function validateAssistant(mode,data,context){
  if(mode==='interview_plan'&&(!Array.isArray(data.milestones)||!data.milestones.length||data.milestones.length>7||data.milestones.some(m=>!date(m.date)||!str(m.title,150)||!str(m.preparation,500))))fail();
  return data;
 }
+

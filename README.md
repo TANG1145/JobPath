@@ -40,3 +40,12 @@ npm run build
 ## AI 协作页面更新
 
 本地分支 work/prep-career-ai，未推送。阅读 [AI配置与使用指南](docs/AI_CONFIGURATION.md) 配置服务端密钥、邀请及本机窗口。备战支持AI日期任务采用，求职页支持目录岗位投递顺序、面试时间线和Offer横向比较；五题自测界面已移除，旧答案保留在备份中。
+
+## 使用与下一阶段
+
+- [网站完整使用路线](docs/USER_GUIDE.md)
+- [AI课堂演示指南](docs/AI_DEMO_GUIDE.md)
+- [网页与命令行API配置](docs/AI_CONFIGURATION.md)
+- [全站视觉整改详细计划（未执行）](docs/VISUAL_REDESIGN_PLAN.md)
+
+AI采用固定流程与只读上下文工具，一次模型调用生成建议；不是自主多Agent系统。本机设置页现在可直接验证、保存已有API Key，新Key在供应商后台申请。视觉整改本轮仅做计划。

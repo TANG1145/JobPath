@@ -18,7 +18,7 @@ try{
  await page.locator('#importfile').setInputFiles({name:'synthetic.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({app:'jobpath',schemaVersion:1,data}))});
  await page.locator('#toast').filter({hasText:'备份已恢复'}).waitFor();
  async function inspect(name,width){
-  await page.evaluate(()=>document.fonts.ready);
+  await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(500);
   const sizes=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(sizes.page<=sizes.viewport,`${name} ${width}px 页面横向溢出 ${sizes.page}`);checks++;
   const tiny=await page.locator('main').evaluate(root=>[...root.querySelectorAll('h1,h2,h3,p,button,label,small,summary')].filter(e=>e.getClientRects().length&&!e.closest('.sr-only')&&parseFloat(getComputedStyle(e).fontSize)<14).map(e=>e.textContent.slice(0,30)));
@@ -51,5 +51,16 @@ try{
  await page.locator('[data-workspace-tab=tasks]').click();await page.locator('#ai-plan-goal').fill('合成失败测试');await page.locator('#generate-personal-plan').click();await page.locator('#toast').filter({hasText:'合成连接错误'}).waitFor();assert.equal(await page.locator('#ai-plan-goal').inputValue(),'合成失败测试');assert.equal(await page.locator('#generate-personal-plan').isEnabled(),true);checks++;
  await page.goto('http://127.0.0.1:5175/explore.html');await page.locator('.list-item').first().waitFor();for(const width of [390,768,1440]){await page.setViewportSize({width,height:1000});await inspect('explore',width)}
  await page.locator('#explore-search').fill('不存在的方向');assert.equal(await page.locator('.list-empty').isVisible(),true);checks++;
- assert.deepEqual(errors,[]);checks++;console.log(`PASS ${checks} redesigned workspace checks: all tabs, desktop/tablet/mobile, readable type, dialogs, aligned filters, dated calendar, AI error recovery, exploration. Screenshots: .local/redesign/`);
+ // New motion/matching states use synthetic responses and an isolated browser.
+ await page.goto('http://127.0.0.1:5175/');
+ for(const width of [390,768,1440]){
+  await page.setViewportSize({width,height:1000});await page.locator('[data-page=jobs]').click();await page.locator('[data-job-view=categories]').click();await inspect('match-entry',width);
+  let pending;const hold=r=>pending=r;await page.route('**/api/ai',hold);await page.locator('#discover-jobs').click();await page.locator('.radar-popup').waitFor();await inspect('radar',width);
+  await page.keyboard.press('Escape');assert.equal(await page.locator('.scan-launcher').isVisible(),true);checks++;
+  const job=await page.evaluate(async()=>{const {jobsForCategory}=await import('/src/recruitment-catalog.js');return jobsForCategory('web').find(j=>j.hiringStatus!=='closed')});
+  while(!pending)await new Promise(r=>setTimeout(r,20));await pending.fulfill({json:{data:{title:'合成岗位匹配',summary:'结合已有实践，核实申请资格后行动',matches:[{jobId:job.id,fit:'可以尝试',reason:'页面实践可作为作品展示的起点',preparation:'核对届别、实习时长并完善项目链接'}]}}});await page.locator('.match-card').waitFor();await page.unroute('**/api/ai',hold);await inspect('match-results',width);
+  await page.locator('[data-page=prep]').click();const fold=page.locator('.checkin-fold');if(!await fold.evaluate(e=>e.open))await fold.locator('summary').click();await inspect('checkin-wave',width);
+  if(await page.locator('#daily-checkin').isEnabled()){await page.locator('#daily-checkin').click();await page.locator('.checkin-celebration').waitFor();await inspect('checkin-celebration',width);await page.getByRole('button',{name:'关闭打卡庆祝'}).click()}
+ }
+ assert.deepEqual(errors,[]);checks++;console.log(`PASS ${checks} redesigned workspace checks: all tabs, desktop/tablet/mobile, readable type, dialogs, aligned filters, dated calendar, AI error recovery, exploration, live radar, matching results and check-in motion. Screenshots: .local/redesign/`);
 }finally{await browser.close()}

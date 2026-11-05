@@ -4,7 +4,7 @@
 
 ## 入口
 
-POST /api/ai支持personal_plan、career_chat、application_plan、interview_plan；answer_feedback仅为历史API兼容。五题自测和AI提取JD界面保持移除。
+POST /api/ai支持job_match、personal_plan、career_chat、application_plan、interview_plan；answer_feedback仅为历史API兼容。五题自测和AI提取JD界面保持移除。
 
 src/ai-client.js先等待GET /api/local-ai建立本机HttpOnly会话，已配置时不发送缓存邀请。backend/http.mjs优先有效本机会话，兼容旧共享凭证。日常网页没有邀请输入或到期步骤。设置页验证官方/models端点并本地保存已有Key。
 
@@ -28,3 +28,13 @@ backend/quota.mjs沿用旧SQLite结构以兼容本机数据，现为调用记录
 - workflow元数据只包含场景、工具名和耗时，不记录密钥/认证头。
 
 .env和.local保持Git忽略，静态服务不暴露配置、数据库或后端源文件。测试使用内存账本、临时合成配置和模拟模型，不读取真实Key。
+
+## 岗位匹配与并发保存
+
+job_match输入与其他规划模式相同，payload包含answer与context，输出为{title,summary,matches:[{jobId,reason,fit,preparation}]}。fit为优先考虑/可以尝试/需要补齐；空结果合法。服务端只接受当前候选的真实ID、非重复项和完整文字字段。候选工具排除明确截止及excludedJobIds，保留原始来源和核验信息。
+
+server.mjs在提供者调用前，将招聘SQLite快照合并到服务端目录，保持与前端招聘状态的共同来源。个人自评、项目证据标记、方向兴趣和已申请来源随上下文提供，标记不等于已验证能力。
+
+客户端AI网络请求可并行，onDraft采用过程通过共享队列依次执行，避免并发结果回滚覆盖。个人计划、投递与面试建议、岗位匹配都在存储失败时抛出错误；不再把仅模型返回成功误报为保存成功。
+
+机会页的雷达不驱动业务、不伪造进度；请求finally中销毁，收起不会重发请求。opportunityMatch是schemaVersion1备份的可选字段，旧备份仍兼容。

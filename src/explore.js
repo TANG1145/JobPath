@@ -36,6 +36,13 @@ const statusBadge = (job) => (job.hiringStatus === 'open'
 let saveStore;            // undefined = 未加载；null = 不可用；object = { db, state, revision }
 let saveLoading = null;
 let saveQueue = Promise.resolve();
+let savePending = false;
+window.addEventListener('beforeunload',event=>{if(savePending){event.preventDefault();event.returnValue='';}});
+async function runSaveAction(action){
+ if(savePending)return;
+ savePending=true;updateJobActions();setSaveStatus('正在保存…');
+ try{await action()}finally{savePending=false;updateJobActions()}
+}
 
 const initialData = () => ({ direction: 'web', hours: 8, tasks: [], jobs: [], applications: [], answers: ['', '', '', '', ''], ratings: {} });
 const openJobDb = () => new Promise((resolve, reject) => {
@@ -182,7 +189,9 @@ function updateJobActions() {
   saveButton.classList.toggle('is-saved', Boolean(saved));
   saveButton.setAttribute('aria-pressed', String(Boolean(saved)));
   targetButton.textContent = target ? '当前目标' : '设为目标';
-  targetButton.disabled = Boolean(target);
+  saveButton.disabled = savePending;
+  targetButton.disabled = Boolean(target) || savePending;
+  for(const button of [saveButton,targetButton]){if(savePending)button.setAttribute('aria-busy','true');else button.removeAttribute('aria-busy')}
 }
 
 function renderDetail(category) {
@@ -286,14 +295,14 @@ function onDetailClick(event) {
   if (saveJobButton) {
     const job = currentJob();
     const category = currentCategory();
-    if (job && category) toggleSaveJob(job, category);
+    if (job && category) runSaveAction(()=>toggleSaveJob(job, category));
     return;
   }
   const targetJobButton = event.target.closest('[data-target-job]');
   if (targetJobButton) {
     const job = currentJob();
     const category = currentCategory();
-    if (job && category) setTargetJob(job, category);
+    if (job && category) runSaveAction(()=>setTargetJob(job, category));
     return;
   }
   const backDirection = event.target.closest('[data-back-direction]');

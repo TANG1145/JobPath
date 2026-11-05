@@ -1,0 +1,8 @@
+import {createLearningTask} from './learning-plan.js';
+import {validDate,addDays} from './planning.js';
+export function aiTasks(plan,{jobId,hours,start,weeks=4,existing=[]}){
+ if(!jobId)throw Error('请先选择目标岗位');const until=addDays(start,weeks*7-1),used=new Map(),count=new Map();
+ for(const t of existing){if(!validDate(t.date)||t.date<start||t.date>until)continue;const week=Math.floor((Date.parse(t.date)-Date.parse(start))/604800000);used.set(week,(used.get(week)||0)+t.minutes);count.set(t.date,(count.get(t.date)||0)+1);}
+ return plan.days.flatMap((d,i)=>{if(!validDate(d.day)||d.day<start||d.day>until)throw Error('AI 日期不在当前计划周期内，请调整需求后生成');const minutes=d.minutes;if(!Number.isInteger(minutes)||minutes<1||minutes>90)throw Error('任务估时应为1—90分钟');const week=Math.floor((Date.parse(d.day)-Date.parse(start))/604800000);used.set(week,(used.get(week)||0)+minutes);count.set(d.day,(count.get(d.day)||0)+1);if(used.get(week)>Math.floor(hours*48)||count.get(d.day)>3)throw Error('建议超过时间预算，请减少任务后再生成');return {...createLearningTask({jobId,title:d.task.slice(0,150),skill:'AI 个性化实践',minutes,acceptance:d.task,resourceIds:[]}),origin:'ai',date:d.day,aiPlanId:plan.at||''};});
+}
+export const aiContext=(state,today)=>({days:state.days,deadline:state.deadline,direction:state.direction,hours:state.hours,cities:state.cities,intent:state.intent,graduation:state.graduation,today,target:state.target,weeks:state.aiWeeks||state.activePlan?.weeks||4,tasks:state.tasks.filter(t=>t.jobId===state.targetId).slice(0,10).map(({title,status,minutes})=>({title,status,minutes})),applications:state.applications.slice(-10).map(({title,stage,date,rounds})=>({title,stage,date,rounds}))});

@@ -19,7 +19,7 @@ node scripts/start-local.mjs --restart
 |---|---|
 | 机会 | 18个方向、招聘列表与详情、收藏岗位、私人JD、目标岗位 |
 | 备战 | 当前目标与进度、打卡、学习任务、日程与计划、96条学习资源、浮动规划助手 |
-| 求职 | 投递台账、AI投递建议、面试时间线、Offer对比、求职复盘 |
+| 求职 | 投递记录、AI投递建议、面试时间线、Offer对比、求职复盘 |
 | 设置 | 个人目标、网页AI连接、备份与恢复 |
 
 AI支持学习计划、对话、目录岗位投递顺序和面试准备。设置 → AI连接，可验证并保存自己的 DeepSeek Key。已移除网站自行设置的次数、预算、试用到期、每天三项任务和90分钟估时等门槛。供应商实际限流、网络错误和账户权限仍会如实反馈。
@@ -29,6 +29,7 @@ AI支持学习计划、对话、目录岗位投递顺序和面试准备。设置
 - [网站使用说明](docs/USER_GUIDE.md)
 - [AI配置](docs/AI_CONFIGURATION.md) · [课堂演示路线](docs/AI_DEMO_GUIDE.md) · [AI实现说明](docs/AI_BACKEND.md)
 - [本轮整改与验收](docs/REDESIGN_ACCEPTANCE.md)
+- [完整测试方案](docs/TEST_PLAN.md) · [动效建议](docs/MOTION_DESIGN.md) · [归档与并发问题复查](docs/FOLLOWUP_AUDIT.md)
 - [功能整理计划](docs/FUNCTIONAL_REORGANIZATION_PLAN.md) · [视觉整改计划](docs/VISUAL_REDESIGN_PLAN.md)
 - 原始课程文档：[产品需求](docs/original/01_产品需求文档_PRD.docx)、[技术与交互设计](docs/original/02_技术与交互设计文档.docx)，原件保留。
 

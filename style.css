@@ -2062,3 +2062,10 @@ dialog .skill-picker .check {
 
 .direction-card{transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.direction-card:hover{transform:none}}
+
+/* Local follow-up corrections: clear collection scopes and spacing at subsection boundaries. */
+.saved-scopes{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 28px}.saved-scopes button{display:inline-flex;align-items:center;gap:9px;background:#fff}.saved-scopes button[aria-pressed=true]{background:var(--tint);border-color:#cfacd5;color:#7d267c}.scope-count{display:inline-flex;align-items:center;justify-content:center;min-width:24px;padding:1px 7px;border-radius:7px;background:#f0eaf4;font-size:14px}.saved-filters{grid-template-columns:2fr 1fr 1fr}.saved-feedback{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.saved-feedback button{white-space:nowrap}.ai-history-item{padding:20px 0;border-bottom:1px solid var(--line)}.ai-history-item:first-of-type{padding-top:8px}.ai-history-item:last-child{border-bottom:0}.ai-history-item h3{margin-bottom:12px}.application-history>h3,[data-section="07 / WEEKLY REVIEW"]>h3,.position-evidence>h3{margin-top:28px;margin-bottom:14px}.route-results>h3:not(:first-child){margin-top:28px}.timeline-item>a+button{margin-left:12px}.timeline-item>p:last-of-type{margin-bottom:16px}.profile-summary dd{overflow-wrap:anywhere}
+@media(max-width:850px){.saved-filters{grid-template-columns:1fr 1fr}.saved-filters label:first-child{grid-column:1/-1}}
+@media(max-width:600px){.saved-scopes{gap:8px;margin:18px 0 24px}.saved-scopes button{padding:10px 11px;font-size:14px;gap:5px}.timeline-item>a+button{display:flex;margin:12px 0 0}.ai-history-item{padding:18px 0}}
+
+#current-target > h3{margin-bottom:14px}

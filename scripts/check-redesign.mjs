@@ -29,13 +29,18 @@ try{
   await page.setViewportSize({width,height:1000});
   for(const [section,tabs] of [['prep',['tasks','schedule','resources']],['career',['tracker','interviews','offers','review']],['settings',['profile','ai','data']]]){
    await page.locator(`[data-page=${section}]`).first().click();
-   for(const tab of tabs){await page.locator(`[data-workspace-tab=${tab}]`).click();await inspect(section+'-'+tab,width)}
+   for(const tab of tabs){await page.locator(`[data-workspace-tab=${tab}]`).click();await inspect(section+'-'+tab,width);
+    if(section==='career'&&tab==='review'){const gap=await page.locator('[data-section="07 / WEEKLY REVIEW"] > h3').evaluate(el=>el.getBoundingClientRect().top-el.previousElementSibling.getBoundingClientRect().bottom);assert.ok(gap>=24,`复盘小节间距过小 ${width}`);checks++;}
+    if(section==='prep'&&tab==='schedule'){const gap=await page.locator('.ai-history-item h3').first().evaluate(el=>el.nextElementSibling.getBoundingClientRect().top-el.getBoundingClientRect().bottom);assert.ok(gap>=12,`AI历史标题与正文过近 ${width}`);checks++;}
+   }
   }
   await page.locator('[data-page=prep]').click();await page.locator('#assistant-launcher').click();await inspect('assistant',width);await page.keyboard.press('Escape');assert.equal(await page.locator('#assistant-drawer').isHidden(),true);checks++;
   await page.locator('[data-page=jobs]').click();await page.locator('[data-job-view=categories]').click();await inspect('directions',width);
   await page.locator('[data-category-open=java]').click();await inspect('positions',width);
   await page.locator('[data-position-open]').first().click();await inspect('position-detail',width);
   await page.locator('[data-page=jobs]').click();await page.locator('[data-open-saved]').click();await inspect('saved',width);
+  const scopeGap=await page.locator('.saved-scopes').evaluate(el=>el.nextElementSibling.getBoundingClientRect().top-el.getBoundingClientRect().bottom);assert.ok(scopeGap>=24,`收藏范围与内容区过近 ${width}`);checks++;
+  const targetGap=await page.locator('#current-target > h3').evaluate(el=>el.nextElementSibling.getBoundingClientRect().top-el.getBoundingClientRect().bottom);assert.ok(targetGap>=12,`当前目标标题贴近岗位卡片 ${width}`);checks++;
   await page.locator('[data-organize]').first().click();await inspect('saved-detail',width);await page.locator('#close').click();
   await page.locator('[data-page=settings]').first().click();await page.locator('[data-action=profile]').click();await inspect('profile-dialog',width);await page.locator('#close').click();
  }

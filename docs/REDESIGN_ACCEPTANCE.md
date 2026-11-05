@@ -2,6 +2,8 @@
 
 日期：2026-11-05。分支：work/prep-career-ai。仅本地修改和本地提交，未推送GitHub。设计基线为根目录DESIGN.md及用户提供的三张Toggl参考截图。
 
+后续复查更新：归档入口、术语、局部间距与AI并发保存已修复；最新结果为112项单元、168项三浏览器场景、128项布局检查通过。下文保留首轮整改记录；最新问题与结果见[FOLLOWUP_AUDIT.md](FOLLOWUP_AUDIT.md)，完整用例见[TEST_PLAN.md](TEST_PLAN.md)。
+
 ## 交付范围
 
 | 模块 | 实际变化 |

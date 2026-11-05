@@ -128,7 +128,7 @@ async function toggleSaveJob(job, category) {
     });
     updateJobActions();
     setSaveStatus(wasSaved
-      ? '已取消收藏。既有台账与任务会保留；若此前设为目标，已同步解除。'
+      ? '已取消收藏。已有投递记录与任务会保留；若此前设为目标，已同步解除。'
       : '已收藏到本机。可在 <a href="/">机会页「收藏岗位」</a> 查看与整理要求。');
   } catch (error) {
     setSaveStatus(`保存失败：${esc(error.message)}`);

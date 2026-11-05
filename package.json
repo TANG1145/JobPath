@@ -11,7 +11,10 @@
     "catalog": "node scripts/export-catalog.mjs",
     "test:e2e": "playwright test",
     "verify:videos": "node scripts/verify-resource-videos.mjs",
-    "recruitment:update": "node scripts/update-recruitment.mjs"
+    "recruitment:update": "node scripts/update-recruitment.mjs",
+    "test:workflow": "node scripts/check-workflow.mjs",
+    "test:layout": "node scripts/check-redesign.mjs",
+    "count:source": "node scripts/count-source.mjs"
   },
   "engines": {
     "node": ">=22.13.0"

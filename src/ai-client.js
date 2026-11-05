@@ -5,7 +5,7 @@ export async function aiConnection(fetchImpl=fetch,storage=sessionStorage){
  return {local:false,token:storage.getItem('jobpath-invite')?.trim()||''};
 }
 export async function aiFetch(path,options={}, {fetchImpl=fetch,storage=sessionStorage}={}){
- const connection=await aiConnection(fetchImpl,storage);if(connection.local&&!connection.enabled&&path==='/api/ai')throw Error('本机 AI 已停用或已过有效期，请到设置中检查连接状态');
+ const connection=await aiConnection(fetchImpl,storage);if(connection.local&&!connection.enabled&&path==='/api/ai')throw Error('本机 AI 已停用，请到设置中检查连接状态');
  const headers=new Headers(options.headers);headers.delete('Authorization');if(!connection.local&&connection.token)headers.set('Authorization','Bearer '+connection.token);
  return fetchImpl(path,{...options,headers,credentials:'same-origin'});
 }

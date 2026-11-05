@@ -1,57 +1,47 @@
-# 启职 JobPath v0.7
+# 启职 JobPath
 
-岗位要求驱动的本地求职备战工作台，卡带未来主义风格。私有仓库：https://github.com/TANG1145/JobPath 。不部署上线，真实 AI 默认关闭。
+明亮、简洁的本地求职工作台：发现岗位 → 建立学习计划 → 跟进投递与面试 → 比较 Offer。
 
-> `tb-b-integrate` 在 tjj 基座上增加 `/explore.html`：18 方向水晶球探索，使用真实 Strands WebGL 纹理、36 条招聘记录与 96 条资源，支持「方向 → 岗位列表 → 岗位详情」链；从「机会 → 探索岗位」工具栏进入。说明见 [B 集成记录](docs/EXPLORE_B_INTEGRATION.md)。
+2026-11-05：全站按 [DESIGN.md](DESIGN.md) 完成布局与样式整改。工作分支 `work/prep-career-ai`，修改仅在本地，未推送 GitHub。
 
-## 运行与测试
+## 启动
 
-Node.js 24/25 推荐（最低22.13）。前端球体导航使用 React 19 与 matter-js；`npm ci` 安装依赖，`npm run dev` 会先构建 Strands bundle，再启动本地服务。
+安装 Node.js 24，首次运行 `npm ci`，然后双击 **启动网站.cmd**。固定访问 http://127.0.0.1:5175 。关闭启动窗口不会结束后台服务；重启电脑后重新启动即可。不要直接打开 index.html。
 
-```sh
+```powershell
 npm ci
-npm run dev
-npm test
-npx playwright install chromium firefox webkit
-npm run test:e2e
-npm run build
+node scripts/start-local.mjs --restart
 ```
 
-本机访问 http://127.0.0.1:5173 。构建在dist/，仅包含客户端与资源目录，不包含服务端密钥、邀请、SQLite或后端实现。GitHub Actions只执行测试和构建，不部署。
+## 页面与功能
 
-## 功能
+| 入口 | 内容 |
+|---|---|
+| 机会 | 18个方向、招聘列表与详情、收藏岗位、私人JD、目标岗位 |
+| 备战 | 当前目标与进度、打卡、学习任务、日程与计划、96条学习资源、浮动规划助手 |
+| 求职 | 投递台账、AI投递建议、面试时间线、Offer对比、求职复盘 |
+| 设置 | 个人目标、网页AI连接、备份与恢复 |
 
-18 个职业方向均可将已收藏岗位设为备战目标（摘要也可），保留私人 JD、原文补充与手动要求编辑。备战不再使用预设方向模板：用户从 96 条资料中选择文档、视频和开源项目，填写学习范围、时间与验收目标，或新增自定义任务，自由组合、排序、移除并记录成果。4/8 周排期只安排自选任务，目标之间任务与时间安排隔离。准备进度仅对照用户自己的学习计划，不计算模板匹配分。
+AI支持学习计划、对话、目录岗位投递顺序和面试准备。设置 → AI连接，可验证并保存自己的 DeepSeek Key。已移除网站自行设置的次数、预算、试用到期、每天三项任务和90分钟估时等门槛。供应商实际限流、网络错误和账户权限仍会如实反馈。
 
-保留投递台账、面试轮次与历史、Offer 对比、备份恢复及保存保护。AI 整理 JD 已删除，本轮没有 AI 规划功能；已有回答反馈网关与限额保护不变。接入边界见 [AI 网关说明](docs/AI_BACKEND.md)。
+## 文档
 
-## 边界
+- [网站使用说明](docs/USER_GUIDE.md)
+- [AI配置](docs/AI_CONFIGURATION.md) · [课堂演示路线](docs/AI_DEMO_GUIDE.md) · [AI实现说明](docs/AI_BACKEND.md)
+- [本轮整改与验收](docs/REDESIGN_ACCEPTANCE.md)
+- [功能整理计划](docs/FUNCTIONAL_REORGANIZATION_PLAN.md) · [视觉整改计划](docs/VISUAL_REDESIGN_PLAN.md)
+- 原始课程文档：[产品需求](docs/original/01_产品需求文档_PRD.docx)、[技术与交互设计](docs/original/02_技术与交互设计文档.docx)，原件保留。
 
-招聘信息保存的是有限原文摘录或摘要，申请资格与当前招聘状态仍以招聘官网为准。资源库共 96 条（48 份文档、42 个项目入口、6 个视频）：原有 24 条保留原核验记录；新增 72 条已检查入口响应与标题，尚未安装运行、验证硬件或完整课程，不宣称项目全部可运行。项目许可与依赖以各仓库为准，旧修复项目仍须按附带说明操作。
+## 验证
 
-计划完成与自报证据不等于满足岗位资格；4/8 周排期是个人时间安排，不承诺录用。旧任务、已确认要求和备份保留。未部署，未合并 main。执行记录见 [测试报告](docs/TEST_REPORT.md)，自由规划说明见 [学习计划](docs/FREE_LEARNING.md)。
+```powershell
+npm test
+npm run build
+# 以下使用独立 Edge 测试上下文，先启动5175服务；AI使用合成响应
+node scripts/check-workflow.mjs
+node scripts/check-redesign.mjs
+```
 
-.env、.local、数据库、邀请和用户备份均不进入Git。测试浏览器保留明确标记的合成演示数据。
+个人记录保存在浏览器本地，可导出恢复。统一使用127.0.0.1:5175，换域名或端口会进入另一个数据空间。没有个人登录、云同步、自动投递或企业Offer同步。岗位状态与资格应核对官网；目录资源为学习入口，运行环境见资源说明。
 
-## 2026-11-05 备战页更新
-
-自定义1—52周周期、折叠学习计划、右上角打卡日历、对齐的资源筛选、AI个性化计划与规划助手已加入本地版本。真实AI当前关闭。双击根目录“启动网站.cmd”固定从 http://127.0.0.1:5175 打开，并保持后台服务。详情与验证见 [备战页改进](docs/PREP_IMPROVEMENTS.md)。
-
-## AI 协作页面更新
-
-本地分支 work/prep-career-ai，未推送。阅读 [AI配置与使用指南](docs/AI_CONFIGURATION.md) 配置服务端密钥、邀请及本机窗口。备战支持AI日期任务采用，求职页支持目录岗位投递顺序、面试时间线和Offer横向比较；五题自测界面已移除，旧答案保留在备份中。
-
-## 使用与下一阶段
-
-- [网站完整使用路线](docs/USER_GUIDE.md)
-- [AI课堂演示指南](docs/AI_DEMO_GUIDE.md)
-- [网页与命令行API配置](docs/AI_CONFIGURATION.md)
-- [全站视觉整改详细计划（未执行）](docs/VISUAL_REDESIGN_PLAN.md)
-
-AI采用固定流程与只读上下文工具，一次模型调用生成建议；不是自主多Agent系统。本机设置页现在可直接验证、保存已有API Key，新Key在供应商后台申请。视觉整改本轮仅做计划。
-
-## 当前开发优先级
-
-先功能、后风格。[功能整理与稳定性计划](docs/FUNCTIONAL_REORGANIZATION_PLAN.md) 为当前执行依据；全站视觉计划冻结待讨论。API邀请冲突已修复，所有AI入口统一使用本机连接检查，配置后不再发送空或旧邀请头。助手不得读取真实API配置，详见AGENTS.md。
-
-主流程检查：启动网站后运行 `node scripts/check-workflow.mjs`，使用隔离浏览器与合成AI响应；可选环境依赖按项目Playwright设置。本机脚本默认Edge，其他环境需修改channel。
+.env、.local、个人数据库、密钥和备份均不提交。原旧版界面验收资料保留用于追溯，本轮验收以REDESIGN_ACCEPTANCE为准。

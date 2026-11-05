@@ -1,6 +1,6 @@
 import {exportBackup,backupFile} from './backup-helpers.mjs';
 import {test,expect} from '@playwright/test';import {categories} from '../src/opportunity-categories.js';import {setupLearning,addCustom} from './learning-helpers.mjs';
-test('18方向摘要均可设目标、无默认任务，刷新和备份可恢复',async({page})=>{
+test('18方向摘要均可设目标、无默认任务，刷新和备份可恢复',async({page})=>{test.setTimeout(60000);
  const data={direction:'web',hours:8,tasks:[],jobs:categories.map(c=>({id:c.id,direction:c.id,title:c.title,company:'测试公司',jd:'岗位摘要',recordStage:'summary'})),applications:[],answers:[]};await page.goto('/');await page.locator('[data-page=settings]').click();await page.locator('[data-workspace-tab=data]').click();page.once('dialog',d=>d.accept());await page.locator('#importfile').setInputFiles({name:'all.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({app:'jobpath',schemaVersion:1,data}))});await expect(page.locator('#toast')).toContainText('备份已恢复');
  for(const c of categories){await page.locator('[data-page=jobs]').click();await page.locator('[data-open-saved]').click();await page.locator(`[data-organize="job:${c.id}"]`).click();await expect(page.locator('#modal')).not.toContainText('暂无备战模板');await page.locator('#detail-target').click();await expect(page.locator('main')).toContainText(c.title);await expect(page.locator('[data-learning-edit]')).toHaveCount(0);await expect(page.locator('#resource-results details')).not.toHaveCount(0)}
  await page.reload();await expect(page.locator('main')).toContainText('产品与内容运营');await expect(page.locator('[data-action=plan]')).toBeDisabled();

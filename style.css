@@ -2125,15 +2125,13 @@ button[aria-busy=true] { background-image:linear-gradient(100deg,transparent 25%
 @keyframes dialog-enter { from { opacity:.3; translate:0 8px; } to { opacity:1; translate:0 0; } }
 
 /* Date cells themselves form the travelling wave; no decorative tile banner. */
-.calendar-day { animation:calendar-wave 6s ease-in-out infinite; animation-delay:var(--wave-delay,0s); will-change:transform; transform-origin:center; }
-@keyframes calendar-wave { 0%,100% { transform:translateY(2.5px) scale(.985); } 50% { transform:translateY(-4px) scale(1.035); } }
+.calendar-day { animation:calendar-wave 8s ease-in-out infinite; animation-delay:var(--wave-delay,0s); transform-origin:center; }
+@keyframes calendar-wave { 0%,100% { background-color:var(--wave-low,#f7f2fa); transform:translateY(.5px); } 50% { background-color:var(--wave-high,#dcc2ea); transform:translateY(-.5px); } }
+.calendar-day.checked { --wave-low:#e7f3eb; --wave-high:#bce1ca; }
+.calendar-day.today { outline:2px solid #a15aa9; outline-offset:2px; font-weight:700; }
 .checkin-calendar { row-gap:9px; padding:5px 0; }
 .motion-paused .calendar-day { animation-play-state:paused; }
 .page-tools { display:flex; align-items:center; gap:18px; }
-.motion-toggle { padding:6px 12px; border-radius:20px; font-size:14px; background:white; color:var(--primary); }
-.motion-settings { border-top:1px solid var(--line); margin-top:24px; padding-top:22px; max-width:360px; }
-.motion-settings label { margin:0; }
-.motion-settings select { margin-top:10px; }
 .radar-sweep::after { content:''; position:absolute; left:50%; bottom:50%; width:2px; height:50%; background:linear-gradient(#a535a8,#d89ce1); transform-origin:bottom; box-shadow:0 0 12px #9c309966; }
 button:not(:disabled):active { scale:.97; }
 html[data-motion="off"] *,html[data-motion="off"] *::before,html[data-motion="off"] *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
@@ -2141,3 +2139,19 @@ html[data-motion="off"] .calendar-day { transform:none; will-change:auto; }
 html[data-motion="off"] .celebration-mark i { display:none; }
 @media(prefers-reduced-motion:reduce) { html:not([data-motion="full"]) .calendar-day { transform:none; will-change:auto; } html:not([data-motion="full"]) .celebration-mark i { display:none; } }
 @media(max-width:850px) { .opportunity-ai>.row { align-items:flex-start; flex-direction:column; gap:14px; } }
+
+/* Local, low-contrast light; content and hit targets stay still. */
+.direction-card:hover { transform:none; background-image:radial-gradient(220px circle at var(--glow-x,50%) var(--glow-y,50%),#efd9f4,transparent 85%); }
+.prep-overview .screen { border-radius:16px; padding:20px; background:linear-gradient(115deg,#fcf8ff,#f1e7fb,#fcebf4,#fcf8ff); background-size:300% 300%; animation:target-aurora 18s ease-in-out infinite; }
+@keyframes target-aurora { 0%,100%{background-position:0% 50%}50%{background-position:100% 50%} }
+@property --beam-angle { syntax:'<angle>'; inherits:false; initial-value:0deg; }
+.panel:has(button[aria-busy=true]) { position:relative; }
+.panel:has(button[aria-busy=true])::after { content:''; position:absolute; inset:-1px; border-radius:inherit; padding:2px; pointer-events:none; background:conic-gradient(from var(--beam-angle),transparent 70%,#ca8bd9 88%,#9c3099 96%,transparent); mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); mask-composite:exclude; animation:plan-beam 3.5s linear infinite; }
+@keyframes plan-beam { to { --beam-angle:360deg; } }
+.workspace-tabs { position:relative; isolation:isolate; gap:12px; padding:6px; border:0; border-radius:16px; background:#f4f0f6; }
+.workspace-tabs::before { content:''; position:absolute; z-index:-1; left:var(--tab-left,6px); width:var(--tab-width,100px); top:6px; bottom:6px; border-radius:11px; background:#fff; box-shadow:0 2px 8px #44264f0c; transition:left .28s ease,width .28s ease; }
+.workspace-tabs button { padding:12px 18px; border-radius:11px; }
+.workspace-tabs button.active:after { display:none; }
+.panel>p,.row+p { line-height:1.7; }
+.task-bottom { gap:16px; }
+.ai-plan-archive { margin-top:24px; }

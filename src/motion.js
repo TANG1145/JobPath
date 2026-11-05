@@ -1,27 +1,12 @@
-// Calendar dates and radar use live CSS animation, controlled by the site setting.
-const preferenceKey='jobpath-motion';
-let mode='full';
-try{const saved=localStorage.getItem(preferenceKey);if(['full','system','off'].includes(saved))mode=saved}catch{}
-document.documentElement.dataset.motion=mode;
-const systemMotion=matchMedia('(prefers-reduced-motion: reduce)');
-export const motionEnabled=()=>mode==='full'||(mode==='system'&&!systemMotion.matches);
-function updateControls(){
- document.querySelectorAll('[data-motion-toggle]').forEach(button=>{button.textContent='动态效果：'+(motionEnabled()?'开启':'关闭');button.setAttribute('aria-pressed',String(motionEnabled()))});
- const select=document.querySelector('#motion-mode');if(select)select.value=mode;
-}
-function setMotion(next){
- mode=next;document.documentElement.dataset.motion=mode;
- try{localStorage.setItem(preferenceKey,mode)}catch{}
- updateControls();document.dispatchEvent(new Event('jobpath-motion-change'));
-}
-systemMotion.addEventListener('change',updateControls);
+// Production motion follows real actions; no demo controls or persisted switches.
+document.documentElement.dataset.motion='full';
+export const motionEnabled=()=>true;
+document.addEventListener('pointermove',e=>{
+ const card=e.target.closest?.('.direction-card');if(!card||e.pointerType==='touch')return;
+ const rect=card.getBoundingClientRect();card.style.setProperty('--glow-x',`${e.clientX-rect.left}px`);card.style.setProperty('--glow-y',`${e.clientY-rect.top}px`);
+});
 let calendarCleanup=()=>{},progressFrame=0,lastScope,lastProgress;
 export function mountMotion(scope){
- updateControls();document.querySelectorAll('[data-motion-toggle]').forEach(button=>button.onclick=()=>setMotion(motionEnabled()?'off':'full'));
- const profile=document.querySelector('[data-section="personal-profile"]');
- if(profile&&!profile.querySelector('.motion-settings')){
-  const controls=document.createElement('div');controls.className='motion-settings';controls.innerHTML='<label>页面动态效果<select id="motion-mode"><option value="full">开启动态效果</option><option value="system">跟随系统设置</option><option value="off">关闭动态效果</option></select></label>';profile.append(controls);controls.querySelector('select').value=mode;controls.querySelector('select').onchange=e=>setMotion(e.target.value);
- }
  cancelAnimationFrame(progressFrame);const ring=document.querySelector('.progress-ring');
  if(ring){const next=ring.style.getPropertyValue('--progress');if(lastScope===scope&&lastProgress!==undefined&&lastProgress!==next&&motionEnabled()){ring.style.setProperty('--progress',lastProgress);getComputedStyle(ring).getPropertyValue('--progress');progressFrame=requestAnimationFrame(()=>ring.style.setProperty('--progress',next))}lastProgress=next;lastScope=scope;}
  calendarCleanup();const calendar=document.querySelector('.checkin-calendar');if(!calendar)return;
@@ -30,9 +15,9 @@ export function mountMotion(scope){
  calendarCleanup=()=>{observer.disconnect();document.removeEventListener('visibilitychange',sync);calendar.classList.add('motion-paused')};
 }
 let celebrationTimer;
-export function celebrateCheckin(){
+export function celebrateCheckin(message='今天已打卡'){
  clearTimeout(celebrationTimer);document.querySelector('.checkin-celebration')?.remove();
- const card=document.createElement('aside');card.className='checkin-celebration';card.setAttribute('role','status');card.innerHTML=`<button aria-label="关闭打卡庆祝">×</button><div class="celebration-mark" aria-hidden="true">✓${Array.from({length:8},(_,i)=>`<i style="--i:${i}"></i>`).join('')}</div><strong>今天的坚持，已记录</strong><p>又向目标前进了一步</p>`;document.body.append(card);const close=()=>{card.remove();clearTimeout(celebrationTimer)};card.querySelector('button').onclick=close;celebrationTimer=setTimeout(close,4200);
+ const card=document.createElement('aside');card.className='checkin-celebration';card.setAttribute('role','status');card.innerHTML=`<button aria-label="关闭打卡庆祝">×</button><div class="celebration-mark" aria-hidden="true">✓${Array.from({length:8},(_,i)=>`<i style="--i:${i}"></i>`).join('')}</div><strong></strong>`;card.querySelector('strong').textContent=message;document.body.append(card);const close=()=>{card.remove();clearTimeout(celebrationTimer)};card.querySelector('button').onclick=close;celebrationTimer=setTimeout(close,4200);
 }
 let activeRadar;
 export function startRadar(){
@@ -48,4 +33,12 @@ export function startRadar(){
  const escape=e=>{if(e.key==='Escape'&&!card.hidden&&!document.querySelector('#modal[open]'))minimize()};
  card.querySelector('button').onclick=minimize;document.addEventListener('keydown',escape);launcher.onclick=()=>toggle(true);document.body.append(card,launcher);activeRadar={close};
  return close;
+}
+
+// Only compare committed changes, so failed saves never trigger a celebration.
+export function celebrateSaved(before,after){
+ const previousOffers=new Set(before.applications.filter(a=>a.stage==='Offer').map(a=>a.id));
+ if(after.applications.some(a=>a.stage==='Offer'&&!previousOffers.has(a.id))){celebrateCheckin('收到新的 Offer');return;}
+ const done=s=>(s.events||[]).filter(e=>e.type==='task_completed').length;
+ if(done(after)>done(before))celebrateCheckin('又完成了一项任务');
 }

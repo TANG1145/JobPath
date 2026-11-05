@@ -49,3 +49,9 @@ npm run build
 - [全站视觉整改详细计划（未执行）](docs/VISUAL_REDESIGN_PLAN.md)
 
 AI采用固定流程与只读上下文工具，一次模型调用生成建议；不是自主多Agent系统。本机设置页现在可直接验证、保存已有API Key，新Key在供应商后台申请。视觉整改本轮仅做计划。
+
+## 当前开发优先级
+
+先功能、后风格。[功能整理与稳定性计划](docs/FUNCTIONAL_REORGANIZATION_PLAN.md) 为当前执行依据；全站视觉计划冻结待讨论。API邀请冲突已修复，所有AI入口统一使用本机连接检查，配置后不再发送空或旧邀请头。助手不得读取真实API配置，详见AGENTS.md。
+
+主流程检查：启动网站后运行 `node scripts/check-workflow.mjs`，使用隔离浏览器与合成AI响应；可选环境依赖按项目Playwright设置。本机脚本默认Edge，其他环境需修改channel。

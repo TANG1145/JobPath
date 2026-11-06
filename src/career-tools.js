@@ -1,0 +1,23 @@
+import {applicationForCandidate} from './career-state.js';
+import {aiContext} from './ai-plan.js';
+import {jobsForCategory} from './recruitment-catalog.js';
+const preferenceDrafts=new WeakMap();
+export function mountCareerTools({state,save,render,esc,today,toast,aiPreview,panel,editRound,application,modal,offerFields,validateOffer}){
+ if(document.querySelector('#calendar-host')){
+ const scope=state.targetId;
+ const main=document.querySelector('main'),footer=document.querySelector('.footer');
+ const area=document.createElement('section');area.className='career-workspace';
+ const drafts=state.careerAI||{},recs=drafts.applications?.targetId===state.targetId?drafts.applications:null,interviews=drafts.interviews;
+ const primary=state.jobs.find(j=>j.id===state.targetId);const candidates=jobsForCategory(state.direction).filter(j=>j.id!==primary?.publicId);
+ const recView=recs?`<h3>${esc(recs.title)}</h3><p>${esc(recs.summary)}</p>${recs.recommendations.filter(r=>candidates.some(j=>j.id===r.jobId)).map((r,i)=>{const job=candidates.find(j=>j.id===r.jobId);return `<article class="timeline-item"><span class="badge">${i+1} · ${esc(r.date)}</span><h3>${esc(job?.title||r.jobId)}</h3><p>${esc(job?.company||'')} · ${esc(job?.city||'')} · 核验 ${esc(job?.checkedAt||'未知')}</p><p>${esc(r.reason)}<br>下一步：${esc(r.action)}</p>${job?`<a href="${esc(job.source)}" target="_blank" rel="noopener noreferrer">核对官方招聘页 ↗</a> <button data-track-candidate="${esc(r.jobId)}">加入投递记录</button>`:''}</article>`}).join('')}`:'<div class="empty">先补充目标城市、求职类型和毕业时间，再生成更贴合现实的投递顺序。</div>';
+ area.innerHTML=`<div>${panel('AI / APPLICATION ROUTE',`<h2>同期备选岗位</h2><p>保留当前主要目标，寻找可以同步准备的岗位和投递时机。</p><label>现实情况与偏好<textarea id="application-preferences" placeholder="例如：2027届、上海实习、每周能到岗三天，希望先投递前端岗位。"></textarea></label><button id="generate-application-route">AI 规划投递顺序</button><div class="route-results">${recView}</div>`)}</div>`;
+ main.insertBefore(area,main.querySelector('.grid'));
+ async function persist(kind,draft){const before=state.careerAI;state.careerAI={...before,[kind]:{...draft,targetId:scope,at:new Date().toISOString()}};try{await save();render()}catch(e){if(before?.[kind])state.careerAI[kind]=before[kind];else delete state.careerAI[kind];throw e}}
+ const preference=document.querySelector('#application-preferences');preference.value=preferenceDrafts.get(state)?.[scope]||'';preference.oninput=()=>preferenceDrafts.set(state,{...preferenceDrafts.get(state),[scope]:preference.value});
+ document.querySelector('#generate-application-route').onclick=()=>aiPreview('application_plan',{answer:'保留当前主要目标，推荐同类型同期可以并行准备的其他岗位，说明可复用的准备内容、额外投入和投递顺序。不要推荐当前主要目标本身。用户补充：'+document.querySelector('#application-preferences').value.trim(),context:aiContext(state,today())},d=>persist('applications',d));
+ area.querySelectorAll('[data-track-candidate]').forEach(b=>b.onclick=()=>{const j=candidates.find(j=>j.id===b.dataset.trackCandidate);if(!j){toast('岗位已变化，请重新生成建议');return}if(state.applications.some(a=>a.source===j.source)){toast('投递记录中已有该岗位');return}modal('加入投递记录',`<p>${esc(j.company)} · ${esc(j.title)}</p><p>加入后为收藏状态，可以继续完善投递日期和下一步。</p>`,()=>state.applications.push(applicationForCandidate(state.applications,j)));});
+ }
+ const offers=document.querySelector('#offer-comparison');if(offers){const button=document.createElement('button');button.id='add-offer-direct';button.textContent='＋ 添加已收到的 Offer';const header=document.createElement('div');header.className='row';offers.querySelector('h2').before(header);header.append(offers.querySelector('h2'),button);button.onclick=()=>modal('记录已收到的 Offer',`<label>公司与岗位<input name="title" required maxlength="150"></label>${offerFields.map(([k,n])=>`<label>${n}<input name="${k}" ${k==='deadline'?'type="date"':''} maxlength="2000"></label>`).join('')}<p>填写已收到的 Offer 条件，缺少的信息可以稍后补充。</p>`,f=>{const offer=Object.fromEntries(offerFields.map(([k])=>[k,f.get(k).trim()]));validateOffer(offer);if(!f.get('title').trim())throw Error('请填写公司与岗位名称');state.applications.push({id:crypto.randomUUID(),title:f.get('title').trim(),stage:'Offer',note:'直接录入已收到的Offer',date:'',appliedDate:'',rounds:[],offer})});
+ const list=state.applications.filter(a=>a.stage==='Offer');if(list.length){const table=document.createElement('div');table.className='offer-table-wrap';table.innerHTML=`<table class="offer-table"><thead><tr><th>对比项</th>${list.map(a=>`<th>${esc(a.title)}</th>`).join('')}</tr></thead><tbody>${offerFields.map(([k,n])=>`<tr><th>${n}</th>${list.map(a=>`<td>${esc(a.offer?.[k]||'待补充')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;offers.querySelector('.panel').insertBefore(table,offers.querySelector('.offer-grid'));}}
+}
+

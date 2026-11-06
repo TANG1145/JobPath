@@ -1,3 +1,5 @@
+> 2026-11-06：四模块调整已实施。备选岗位移至备战；投递记录支持编号、交替底色、自定义阶段；面试使用周/日日程；回顾使用月份文件夹与Markdown编辑/阅读。当前验收见CAREER_RELEASE_ACCEPTANCE.md。
+
 > 发行版收尾：已落实日期颜色波浪、局部交互动效与正式界面文案清理。最新验证和交付范围见 [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)，当前动效行为见 [MOTION_DESIGN.md](MOTION_DESIGN.md)。
 
 > 2026-11-05动效与机会匹配追加已实施：每日打卡波浪、成功庆祝、真实请求雷达、目录AI匹配、结果到收藏/目标/投递闭环及保存失败提示修正。保留浅色工作台，不重做全站风格。验收见[MOTION_ACCEPTANCE.md](MOTION_ACCEPTANCE.md)，动效规则见[MOTION_DESIGN.md](MOTION_DESIGN.md)。

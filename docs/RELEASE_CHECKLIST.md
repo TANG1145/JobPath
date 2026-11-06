@@ -1,3 +1,5 @@
+> 最新2026-11-06验收见 [四模块调整验收](CAREER_RELEASE_ACCEPTANCE.md)。以下为上一轮动效收尾记录。
+
 # 本地发行检查
 
 日期：2026-11-05。分支：work/prep-career-ai。未上传GitHub，未读取本地API配置；原始需求和设计文档仍保留在docs/original。

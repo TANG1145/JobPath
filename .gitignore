@@ -13,3 +13,5 @@ playwright-report/
 
 public/visuals/*
 !public/visuals/strands.css
+
+public/markdown.js

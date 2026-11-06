@@ -2155,3 +2155,28 @@ html[data-motion="off"] .celebration-mark i { display:none; }
 .panel>p,.row+p { line-height:1.7; }
 .task-bottom { gap:16px; }
 .ai-plan-archive { margin-top:24px; }
+
+/* Career workspace: clear records, full-width timetable, quiet writing space. */
+.application-record{padding:26px!important;border-radius:18px;margin:18px 0!important;border:1px solid #e6dced!important;background:white}
+.application-record:nth-of-type(even){background:#f5edf9}
+.record-number{display:inline-grid;place-items:center;min-width:34px;height:34px;background:#ead5f1;color:#82368f;border-radius:10px;margin-right:12px}
+.application-record label{max-width:320px}.application-record>p{margin:16px 0;line-height:1.8}.application-history{margin-top:22px}
+.calendar-toolbar{gap:24px;align-items:flex-start}.calendar-toolbar .filters{gap:10px;align-items:flex-end}.calendar-toolbar label{margin:0}.calendar-toolbar input,.calendar-toolbar select{margin:6px 0 0}.calendar-toolbar h2{margin-bottom:12px}
+.schedule-scroll{height:65vh;min-height:440px;overflow:auto;border:1px solid #e6dfeb;border-radius:16px;margin:24px 0;scrollbar-gutter:stable}
+.schedule-grid{display:grid;grid-template-columns:66px repeat(var(--days),minmax(135px,1fr));min-width:100%;width:100%;position:relative}
+.schedule-grid:has(.schedule-date:only-of-type){width:100%}
+.schedule-date,.schedule-corner{position:sticky;top:0;z-index:4;background:#fff;padding:16px 10px;border-bottom:1px solid #e6dfeb;text-align:center;display:flex;flex-direction:column;gap:6px}
+.schedule-date.is-today{background:#f5e9fa;color:#8d3198}.schedule-corner{left:0;z-index:5;font-size:14px}
+.schedule-hours{position:relative;height:1440px;background:white;position:sticky;left:0;z-index:2}
+.schedule-hours span{position:absolute;left:8px;font-size:14px;color:#74657c}
+.schedule-column{position:relative;height:1440px;border-left:1px solid #e6dfeb;background:repeating-linear-gradient(#fff 0px,#fff 59px,#eae4ef 60px)}
+.schedule-column.is-today{background:repeating-linear-gradient(#fcf8ff 0px,#fcf8ff 59px,#eae4ef 60px)}
+.schedule-allday,.schedule-allday-label{padding:10px;border-bottom:1px solid #e6dfeb;background:#faf8fc}.schedule-allday-label{font-size:14px}
+.schedule-event{display:flex;flex-direction:column;gap:4px;text-align:left;white-space:normal;overflow:hidden;border:1px solid #dec4e8;border-left:3px solid #a847b2;background:#f0e0f7;color:#51335e;padding:8px;border-radius:8px;line-height:1.45;font-size:14px}
+.schedule-column>.schedule-event{position:absolute;margin:0}.schedule-event.is-complete{background:#eaf4ef;border-color:#c5dfd0;color:#376b4e}.schedule-event:hover{filter:brightness(.98);z-index:3}.pending-interviews{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}.unscheduled{margin-top:20px}
+.review-workspace{display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}.journal-sidebar{padding:22px!important}.journal-sidebar>button{width:100%;margin:20px 0}.journal-sidebar details{margin:18px 0}.journal-sidebar summary{display:flex;justify-content:space-between}.journal-file{display:block;width:100%;text-align:left;border:0;background:transparent;margin-top:8px;padding:12px}.journal-file span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#7b6c84;margin-top:6px}.journal-file.active{background:#f2e6f7;color:#8e3498}
+.journal-editor{min-width:0}.journal-editor .row{gap:16px}.journal-editor label{margin:0}.journal-editor input{margin-top:8px}.journal-editor textarea{width:100%;min-height:55vh;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:16px;line-height:1.8;margin-top:16px;padding:22px}
+.markdown-toolbar{display:flex;gap:8px;flex-wrap:wrap;padding-top:22px;margin-top:22px;border-top:1px solid var(--line)}.markdown-toolbar button{padding:8px 14px}.markdown-body{min-height:55vh;line-height:1.85;padding:24px 0;overflow-wrap:anywhere}.markdown-body h1{font-size:28px}.markdown-body h2{font-size:23px}.markdown-body h3{font-size:19px}.markdown-body pre,.legacy-review pre{white-space:pre-wrap;background:#f4eff7;padding:18px;border-radius:12px}.markdown-body blockquote{border-left:3px solid #b16bbd;padding-left:18px;margin-left:0;color:#76677f}.markdown-body table{display:block;max-width:100%;overflow:auto;border-collapse:collapse}.markdown-body th,.markdown-body td{padding:12px;border:1px solid var(--line)}.markdown-body ul,.markdown-body ol{padding-left:28px}.markdown-body p{margin:16px 0}.legacy-review{overflow-wrap:anywhere}
+@media(max-width:750px){.review-workspace{grid-template-columns:1fr}.journal-sidebar{max-height:270px;overflow:auto}.interview-calendar{padding:16px!important}.calendar-toolbar .filters{width:100%}.calendar-toolbar label{flex:1}.journal-editor .row{align-items:flex-start;flex-direction:column}.application-record{padding:20px!important}.schedule-grid{grid-template-columns:60px repeat(var(--days),minmax(220px,1fr))}.journal-editor textarea{padding:14px}.journal-editor .filters{gap:8px}}
+
+.schedule-event span,.schedule-event strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;flex-shrink:0}

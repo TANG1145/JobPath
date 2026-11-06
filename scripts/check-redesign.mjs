@@ -10,7 +10,7 @@ await page.route('**/api/local-ai',r=>r.fulfill({json:{configured:true,enabled:t
 await page.route('**/api/ai',r=>r.fulfill({status:502,json:{message:'合成连接错误，请重试'}}));
 const date=new Date().toLocaleDateString('en-CA');
 const offer={content:'前端开发与产品协作',city:'上海',compensation:'月薪 12000 元 × 13 薪',probation:'6个月',learning:'导师支持',deadline:'2026-12-01',questions:'确认团队与入职时间'};
-const data={direction:'web',targetId:'sample',target:'前端开发实习生',hours:8,intent:'实习',cities:'上海',graduation:'2027-06',jobs:[{id:'sample',title:'前端开发实习生',company:'示例科技',jd:'负责界面与交互，熟悉 JavaScript。',direction:'web'}],tasks:Array.from({length:8},(_,i)=>({id:'task-'+i,key:'task-'+i,jobId:'sample',title:i===0?'完成一个响应式页面并验证键盘操作':'项目实践与学习记录 '+(i+1),skill:'前端开发',acceptance:'提交实现与验证结果',minutes:i===0?180:30,status:i===1?'完成':i===2?'进行中':'待做',evidence:i===1?'独立实现接口并验证正常和异常输入':'',date,resourceIds:[]})),applications:[{id:'application-a',title:'示例科技 · 前端开发',stage:'面试',note:'准备项目介绍',date,appliedDate:date,rounds:[{id:'round-a',name:'技术面',date,status:'已完成',note:'复盘：清楚说明个人贡献，补充性能优化案例'}]},{id:'offer-a',title:'示例 A · 前端开发',stage:'Offer',note:'',offer},{id:'offer-b',title:'示例 B · 软件开发',stage:'Offer',note:'',offer:{...offer,city:'杭州',compensation:'月薪 14000 元 × 12 薪'}}],answers:[],aiWorkspace:{sample:{messages:[{role:'user',text:'今天只有45分钟，先做什么？'},{role:'assistant',text:'先用30分钟完成页面布局，再用15分钟验证窄屏和键盘操作。'}],plans:[{title:'本周项目实践计划',summary:'先完成项目核心流程，再复盘并准备面试。',at:new Date().toISOString(),days:[{day:date,task:'实现核心页面并记录验证结果',minutes:180}]}]}},events:[]};
+const data={direction:'web',targetId:'sample',target:'前端开发实习生',hours:8,intent:'实习',cities:'上海',graduation:'2027-06',jobs:[{id:'sample',title:'前端开发实习生',company:'示例科技',jd:'负责界面与交互，熟悉 JavaScript。',direction:'web'}],tasks:Array.from({length:8},(_,i)=>({id:'task-'+i,key:'task-'+i,jobId:'sample',title:i===0?'完成一个响应式页面并验证键盘操作':'项目实践与学习记录 '+(i+1),skill:'前端开发',acceptance:'提交实现与验证结果',minutes:i===0?180:30,status:i===1?'完成':i===2?'进行中':'待做',evidence:i===1?'独立实现接口并验证正常和异常输入':'',date,resourceIds:[]})),applications:[{id:'application-a',title:'示例科技 · 前端开发',stage:'面试',note:'准备项目介绍',date,appliedDate:date,rounds:[{id:'round-a',name:'技术面',date,time:'09:00',endTime:'10:30',status:'已完成',note:'复盘：清楚说明个人贡献，补充性能优化案例'}]},{id:'offer-a',title:'示例 A · 前端开发',stage:'Offer',note:'',offer},{id:'offer-b',title:'示例 B · 软件开发',stage:'Offer',note:'',offer:{...offer,city:'杭州',compensation:'月薪 14000 元 × 12 薪'}}],answers:[],aiWorkspace:{sample:{messages:[{role:'user',text:'今天只有45分钟，先做什么？'},{role:'assistant',text:'先用30分钟完成页面布局，再用15分钟验证窄屏和键盘操作。'}],plans:[{title:'本周项目实践计划',summary:'先完成项目核心流程，再复盘并准备面试。',at:new Date().toISOString(),days:[{day:date,task:'实现核心页面并记录验证结果',minutes:180}]}]}},events:[]};
 mkdirSync('.local/redesign',{recursive:true});
 try{
  await page.goto('http://127.0.0.1:5175');
@@ -27,10 +27,10 @@ try{
  }
  for(const width of [390,768,1440]){
   await page.setViewportSize({width,height:1000});
-  for(const [section,tabs] of [['prep',['tasks','schedule','resources']],['career',['tracker','interviews','offers','review']],['settings',['profile','ai','data']]]){
+  for(const [section,tabs] of [['prep',['tasks','alternatives','schedule','resources']],['career',['tracker','interviews','offers','review']],['settings',['profile','ai','data']]]){
    await page.locator(`[data-page=${section}]`).first().click();
    for(const tab of tabs){await page.locator(`[data-workspace-tab=${tab}]`).click();await inspect(section+'-'+tab,width);
-    if(section==='career'&&tab==='review'){const gap=await page.locator('[data-section="07 / WEEKLY REVIEW"] > h3').evaluate(el=>el.getBoundingClientRect().top-el.previousElementSibling.getBoundingClientRect().bottom);assert.ok(gap>=24,`复盘小节间距过小 ${width}`);checks++;}
+    if(section==='career'&&tab==='review'){assert.ok(await page.locator('#review-source').isVisible());checks++;}
     if(section==='prep'&&tab==='schedule'){const gap=await page.locator('.ai-history-item h3').first().evaluate(el=>el.nextElementSibling.getBoundingClientRect().top-el.getBoundingClientRect().bottom);assert.ok(gap>=12,`AI历史标题与正文过近 ${width}`);checks++;}
    }
   }

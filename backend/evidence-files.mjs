@@ -7,9 +7,11 @@ export function chooseWindowsFiles(){
  const script=`[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new(); Add-Type -AssemblyName System.Windows.Forms; $dialog=New-Object System.Windows.Forms.OpenFileDialog; $dialog.Title='选择学习成果文件'; $dialog.Multiselect=$true; $dialog.CheckFileExists=$true; $owner=New-Object System.Windows.Forms.Form; $owner.TopMost=$true; $owner.ShowInTaskbar=$false; $owner.StartPosition='CenterScreen'; $owner.Size=New-Object System.Drawing.Size(1,1); $owner.Opacity=0; $owner.Show(); $owner.Activate(); try { if($dialog.ShowDialog($owner) -eq [System.Windows.Forms.DialogResult]::OK){ ConvertTo-Json -Compress -InputObject @($dialog.FileNames) } else { '[]' } } finally { $dialog.Dispose(); $owner.Dispose() }`;
  return new Promise((resolve,reject)=>{const child=spawn('powershell.exe',['-NoProfile','-STA','-WindowStyle','Hidden','-EncodedCommand',Buffer.from(script,'utf16le').toString('base64')],{windowsHide:false});let output='';child.stdout.setEncoding('utf8');child.stdout.on('data',s=>output+=s);child.on('error',()=>reject(Error('无法打开文件选择窗口')));child.on('close',code=>{try{if(code!==0)throw Error();const result=JSON.parse(output.trim().replace(/^\uFEFF/,''));if(!Array.isArray(result))throw Error();resolve(result)}catch{reject(Error('文件选择未完成，请重试'))}})});
 }
-export function revealWindowsFile(file){
+export async function revealWindowsFile(file){
  if(process.platform!=='win32')throw Error('定位文件目前支持Windows');
- return new Promise((resolve,reject)=>{const child=spawn('explorer.exe',['/select,',file],{detached:true,stdio:'ignore',windowsHide:false});child.once('error',()=>reject(Error('无法打开文件资源管理器')));child.once('spawn',()=>{child.unref();resolve()})});
+ const encoded=Buffer.from(file,'utf16le').toString('base64');
+ const script="$file=[Text.Encoding]::Unicode.GetString([Convert]::FromBase64String('"+encoded+"'));\n"+await readFile(new URL('./reveal-evidence.ps1',import.meta.url),'utf8');
+ return new Promise((resolve,reject)=>{const child=spawn('powershell.exe',['-NoProfile','-STA','-WindowStyle','Hidden','-EncodedCommand',Buffer.from(script,'utf16le').toString('base64')],{windowsHide:false,stdio:'ignore'});const timer=setTimeout(()=>{child.kill();reject(Error('文件夹未能打开，请重试'))},15000);child.once('error',()=>{clearTimeout(timer);reject(Error('无法打开文件资源管理器'))});child.once('close',code=>{clearTimeout(timer);code===0?resolve():reject(Error('文件夹未能打开，请重试'))});});
 }
 export class EvidenceFiles{
  constructor(root,{pick=chooseWindowsFiles,reveal=revealWindowsFile}={}){this.file=path.join(root,'.local','evidence-files.json');this.pick=pick;this.reveal=reveal;this.busy=false;}

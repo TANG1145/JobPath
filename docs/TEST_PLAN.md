@@ -268,3 +268,5 @@ npm run test:layout
 - 自动测试使用临时合成文件和模拟选择/定位适配器，不操作个人文件。Windows原生窗口由用户在正式页面点击选择与定位进行体验验收。
 
 2026-11-06原生窗口复验：修复后台进程隐藏窗口与未显示父窗口的激活方式；通过正式/api/evidence/select触发原生选择器，用户确认窗口已出现。文件关联专项2项复测通过。无需管理员权限。
+
+资源管理器前置更新：删除定位成功的界面提示；定位后恢复目标窗口并短暂前置，随后取消置顶。使用.local/evidence-window-test中的合成文件执行真实Windows定位，调用成功；2项文件服务测试及三浏览器6项文件交互测试通过。Windows层级实现参考 https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-setwindowpos 。
